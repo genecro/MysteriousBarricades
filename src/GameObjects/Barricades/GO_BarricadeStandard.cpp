@@ -1,0 +1,55 @@
+#include "GO_BarricadeStandard.h"
+
+T3DModel* GO_BarricadeStandard::barricadeModel = nullptr;
+uint8_t GO_BarricadeStandard::instanceCount = 0;
+
+GO_BarricadeStandard::GO_BarricadeStandard(T3DVec3 pos, T3DVec3 sizeRotation, color_t objColor) {
+    position_ = pos;
+    rotation_ = fm_atan2f(sizeRotation.z, sizeRotation.x);
+    scale_ = sqrt(pow(sizeRotation.x, 2) + pow(sizeRotation.z, 2))*scaleFactor;
+    objColor_ = objColor;
+
+    t3d_mat4_identity(barricadeMat);
+    barricadeMatFP = (T3DMat4FP*)malloc_uncached(sizeof(T3DMat4FP));
+
+    instanceCount++;
+    if(!barricadeModel) {
+        barricadeModel = t3d_model_load("rom:/barricadeStandard.t3dm");
+    }
+}
+
+GO_BarricadeStandard::~GO_BarricadeStandard() {
+    free_uncached(barricadeMatFP);
+    instanceCount--;
+    if(instanceCount==0) {
+        t3d_model_free(barricadeModel);
+        barricadeModel = nullptr;
+    }
+}
+
+void GO_BarricadeStandard::handleInput() {
+
+}
+
+void GO_BarricadeStandard::update() {
+    t3d_mat4_from_srt_euler(&barricadeMat,
+        (float[3]){scale_, 0.04f, 1.0f},
+        (float[3]){0.0f, rotation_, 0.0f},
+        position_.v
+    );
+    t3d_mat4_to_fixed(barricadeMatFP, &barricadeMat);
+
+    checkTimeLeft();
+}
+
+void GO_BarricadeStandard::renderRdpq() {
+
+}
+
+void GO_BarricadeStandard::renderT3d() {
+    rdpq_sync_pipe();
+
+    rdpq_set_prim_color(objColor_);
+    t3d_matrix_set(barricadeMatFP, true);
+    t3d_model_draw(barricadeModel);
+}

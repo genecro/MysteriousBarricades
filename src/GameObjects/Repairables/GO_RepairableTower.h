@@ -1,0 +1,22 @@
+#pragma once
+
+#include "GO_Repairable.h"
+//#include "../globals.h"
+
+class GO_RepairableTower: public GO_Repairable {
+public:
+    GO_RepairableTower(T3DVec3 pos, int HPTotal, int HPCurrent, color_t objColor);
+
+    static T3DModel* towerModel;
+    static uint8_t instanceCount;
+
+    virtual ~GO_RepairableTower();
+    virtual void handleInput() override;
+    virtual void update() override;
+    virtual void renderT3d() override;
+    virtual void renderRdpq() override;
+
+private:
+    T3DMat4 towerMat;
+    T3DMat4FP *towerMatFP;
+};
