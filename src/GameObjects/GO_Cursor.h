@@ -23,12 +23,16 @@ public:
 
     T3DVec3 position_;
     T3DVec3 groundMarkerPos;
-    T3DVec3 barrierEdgeRelative = (T3DVec3){0,0,0};
+    T3DVec3 normalOfCurrTriangle;
+
+    T3DVec3 barricadeEdgeRelativeToCursor = (T3DVec3){0,0,0};
 
     color_t cursorColorBase = color_t{255, 40, 0, 150};
     color_t cursorColorRepair = color_t{0, 255, 0, 150};
     color_t cursorColor = cursorColorBase;
     color_t groundMarkerColor = color_t{0, 255, 255, 255};
+
+    void handleMovement(T3DVec3 intendedMovement);
 
 private:
     T3DMat4 cursorMat;

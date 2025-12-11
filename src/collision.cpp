@@ -137,6 +137,28 @@ T3DVec3 collision::findGroundIntersection(const std::vector<Triangle>& triangles
     return intersectionCoord;
 }
 
+T3DVec3 collision::findGroundIntersection(const std::vector<Triangle>& triangles, const T3DVec3& rayOrigin, Triangle& triangleOut) {
+    float outT;
+    T3DVec3 intersectionCoord = {0, -500, 0};
+
+    for (const auto& tri : triangles) {
+        if(rayIntersectsTriangle(rayOrigin, {0,-1,0}, tri, outT, intersectionCoord)) {
+            //return intersectionCoord;
+            //triangleNormalOut = triangleNormal(tri);
+            triangleOut = tri;
+            break;
+        }
+    }
+
+    /*
+    if(intersectionCoord.y==-500) {
+        triangleNormalOut = intersectionCoord;
+    }
+    */
+
+    return intersectionCoord;
+}
+
 T3DVec3 collision::triangleNormal(const Triangle& tri) {
     T3DVec3 triangleNormal, diff1, diff2;
     t3d_vec3_diff(&diff1, &tri.v1, &tri.v0);

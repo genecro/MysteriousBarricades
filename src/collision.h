@@ -64,6 +64,7 @@ namespace collision{
   //check ground
   bool rayIntersectsTriangle(const T3DVec3& rayOrigin, const T3DVec3& rayDir, const Triangle& tri, float& outT, T3DVec3& outIntersection);
   T3DVec3 findGroundIntersection(const std::vector<Triangle>& triangles, const T3DVec3& rayOrigin);
+  T3DVec3 findGroundIntersection(const std::vector<Triangle>& triangles, const T3DVec3& rayOrigin, Triangle& triangleOut);
   T3DVec3 triangleNormal(const Triangle& tri);
   bool raycastGround(const T3DVec3& playerPos, const std::vector<Triangle>& triangles, float maxSlopeAngle, T3DVec3& outGroundPos, T3DVec3& outSlideDirection);
 

@@ -54,6 +54,8 @@ void GS_Level01::handleInput() {
     float borderScale = 0.8f;
 
     theCursor->handleInput();
+
+    /*
     if(theCursor->position_.x > envModel->aabbMax[0]*scaleFactor*borderScale) {
         theCursor->position_.x = envModel->aabbMax[0]*scaleFactor*borderScale;
     }
@@ -67,6 +69,7 @@ void GS_Level01::handleInput() {
     else if (theCursor->position_.z < envModel->aabbMin[2]*scaleFactor*borderScale) {
         theCursor->position_.z = envModel->aabbMin[2]*scaleFactor*borderScale;
     }
+        */
 
     //global::thePlayer->handleInput();
     handleInputCamera();
