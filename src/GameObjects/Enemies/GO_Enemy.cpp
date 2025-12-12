@@ -1,15 +1,15 @@
-#include "GO_Repairable.h"
+#include "GO_Enemy.h"
 #include "../../globals.h"
 
-GO_Repairable::GO_Repairable() {
+GO_Enemy::GO_Enemy() {
 
 }
 
-GO_Repairable::~GO_Repairable() {
+GO_Enemy::~GO_Enemy() {
     
 }
 
-void GO_Repairable::updateHPBar() {
+void GO_Enemy::updateHPBar() {
 
     HPBarTotalLength_ = HPTotal_*40.0f/100.0f;
 
@@ -26,11 +26,15 @@ void GO_Repairable::updateHPBar() {
     t3d_viewport_calc_viewspace_pos(global::gameState->viewport, HPBarPos_, position_);
 }
 
-void GO_Repairable::drawHPBar() {
+void GO_Enemy::drawHPBar() {
     rdpq_sync_pipe();
     rdpq_set_mode_fill(RGBA32(0x00, 0x00, 0x00, 0xFF));
     rdpq_fill_rectangle(HPBarPos_.v[0], HPBarPos_.v[1], HPBarPos_.v[0]+HPBarTotalLength_, HPBarPos_.v[1]+HPBarHeight_);
 
     rdpq_set_mode_fill(HPBarColor_);
     rdpq_fill_rectangle(HPBarPos_.v[0]+1, HPBarPos_.v[1]+1, HPBarPos_.v[0]+HPBarCurrentLength_, HPBarPos_.v[1]+HPBarHeight_-1);
+}
+
+void GO_Enemy::setGroundCoord(float newGroundCoord) {
+    position_.y = newGroundCoord;
 }

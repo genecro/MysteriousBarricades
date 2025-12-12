@@ -5,6 +5,7 @@
 #include "../GameObjects/GameObjectList.h"
 #include "../GameObjects/Repairables/RepairableList.h"
 #include "../GameObjects/Barricades/BarricadeList.h"
+#include "../GameObjects/Enemies/EnemyList.h"
 #include "../collision.h"
 
 class GameState
@@ -27,6 +28,7 @@ public:
     GameObjectList* objectList;
     RepairableList* repairableList;
     BarricadeList* barricadeList;
+    EnemyList* enemyList;
 
     GO_Repairable* currentRepairable;
 

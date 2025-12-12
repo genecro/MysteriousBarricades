@@ -9,3 +9,4 @@
 #include "GO_Cursor.h"
 #include "Repairables/GO_RepairableTower.h"
 #include "Barricades/GO_BarricadeStandard.h"
+#include "Enemies/GO_EnemyBasic.h"

@@ -31,6 +31,12 @@ GS_Level01::GS_Level01(T3DVec3 startingCursorPosition) {
     repairableList->push(new GO_RepairableTower(collision::findGroundIntersection(collisionTris, (T3DVec3){-15,10,-15}), 100, 25, (color_t){120, 0, 255, 255}));
 
     barricadeList = new BarricadeList();
+
+    enemyList = new EnemyList(&collisionTris);
+    enemyList->push(new GO_EnemyBasic((T3DVec3){-15, 5, 0}, repairableList->getCurrRepairable()->position_));
+    enemyList->push(new GO_EnemyBasic((T3DVec3){15, 5, -15}, repairableList->getCurrRepairable()->position_));
+    enemyList->push(new GO_EnemyBasic((T3DVec3){0, 5, -15}, repairableList->getCurrRepairable()->position_));
+    enemyList->push(new GO_EnemyBasic((T3DVec3){-15, 5, 15}, repairableList->getCurrRepairable()->position_));
 }
 
 GS_Level01::~GS_Level01() {
@@ -76,6 +82,7 @@ void GS_Level01::handleInput() {
     //objectList->handleInput();
     repairableList->handleInput();
     barricadeList->handleInput();
+    enemyList->handleInput();
 }
 
 void GS_Level01::update() {
@@ -98,6 +105,7 @@ void GS_Level01::update() {
     //objectList->update();
     repairableList->update();
     barricadeList->update();
+    enemyList->update();
 }
 
 void GS_Level01::renderT3d() {
@@ -116,6 +124,7 @@ void GS_Level01::renderT3d() {
     t3d_matrix_push_pos(1);
     //objectList->renderT3d();
     repairableList->renderT3d();
+    enemyList->renderT3d();
     
     //global::thePlayer->renderT3d();
     
@@ -130,6 +139,7 @@ void GS_Level01::renderRdpq() {
     //objectList->renderRdpq();
     repairableList->renderRdpq();
     barricadeList->renderRdpq();
+    enemyList->renderRdpq();
     //global::thePlayer->renderRdpq();
 }
 

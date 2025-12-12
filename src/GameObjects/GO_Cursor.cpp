@@ -130,9 +130,9 @@ void GO_Cursor::handleInput() {
         if(joypad.stick_x < -STICK_DEADZONE || joypad.stick_x > STICK_DEADZONE ||
            joypad.stick_y < -STICK_DEADZONE || joypad.stick_y > STICK_DEADZONE) {
             handleMovement((T3DVec3){
-                    (float)(joypad.stick_x)/200.0f,
+                    (float)(joypad.stick_x)/200.0f*global::frameTimeMultiplier,
                     0,
-                    (float)(joypad.stick_y)/200.0f
+                    (float)(joypad.stick_y)/200.0f*global::frameTimeMultiplier
                 }
             );
         }

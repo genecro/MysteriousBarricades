@@ -15,7 +15,8 @@
 
 int main(void)
 {
-    uint64_t start, end;
+    //uint64_t start, end;
+    float smoothedDeltaTime = 1.0f/60.0f;
     timer_init();
 
     debug_init_isviewer();
@@ -53,8 +54,10 @@ int main(void)
 
     debugf("Entering main loop\n");
     while(1) {
-        start = get_ticks();
-        global::frameStart = start;
+        smoothedDeltaTime = fm_lerp(smoothedDeltaTime, fminf(display_get_delta_time(), 0.04f), 0.1f);
+        global::frameTimeMultiplier = smoothedDeltaTime*60.0f;
+        //debugf("Delta time: %.7f\n", global::frameTimeMultiplier);
+
         global::disp = display_get();
         surface_t* zbuf = display_get_zbuf();
         //rdpq_attach(disp, &zbuffer);
@@ -150,17 +153,21 @@ int main(void)
             debugf("Next state has been set\n");
         }
 
-        end = get_ticks();
-        float previousFrame = global::elapsedSeconds;
-        global::elapsedSeconds = (float)TIMER_MICROS_LL(end - start)/1000000.0f;
-        global::usPerFrame = (float)TIMER_MICROS(end-start);
-        global::frameTimeMultiplier = global::usPerFrame/global::US_60FPS;
+        //end = get_ticks();
+        //float previousFrame = global::elapsedSeconds;
+        //global::elapsedSeconds = (float)TIMER_MICROS_LL(end - start)/1000000.0f;
+        //global::usPerFrame = (float)TIMER_MICROS(end-start);
+        //global::frameTimeMultiplier = global::usPerFrame/global::US_60FPS;
+        
+        
 
+        /*
         if(global::elapsedSeconds < 0.0f || global::elapsedSeconds > 1.0f)
         {
             debugf("\nSomething went wrong with the frane time, using previous frame time\n");
             global::elapsedSeconds = previousFrame;
         }
+            */
 
         rdpq_detach_show();
     }
