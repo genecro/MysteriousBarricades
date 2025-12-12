@@ -64,26 +64,6 @@ void GO_Cursor::handleInput() {
 
         //moving around
         case global::CURSOR_STATE_BASE:
-            /*
-            if(joypad.stick_x < -STICK_DEADZONE || joypad.stick_x > STICK_DEADZONE) {
-                position_.x -= (float)(joypad.stick_x)/200.0f;
-            }
-
-            if(joypad.stick_y < -STICK_DEADZONE || joypad.stick_y > STICK_DEADZONE) {
-                position_.z += (float)(joypad.stick_y)/200.0f;
-            }
-            */
-
-            if(joypad.stick_x < -STICK_DEADZONE || joypad.stick_x > STICK_DEADZONE ||
-               joypad.stick_y < -STICK_DEADZONE || joypad.stick_y > STICK_DEADZONE) {
-                handleMovement((T3DVec3){
-                        (float)(joypad.stick_x)/200.0f,
-                        0,
-                        (float)(joypad.stick_y)/200.0f
-                    }
-                );
-            }
-
             if(btn.a) {
                 cursorState = global::CURSOR_STATE_BARRICADE;
             }
@@ -109,7 +89,7 @@ void GO_Cursor::handleInput() {
                 if(abs(barricadeEdgeRelativeToCursor.x) + abs(barricadeEdgeRelativeToCursor.z) > 2) {
                     global::gameState->barricadeList->push(
                         new GO_BarricadeStandard(
-                            groundMarkerPos,//collision::findGroundIntersection(*collisionTris, position_, normalOfCurrTriangle), 
+                            groundMarkerPos,
                             barricadeEdgeRelativeToCursor, 
                             (color_t){0xFF, 0, 0, 0x7F}
                         )
@@ -121,18 +101,6 @@ void GO_Cursor::handleInput() {
 
         //over a repairable
         case global::CURSOR_STATE_REPAIR:
-            
-            if(joypad.stick_x < -STICK_DEADZONE || joypad.stick_x > STICK_DEADZONE) {
-                position_.x -= (float)(joypad.stick_x)/200.0f;
-            }
-
-            if(joypad.stick_y < -STICK_DEADZONE || joypad.stick_y > STICK_DEADZONE) {
-                position_.z += (float)(joypad.stick_y)/200.0f;
-            }
-            
-
-            
-
             if(joypad.btn.a) {
                 GO_Repairable* temp = global::gameState->repairableList->getCurrRepairable();
                 if(temp) {
@@ -158,6 +126,16 @@ void GO_Cursor::handleInput() {
                 position_.z = temp->position_.z;
             }
         }
+
+        if(joypad.stick_x < -STICK_DEADZONE || joypad.stick_x > STICK_DEADZONE ||
+           joypad.stick_y < -STICK_DEADZONE || joypad.stick_y > STICK_DEADZONE) {
+            handleMovement((T3DVec3){
+                    (float)(joypad.stick_x)/200.0f,
+                    0,
+                    (float)(joypad.stick_y)/200.0f
+                }
+            );
+        }
     }
     
 }
@@ -175,7 +153,7 @@ void GO_Cursor::update() {
     );
     t3d_mat4_to_fixed(cursorMatFP, &cursorMat);
 
-    groundMarkerPos = collision::findGroundIntersection(*collisionTris, position_);//, normalOfCurrTriangle);
+    groundMarkerPos = collision::findGroundIntersection(*collisionTris, position_);
 
     t3d_mat4_from_srt_euler(&groundMarkerMat,
         (float[3]){0.003f, 0.003f, 0.003f},
@@ -299,36 +277,29 @@ void GO_Cursor::setStateRepair() {
 }
 
 void GO_Cursor::handleMovement(T3DVec3 intendedMovement) {
-    //debugf("Distance to ground: %.2f\n", position_.y-groundMarkerPos.y);
-    //if(position_.y-groundMarkerPos.y < 5) {// || position_.y-groundMarkerPos.y > 50) {
-    //    intendedMovement.x-=normalOfCurrTriangle.x;
-    //    intendedMovement.z+=normalOfCurrTriangle.z;
-    //}
-
     Triangle tempTri;
 
-    collision::findGroundIntersection(*collisionTris, (T3DVec3){position_.x-intendedMovement.x, position_.y, position_.z}, tempTri);
+    intendedMovement.x *= -1;
 
-    if(fmaxf(tempTri.v0.y, fmaxf(tempTri.v1.y, tempTri.v2.y)) > position_.y-5.0f) {
-        intendedMovement.x = 0;
+    for (int i = 0; i < 5; i++) {
+        bool collided = false;
+        T3DVec3 groundLoc = collision::findGroundIntersection(*collisionTris, (T3DVec3){position_.x+intendedMovement.x, position_.y, position_.z+intendedMovement.z}, tempTri);
+        if(groundLoc.y > -100 && fmaxf(tempTri.v0.y, fmaxf(tempTri.v1.y, tempTri.v2.y)) > position_.y-5.0f) {
+            collided = true;
+            T3DVec3 triNorm = collision::triangleNormal(tempTri);
+            triNorm.y=0;
+
+            t3d_vec3_norm(&triNorm);
+
+            float intoWall = t3d_vec3_dot(triNorm, intendedMovement);
+
+            if(intoWall < 0.0f) {
+                intendedMovement -= triNorm * intoWall;
+            }
+        }
+        if(!collided) break;
     }
 
-    collision::findGroundIntersection(*collisionTris, (T3DVec3){position_.x, position_.y, position_.z+intendedMovement.z}, tempTri);
-
-    if(fmaxf(tempTri.v0.y, fmaxf(tempTri.v1.y, tempTri.v2.y)) > position_.y-5.0f) {
-        intendedMovement.z = 0;
-    }
-
-    /*
-    if(position_.y - collision::findGroundIntersection(*collisionTris, (T3DVec3){position_.x-intendedMovement.x, position_.y, position_.z}).y < 5) {
-        intendedMovement.x = 0;
-    }
-
-    if(position_.y - collision::findGroundIntersection(*collisionTris, (T3DVec3){position_.x, position_.y, position_.z+intendedMovement.z}).y < 5) {
-        intendedMovement.z *= 0.1f;
-    }
-    */
-
-    position_.x -= intendedMovement.x;
+    position_.x += intendedMovement.x;
     position_.z += intendedMovement.z;
 }
