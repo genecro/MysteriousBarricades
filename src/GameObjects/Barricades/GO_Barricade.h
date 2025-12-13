@@ -2,6 +2,7 @@
 
 #include "../GameObject.h"
 //#include "../globals.h"
+#include "../Enemies/GO_Enemy.h"
 
 class GO_Barricade: public GameObject {
 public:
@@ -14,10 +15,13 @@ public:
     virtual void update() = 0;
     virtual void renderT3d() = 0;
     virtual void renderRdpq() = 0;
+    virtual void processEnemy(GO_Enemy* theEnemy) = 0;
+    bool checkCollision(GO_Enemy* theEnemy);
 
     void checkTimeLeft();
 
-    bool timeToDelete = false;
-
     float framesUntilDelete = 5.0f*60.0f;
+
+    float scale_;
+    float scaleFactor_;
 };

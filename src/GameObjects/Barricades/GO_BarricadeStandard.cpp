@@ -6,7 +6,8 @@ uint8_t GO_BarricadeStandard::instanceCount = 0;
 GO_BarricadeStandard::GO_BarricadeStandard(T3DVec3 pos, T3DVec3 sizeRotation, color_t objColor) {
     position_ = pos;
     rotation_ = fm_atan2f(sizeRotation.z, sizeRotation.x);
-    scale_ = sqrt(pow(sizeRotation.x, 2) + pow(sizeRotation.z, 2))*scaleFactor;
+    scaleFactor_ = 0.015;
+    scale_ = sqrt(pow(sizeRotation.x, 2) + pow(sizeRotation.z, 2))*scaleFactor_;
     objColor_ = objColor;
 
     t3d_mat4_identity(barricadeMat);
@@ -16,6 +17,8 @@ GO_BarricadeStandard::GO_BarricadeStandard(T3DVec3 pos, T3DVec3 sizeRotation, co
     if(!barricadeModel) {
         barricadeModel = t3d_model_load("rom:/barricadeStandard.t3dm");
     }
+
+    debugf("Barricade scale = %.2f\n", scale_);
 }
 
 GO_BarricadeStandard::~GO_BarricadeStandard() {
@@ -52,4 +55,10 @@ void GO_BarricadeStandard::renderT3d() {
     rdpq_set_prim_color(objColor_);
     t3d_matrix_set(barricadeMatFP, true);
     t3d_model_draw(barricadeModel);
+}
+
+void GO_BarricadeStandard::processEnemy(GO_Enemy* theEnemy) {
+    if(checkCollision(theEnemy)) {
+        theEnemy->HPCurrent_ -= theEnemy->HPTotal_/2.0f;
+    }
 }

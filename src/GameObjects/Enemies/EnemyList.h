@@ -16,8 +16,10 @@ public:
     void renderT3d();
     void renderRdpq();
 
+    std::vector<GO_Enemy*>* gameObjects_;
+
 private:
-    std::vector<GO_Enemy*>* gameObjects;
+    
     int nextId_;
     std::vector<Triangle>* collisionTris_;
 };

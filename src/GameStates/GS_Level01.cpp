@@ -106,6 +106,7 @@ void GS_Level01::update() {
     repairableList->update();
     barricadeList->update();
     enemyList->update();
+    enemyBarricadeCheck();
 }
 
 void GS_Level01::renderT3d() {

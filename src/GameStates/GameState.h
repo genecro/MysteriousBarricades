@@ -38,6 +38,8 @@ public:
     std::vector<Triangle> collisionTris;
 
     T3DViewport viewport;
+
+    void enemyBarricadeCheck();
     
 
 protected:

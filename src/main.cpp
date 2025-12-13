@@ -15,7 +15,6 @@
 
 int main(void)
 {
-    //uint64_t start, end;
     float smoothedDeltaTime = 1.0f/60.0f;
     timer_init();
 
@@ -138,8 +137,6 @@ int main(void)
         if(global::gameState && global::gameState->envModel) {
             rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, display_get_width()-110, 73, "EnvVertCt: %d", global::gameState->envModel->totalVertCount);
         }
-        
-
 
         //if current gameState has nextState, point to nextState and delete current gameState
         if(global::gameState->nextState != nullptr)
@@ -152,22 +149,6 @@ int main(void)
             global::gameState->testFunc();
             debugf("Next state has been set\n");
         }
-
-        //end = get_ticks();
-        //float previousFrame = global::elapsedSeconds;
-        //global::elapsedSeconds = (float)TIMER_MICROS_LL(end - start)/1000000.0f;
-        //global::usPerFrame = (float)TIMER_MICROS(end-start);
-        //global::frameTimeMultiplier = global::usPerFrame/global::US_60FPS;
-        
-        
-
-        /*
-        if(global::elapsedSeconds < 0.0f || global::elapsedSeconds > 1.0f)
-        {
-            debugf("\nSomething went wrong with the frane time, using previous frame time\n");
-            global::elapsedSeconds = previousFrame;
-        }
-            */
 
         rdpq_detach_show();
     }

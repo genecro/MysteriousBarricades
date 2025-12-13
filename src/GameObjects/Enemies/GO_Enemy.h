@@ -7,8 +7,8 @@ class GO_Enemy: public GameObject {
 public:
     GO_Enemy();
 
-    int HPTotal_;
-    int HPCurrent_;
+    float HPTotal_;
+    float HPCurrent_;
     float height_;
 
     color_t objColor_ = (color_t){0,0,0,0};

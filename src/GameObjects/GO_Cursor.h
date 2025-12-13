@@ -15,6 +15,8 @@ public:
     int cursorState;
     float barrierSize = 5.0f;
 
+    float healingSpeed_ = 0.2f;
+
     void setStateRepair();
     void setStateBaseState();
     void setStateMakingBarricade();

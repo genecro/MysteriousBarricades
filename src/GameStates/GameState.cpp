@@ -174,3 +174,11 @@ void GameState::updateCamera() {
         camera.target += {{0,10,0}};
     }
 }
+
+void GameState::enemyBarricadeCheck() {
+    for(GO_Barricade* b: *(barricadeList->gameObjects_)) {
+        for(GO_Enemy* e: *(enemyList->gameObjects_)) {
+            b->processEnemy(e);
+        }
+    }
+}

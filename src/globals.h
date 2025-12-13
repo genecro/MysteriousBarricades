@@ -21,10 +21,6 @@ namespace global
     extern std::vector<GameInterrupt*>* GameInterruptStack;
     extern GO_Player* thePlayer;
     extern GameState* gameState;
-    //extern float usPerFrame;
-    //const extern float US_60FPS;
     extern float frameTimeMultiplier;
     extern surface_t* disp;
-    //extern uint16_t frameStart;
-    //extern joypad_inputs_t input;
 }

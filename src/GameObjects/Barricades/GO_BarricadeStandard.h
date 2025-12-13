@@ -16,10 +16,12 @@ public:
     virtual void renderT3d() override;
     virtual void renderRdpq() override;
 
+    void processEnemy(GO_Enemy* theEnemy);
+
 private:
     T3DMat4 barricadeMat;
     T3DMat4FP *barricadeMatFP;
 
-    float scale_;
-    float scaleFactor = 0.015;
+    
+    
 };

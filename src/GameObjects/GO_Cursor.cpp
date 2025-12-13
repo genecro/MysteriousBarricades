@@ -13,8 +13,6 @@ GO_Cursor::GO_Cursor(T3DVec3 position, std::vector<Triangle> *newCollisionTris) 
     objectWidth_ = 2;
     rotation_ = 0;
 
-    
-
     instanceCount++;
     if(!cursorModel) {
         cursorModel = t3d_model_load("rom:/cursor.t3dm");
@@ -40,8 +38,6 @@ GO_Cursor::GO_Cursor(T3DVec3 position, std::vector<Triangle> *newCollisionTris) 
     collisionTris = newCollisionTris;
 
     cursorState = global::CURSOR_STATE_BASE;
-
-    
 }
 
 GO_Cursor::~GO_Cursor() {
@@ -104,7 +100,7 @@ void GO_Cursor::handleInput() {
             if(joypad.btn.a) {
                 GO_Repairable* temp = global::gameState->repairableList->getCurrRepairable();
                 if(temp) {
-                    if(temp->HPCurrent_ < temp->HPTotal_) temp->HPCurrent_++;
+                    if(temp->HPCurrent_ < temp->HPTotal_) temp->HPCurrent_ += healingSpeed_*global::frameTimeMultiplier;
                 }
             }
 
@@ -137,7 +133,6 @@ void GO_Cursor::handleInput() {
             );
         }
     }
-    
 }
 
 void GO_Cursor::update() {

@@ -22,3 +22,15 @@ void GO_Barricade::checkTimeLeft() {
         }
     }
 }
+
+bool GO_Barricade::checkCollision(GO_Enemy* theEnemy) {
+    
+    float xDiff = position_.x-theEnemy->position_.x;
+    float yDiff = position_.z-theEnemy->position_.z;
+    
+    return abs(
+        fm_cosf(rotation_)*(yDiff) 
+        - fm_sinf(rotation_)*(xDiff)
+    ) <= theEnemy->objectWidth_
+    && sqrt(xDiff*xDiff + yDiff*yDiff) <= scale_/scaleFactor_;
+}

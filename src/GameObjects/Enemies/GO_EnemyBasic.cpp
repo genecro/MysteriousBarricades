@@ -11,6 +11,8 @@ GO_EnemyBasic::GO_EnemyBasic(T3DVec3 pos, T3DVec3 target) {
     objColor_ = color_t{0, 0xFF, 0, 0xFF};
     target_ = target;
 
+    objectWidth_ = 2;
+
     rotation_ = fm_atan2f(target_.z - position_.z, target_.x - position_.x) + (((float)rand() / (float)RAND_MAX)*(T3D_PI / 2.0f) - (T3D_PI / 4.0f));
 
     speed_ = 0.02;
@@ -56,6 +58,9 @@ void GO_EnemyBasic::update() {
     t3d_mat4_to_fixed(enemyMatFP, &enemyMat);
 
     updateHPBar();
+    if(HPCurrent_<=0) {
+        timeToDelete = true;
+    }
 }
 
 void GO_EnemyBasic::renderRdpq() {

@@ -37,4 +37,6 @@ public:
 
     float downwardVel;
     float terminalVel;
+
+    bool timeToDelete = false;
 };
