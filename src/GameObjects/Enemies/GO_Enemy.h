@@ -18,11 +18,13 @@ public:
     virtual void update() = 0;
     virtual void renderT3d() = 0;
     virtual void renderRdpq() = 0;
-    virtual void stun() = 0;
+    virtual void stun(float stunTimeSeconds) = 0;
 
     void updateHPBar();
     void drawHPBar();
     void setGroundCoord(float newGroundCoord);
+
+    void pushAway(T3DVec3 sourcePos, float angle, float distance);
 
     
 

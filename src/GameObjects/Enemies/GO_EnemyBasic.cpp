@@ -99,8 +99,9 @@ void GO_EnemyBasic::renderT3d() {
     }
 }
 
-void GO_EnemyBasic::stun() {
+void GO_EnemyBasic::stun(float stunTimeSeconds) {
     isStunned_ = true;
     isInvincible_ = true;
-    stunCooldown_ = 5*60;
+    stunCooldown_ = stunTimeSeconds*60.f;
 }
+

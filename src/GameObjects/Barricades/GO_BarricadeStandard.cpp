@@ -42,6 +42,7 @@ void GO_BarricadeStandard::update() {
     );
     t3d_mat4_to_fixed(barricadeMatFP, &barricadeMat);
 
+    //castSuccess_ = true;
     checkTimeLeft();
 }
 
@@ -59,7 +60,13 @@ void GO_BarricadeStandard::renderT3d() {
 
 void GO_BarricadeStandard::processEnemy(GO_Enemy* theEnemy) {
     if(checkCollision(theEnemy) && !theEnemy->isInvincible_) {
-        theEnemy->HPCurrent_ -= theEnemy->HPTotal_/2.0f;
-        theEnemy->stun();
+        
+        if(castSuccess_) {
+            theEnemy->HPCurrent_ -= theEnemy->HPTotal_/2.0f;
+            theEnemy->stun(5);
+            theEnemy->pushAway(position_, rotation_, 5);
+        }
+
+        timeToDelete = true;
     }
 }

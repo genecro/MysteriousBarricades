@@ -21,7 +21,4 @@ public:
 private:
     T3DMat4 barricadeMat;
     T3DMat4FP *barricadeMatFP;
-
-    
-    
 };

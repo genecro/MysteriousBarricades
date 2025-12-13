@@ -24,4 +24,6 @@ public:
 
     float scale_;
     float scaleFactor_;
+
+    bool castSuccess_ = false;
 };

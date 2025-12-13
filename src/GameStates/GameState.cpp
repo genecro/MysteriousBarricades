@@ -180,5 +180,6 @@ void GameState::enemyBarricadeCheck() {
         for(GO_Enemy* e: *(enemyList->gameObjects_)) {
             b->processEnemy(e);
         }
+        if(!b->castSuccess_ && !b->timeToDelete) b->castSuccess_ = true;
     }
 }
