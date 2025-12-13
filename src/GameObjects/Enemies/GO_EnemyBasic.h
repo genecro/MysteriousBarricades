@@ -15,6 +15,7 @@ public:
     virtual void update() override;
     virtual void renderT3d() override;
     virtual void renderRdpq() override;
+    virtual void stun() override;
 
 private:
     T3DMat4 enemyMat;

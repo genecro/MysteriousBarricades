@@ -58,7 +58,8 @@ void GO_BarricadeStandard::renderT3d() {
 }
 
 void GO_BarricadeStandard::processEnemy(GO_Enemy* theEnemy) {
-    if(checkCollision(theEnemy)) {
+    if(checkCollision(theEnemy) && !theEnemy->isInvincible_) {
         theEnemy->HPCurrent_ -= theEnemy->HPTotal_/2.0f;
+        theEnemy->stun();
     }
 }

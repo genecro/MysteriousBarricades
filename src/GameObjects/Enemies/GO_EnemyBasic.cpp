@@ -13,6 +13,9 @@ GO_EnemyBasic::GO_EnemyBasic(T3DVec3 pos, T3DVec3 target) {
 
     objectWidth_ = 2;
 
+    isStunned_ = false;
+    isInvincible_ = false;
+
     rotation_ = fm_atan2f(target_.z - position_.z, target_.x - position_.x) + (((float)rand() / (float)RAND_MAX)*(T3D_PI / 2.0f) - (T3D_PI / 4.0f));
 
     speed_ = 0.02;
@@ -43,12 +46,31 @@ void GO_EnemyBasic::update() {
     float prevLifetime = lifetime_;
     lifetime_ += global::frameTimeMultiplier;
 
-    if((int)(prevLifetime / (60.0f*5.0f)) != (int)(lifetime_ / (60.0f*5.0f))) {
-        rotation_ = fm_atan2f(target_.z - position_.z, target_.x - position_.x) + (((float)rand() / (float)RAND_MAX)*(T3D_PI / 2.0f) - (T3D_PI / 4.0f));
-    }
+    //not stunned, moves normally
+    if(!isStunned_) {
+        //rotate randomly towards the target every 5 seconds
+        if((int)(prevLifetime / (60.0f*5.0f)) != (int)(lifetime_ / (60.0f*5.0f))) {
+            rotation_ = fm_atan2f(target_.z - position_.z, target_.x - position_.x) + (((float)rand() / (float)RAND_MAX)*(T3D_PI / 2.0f) - (T3D_PI / 4.0f));
+        }
 
-    position_.x += speed_*fm_cosf(rotation_)*global::frameTimeMultiplier;
-    position_.z += speed_*fm_sinf(rotation_)*global::frameTimeMultiplier;
+        //move forward
+        position_.x += speed_*fm_cosf(rotation_)*global::frameTimeMultiplier;
+        position_.z += speed_*fm_sinf(rotation_)*global::frameTimeMultiplier;
+    }
+    //stunned, model flashes and can't move or be damaged until cooldown reaches 0
+    else {
+        float prevStunCooldown = stunCooldown_;
+        stunCooldown_ -= global::frameTimeMultiplier;
+        if(stunCooldown_ <= 0) {
+            isStunned_ = false;
+            isInvincible_ = false;
+            stunCooldown_ = 0;
+            displayModel_ = true;
+        }
+        else if((int)(prevStunCooldown / (5.0f)) != (int)(stunCooldown_ / (5.0f))) {
+            displayModel_ = !displayModel_;
+        }
+    }
 
     t3d_mat4_from_srt_euler(&enemyMat,
         (float[3]){0.02f, 0.02f, 0.02f},
@@ -68,10 +90,17 @@ void GO_EnemyBasic::renderRdpq() {
 }
 
 void GO_EnemyBasic::renderT3d() {
-    rdpq_sync_pipe();
+    if(displayModel_) {
+        rdpq_sync_pipe();
 
-    rdpq_set_prim_color(objColor_);
-    t3d_matrix_set(enemyMatFP, true);
-    t3d_model_draw(enemyModel);
+        rdpq_set_prim_color(objColor_);
+        t3d_matrix_set(enemyMatFP, true);
+        t3d_model_draw(enemyModel);
+    }
 }
 
+void GO_EnemyBasic::stun() {
+    isStunned_ = true;
+    isInvincible_ = true;
+    stunCooldown_ = 5*60;
+}
