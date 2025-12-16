@@ -25,6 +25,7 @@ public:
     void setGroundCoord(float newGroundCoord);
 
     void pushAway(T3DVec3 sourcePos, float angle, float distance);
+    void receiveDamage(float damageAmount);
 
     
 

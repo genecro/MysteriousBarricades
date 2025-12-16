@@ -39,4 +39,6 @@ public:
     float terminalVel;
 
     bool timeToDelete = false;
+
+    float lifetime_ = 0.0f;
 };

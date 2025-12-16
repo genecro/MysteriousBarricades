@@ -56,30 +56,13 @@ void GS_Level01::handleInput() {
         
     }
 
-    
     float borderScale = 0.8f;
 
     theCursor->handleInput();
 
-    /*
-    if(theCursor->position_.x > envModel->aabbMax[0]*scaleFactor*borderScale) {
-        theCursor->position_.x = envModel->aabbMax[0]*scaleFactor*borderScale;
-    }
-    else if (theCursor->position_.x < envModel->aabbMin[0]*scaleFactor*borderScale) {
-        theCursor->position_.x = envModel->aabbMin[0]*scaleFactor*borderScale;
-    }
-
-    if(theCursor->position_.z > envModel->aabbMax[2]*scaleFactor*borderScale) {
-        theCursor->position_.z = envModel->aabbMax[2]*scaleFactor*borderScale;
-    }
-    else if (theCursor->position_.z < envModel->aabbMin[2]*scaleFactor*borderScale) {
-        theCursor->position_.z = envModel->aabbMin[2]*scaleFactor*borderScale;
-    }
-        */
-
     //global::thePlayer->handleInput();
     handleInputCamera();
-    //objectList->handleInput();
+    objectList->handleInput();
     repairableList->handleInput();
     barricadeList->handleInput();
     enemyList->handleInput();
@@ -93,8 +76,6 @@ void GS_Level01::update() {
     //debugf("Ground marker: x=%0.2f, y=%0.2f, z=%0.2f\n\n", theCursor->groundMarkerPos.x, theCursor->groundMarkerPos.y, theCursor->groundMarkerPos.z);
     updateCamera();
 
-    
-
     t3d_mat4_from_srt_euler(&envMat,
         (float[3]){ scaleFactor, scaleFactor, scaleFactor},
         (float[3]){0.0f, 0.0f, 0.0f},
@@ -102,12 +83,12 @@ void GS_Level01::update() {
     );
     t3d_mat4_to_fixed(envMatFP, &envMat);
 
-    //objectList->update();
+    objectList->update();
     enemyBarricadeCheck();
     repairableList->update();
     barricadeList->update();
     enemyList->update();
-    
+    if(!endStateReached) checkForWinOrLoss();
 }
 
 void GS_Level01::renderT3d() {
@@ -124,7 +105,7 @@ void GS_Level01::renderT3d() {
     t3d_viewport_look_at(viewport, camera.pos, camera.target, {{0, 1, 0}});
 
     t3d_matrix_push_pos(1);
-    //objectList->renderT3d();
+    
     repairableList->renderT3d();
     enemyList->renderT3d();
     
@@ -133,12 +114,13 @@ void GS_Level01::renderT3d() {
     t3d_matrix_set(envMatFP, true);
     t3d_model_draw(envModel);
     barricadeList->renderT3d();
+    objectList->renderT3d();
     theCursor->renderT3d();
     t3d_matrix_pop(1);
 }
 
 void GS_Level01::renderRdpq() {
-    //objectList->renderRdpq();
+    objectList->renderRdpq();
     repairableList->renderRdpq();
     barricadeList->renderRdpq();
     enemyList->renderRdpq();
@@ -163,4 +145,35 @@ void GS_Level01::handleInputCamera() {
 void GS_Level01::updateCamera() {
     camera.target = theCursor->position_ + (T3DVec3){0, -3, 0};
     camera.pos = theCursor->position_ + (T3DVec3){0, 10, -15};
+}
+
+void GS_Level01::levelWon() {
+    enemyList->destroyAllEnemies();
+    global::GameInterruptStack->push_back(new GI_Alert("You won!"));
+}
+
+void GS_Level01::levelLost() {
+    global::GameInterruptStack->push_back(new GI_Alert("You lost!"));
+}
+
+void GS_Level01::checkForWinOrLoss() {
+    float totalHPTotal = 0;
+    float currentHPTotal = 0;
+    for(GO_Repairable* r: *repairableList->repairables) {
+        if(r->HPCurrent_ <= 0) {
+            //lose
+            endStateReached = true;
+            levelLost();
+        }
+        else {
+            totalHPTotal += r->HPTotal_;
+            currentHPTotal += r->HPCurrent_;
+        }
+    }
+
+    if(currentHPTotal >= totalHPTotal) {
+        //win
+        endStateReached = true;
+        levelWon();
+    }
 }

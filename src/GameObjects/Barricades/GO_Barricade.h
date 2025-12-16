@@ -26,4 +26,7 @@ public:
     float scaleFactor_;
 
     bool castSuccess_ = false;
+    bool castHasFailed_ = false;
+    float failedTimer_;
+    float failedTimerMax_;
 };

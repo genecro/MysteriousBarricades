@@ -38,7 +38,9 @@ void GameObjectList::handleInput() {
 
 void GameObjectList::update() {
     for(GameObject* i: *gameObjects) {
-        i->update();
+        
+        if(i->timeToDelete) remove(i);
+        else i->update();
     }
 }
 

@@ -183,3 +183,13 @@ void GameState::enemyBarricadeCheck() {
         if(!b->castSuccess_ && !b->timeToDelete) b->castSuccess_ = true;
     }
 }
+
+void GameState::checkForWinOrLoss() {
+
+}
+void GameState::levelWon() {
+
+}
+void GameState::levelLost() {
+    
+}

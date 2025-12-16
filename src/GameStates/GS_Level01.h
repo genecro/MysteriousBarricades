@@ -15,6 +15,11 @@ public:
 
     virtual void testFunc() override;
 
+    void checkForWinOrLoss() override;
+
+    void levelWon() override;
+    void levelLost() override;
+
 private:
     uint8_t colorAmbient[4] = {80, 80, 100, 0xFF};
 

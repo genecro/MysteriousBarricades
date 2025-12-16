@@ -60,3 +60,9 @@ void EnemyList::renderRdpq() {
         i->renderRdpq();
     }
 }
+
+void EnemyList::destroyAllEnemies() {
+    for(GO_Enemy* i: *gameObjects_) {
+        i->timeToDelete = true;
+    }
+}

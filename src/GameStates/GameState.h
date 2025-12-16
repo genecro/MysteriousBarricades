@@ -40,6 +40,11 @@ public:
     T3DViewport viewport;
 
     void enemyBarricadeCheck();
+
+    virtual void checkForWinOrLoss();
+    virtual void levelWon();
+    virtual void levelLost();
+    bool endStateReached = false;
     
 
 protected:

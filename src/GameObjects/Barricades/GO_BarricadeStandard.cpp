@@ -1,4 +1,5 @@
 #include "GO_BarricadeStandard.h"
+#include "../../globals.h"
 
 T3DModel* GO_BarricadeStandard::barricadeModel = nullptr;
 uint8_t GO_BarricadeStandard::instanceCount = 0;
@@ -9,6 +10,8 @@ GO_BarricadeStandard::GO_BarricadeStandard(T3DVec3 pos, T3DVec3 sizeRotation, co
     scaleFactor_ = 0.015;
     scale_ = sqrt(pow(sizeRotation.x, 2) + pow(sizeRotation.z, 2))*scaleFactor_;
     objColor_ = objColor;
+
+    failedTimerMax_ = 1*60;
 
     t3d_mat4_identity(barricadeMat);
     barricadeMatFP = (T3DMat4FP*)malloc_uncached(sizeof(T3DMat4FP));
@@ -35,6 +38,13 @@ void GO_BarricadeStandard::handleInput() {
 }
 
 void GO_BarricadeStandard::update() {
+
+    if(castHasFailed_) {
+        failedTimer_-=global::frameTimeMultiplier;
+        objColor_ = (color_t){0x77, 0x77, 0x77, fmax(255.0f*failedTimer_ / failedTimerMax_, 0.0f)};
+        if(failedTimer_ <= 0) timeToDelete = true;
+    }
+
     t3d_mat4_from_srt_euler(&barricadeMat,
         (float[3]){scale_, 0.04f, 1.0f},
         (float[3]){0.0f, rotation_, 0.0f},
@@ -61,12 +71,17 @@ void GO_BarricadeStandard::renderT3d() {
 void GO_BarricadeStandard::processEnemy(GO_Enemy* theEnemy) {
     if(checkCollision(theEnemy) && !theEnemy->isInvincible_) {
         
-        if(castSuccess_) {
-            theEnemy->HPCurrent_ -= theEnemy->HPTotal_/2.0f;
-            theEnemy->stun(5);
+        if(castSuccess_ && !castHasFailed_) {
+            //theEnemy->HPCurrent_ -= theEnemy->HPTotal_/2.0f;
+            theEnemy->receiveDamage(theEnemy->HPTotal_/2);
+            theEnemy->stun(2);
             theEnemy->pushAway(position_, rotation_, 5);
+            timeToDelete = true;
         }
 
-        timeToDelete = true;
+        else if(!castHasFailed_) {
+            castHasFailed_ = true;
+            failedTimer_ = failedTimerMax_;
+        }
     }
 }

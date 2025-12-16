@@ -16,6 +16,8 @@ public:
     void renderT3d();
     void renderRdpq();
 
+    void destroyAllEnemies();
+
     std::vector<GO_Enemy*>* gameObjects_;
 
 private:

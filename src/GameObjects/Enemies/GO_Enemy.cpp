@@ -40,15 +40,21 @@ void GO_Enemy::setGroundCoord(float newGroundCoord) {
 }
 
 void GO_Enemy::pushAway(T3DVec3 sourcePos, float angle, float distance) {
-    //barricades 180 degrees apart look the same but push in opposite directions
-    //find new positions in both directions and keep the one that's farther away from the barricade
-    T3DVec3 newPosition1 = position_+(T3DVec3){distance*fm_sinf(angle), 0, -distance*fm_cosf(angle)};
-    T3DVec3 newPosition2 = position_+(T3DVec3){distance*fm_sinf(angle-T3D_PI), 0, -distance*fm_cosf(angle-T3D_PI)};
-    
-    if(t3d_vec3_distance2(sourcePos, newPosition1) > t3d_vec3_distance2(sourcePos, newPosition2)) {
-        position_ = newPosition1;
+    if(HPCurrent_ > 0) {
+        //barricades 180 degrees apart look the same but push in opposite directions
+        //find new positions in both directions and keep the one that's farther away from the barricade
+        T3DVec3 newPosition1 = position_+(T3DVec3){distance*fm_sinf(angle), 0, -distance*fm_cosf(angle)};
+        T3DVec3 newPosition2 = position_+(T3DVec3){distance*fm_sinf(angle-T3D_PI), 0, -distance*fm_cosf(angle-T3D_PI)};
+        
+        if(t3d_vec3_distance2(sourcePos, newPosition1) > t3d_vec3_distance2(sourcePos, newPosition2)) {
+            position_ = newPosition1;
+        }
+        else {
+            position_ = newPosition2;
+        }
     }
-    else {
-        position_ = newPosition2;
-    }
+}
+
+void GO_Enemy::receiveDamage(float damageAmount) {
+    HPCurrent_ -= damageAmount;
 }
