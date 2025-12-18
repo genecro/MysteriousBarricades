@@ -19,3 +19,7 @@ void GameObject::checkCollision() {
     }
 }
     */
+
+void GameObject::consumeEffect() {
+    
+}

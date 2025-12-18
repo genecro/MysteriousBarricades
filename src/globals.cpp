@@ -8,4 +8,5 @@ namespace global
     GameState* gameState;
     float frameTimeMultiplier;
     surface_t* disp;
+    Audio* audioManager;
 }

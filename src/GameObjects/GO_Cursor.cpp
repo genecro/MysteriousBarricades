@@ -111,6 +111,7 @@ void GO_Cursor::handleInput() {
         if(btn.r) {
             GO_Repairable* temp = global::gameState->repairableList->getNextRepairable();
             if(temp) {
+                global::audioManager->playSFX("rom:/vibratoWhimsy4.wav64", {.volume = 0.4f});
                 position_.x = temp->position_.x;
                 position_.z = temp->position_.z;
             }
@@ -118,6 +119,7 @@ void GO_Cursor::handleInput() {
         else if(btn.l) {
             GO_Repairable* temp = global::gameState->repairableList->getPrevRepairable();
             if(temp) {
+                global::audioManager->playSFX("rom:/vibratoWhimsy4.wav64", {.volume = 0.4f});
                 position_.x = temp->position_.x;
                 position_.z = temp->position_.z;
             }

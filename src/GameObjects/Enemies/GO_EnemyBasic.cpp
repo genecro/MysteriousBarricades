@@ -1,6 +1,7 @@
 #include "GO_EnemyBasic.h"
 #include "../../globals.h"
 #include "../GO_Explosion.h"
+#include "../GO_RepairBoost.h"
 
 T3DModel* GO_EnemyBasic::enemyModel = nullptr;
 uint8_t GO_EnemyBasic::instanceCount = 0;
@@ -31,7 +32,9 @@ GO_EnemyBasic::GO_EnemyBasic(T3DVec3 pos, T3DVec3 target) {
 }
 
 GO_EnemyBasic::~GO_EnemyBasic() {
+    global::gameState->objectList->push(new GO_RepairBoost(position_));
     global::gameState->objectList->push(new GO_Explosion(position_, 5, (color_t){0xFF, 0x77, 0x00, 0xFF}, 2*60));
+    
     
     free_uncached(enemyMatFP);
     instanceCount--;
@@ -85,6 +88,7 @@ void GO_EnemyBasic::update() {
     updateHPBar();
     if(HPCurrent_<=0) {
         timeToDelete = true;
+        global::audioManager->playSFX("cruncher5.wav64", {.volume = 0.4f});
     }
 }
 

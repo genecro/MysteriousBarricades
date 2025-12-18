@@ -12,7 +12,7 @@ public:
     void remove(GameObject* delObj);
 
     void handleInput();
-    void update();
+    void update(T3DVec3 cursorPosition);
     void renderT3d();
     void renderRdpq();
 

@@ -7,6 +7,7 @@
 #include "../GameObjects/Barricades/BarricadeList.h"
 #include "../GameObjects/Enemies/EnemyList.h"
 #include "../collision.h"
+#include "../GameObjects/GO_Cursor.h"
 
 class GameState
 {
@@ -45,6 +46,8 @@ public:
     virtual void levelWon();
     virtual void levelLost();
     bool endStateReached = false;
+
+    GO_Cursor* theCursor;
     
 
 protected:

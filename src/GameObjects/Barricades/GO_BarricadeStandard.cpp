@@ -68,10 +68,11 @@ void GO_BarricadeStandard::renderT3d() {
     t3d_model_draw(barricadeModel);
 }
 
+//TODO: move this to GO_Barricade and create affectEnemy function here
 void GO_BarricadeStandard::processEnemy(GO_Enemy* theEnemy) {
-    if(checkCollision(theEnemy) && !theEnemy->isInvincible_) {
+    if(checkCollision(theEnemy)) {
         
-        if(castSuccess_ && !castHasFailed_) {
+        if(castSuccess_ && !castHasFailed_ && !theEnemy->isInvincible_) {
             //theEnemy->HPCurrent_ -= theEnemy->HPTotal_/2.0f;
             theEnemy->receiveDamage(theEnemy->HPTotal_/2);
             theEnemy->stun(2);
@@ -79,9 +80,16 @@ void GO_BarricadeStandard::processEnemy(GO_Enemy* theEnemy) {
             timeToDelete = true;
         }
 
-        else if(!castHasFailed_) {
+        else if(!castSuccess_ && !castHasFailed_) {
             castHasFailed_ = true;
             failedTimer_ = failedTimerMax_;
+            global::audioManager->playSFX("metallicDodgeChance5.wav64", {.volume = 0.4f});
         }
     }
+}
+
+void GO_BarricadeStandard::castSuccess() {
+    castSuccess_ = true;
+
+    global::audioManager->playSFX("bitSweep1.wav64", {.volume = 0.4f});
 }

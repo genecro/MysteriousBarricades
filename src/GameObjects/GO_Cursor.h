@@ -17,6 +17,9 @@ public:
 
     float healingSpeed_ = 0.2f;
 
+    float RPCurrent_ = 25;
+    float RPTotal_ = 100;
+
     void setStateRepair();
     void setStateBaseState();
     void setStateMakingBarricade();

@@ -21,6 +21,8 @@ public:
     virtual void renderT3d() = 0;
     virtual void renderRdpq() = 0;
 
+    virtual void consumeEffect();
+
     std::vector<Triangle>* collisionTris;
 
     //void checkCollision();
@@ -41,4 +43,6 @@ public:
     bool timeToDelete = false;
 
     float lifetime_ = 0.0f;
+
+    bool takeable_ = false;
 };

@@ -41,6 +41,7 @@ void GO_Enemy::setGroundCoord(float newGroundCoord) {
 
 void GO_Enemy::pushAway(T3DVec3 sourcePos, float angle, float distance) {
     if(HPCurrent_ > 0) {
+        global::audioManager->playSFX("coinLaser2.wav64", {.volume = 0.8f});
         //barricades 180 degrees apart look the same but push in opposite directions
         //find new positions in both directions and keep the one that's farther away from the barricade
         T3DVec3 newPosition1 = position_+(T3DVec3){distance*fm_sinf(angle), 0, -distance*fm_cosf(angle)};

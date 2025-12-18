@@ -27,11 +27,22 @@ int main(void)
     //display_init(RESOLUTION_320x240, DEPTH_16_BPP, 3, GAMMA_NONE, ANTIALIAS_RESAMPLE_FETCH_ALWAYS);
     display_init(RESOLUTION_320x240, DEPTH_16_BPP, 3, GAMMA_NONE, FILTERS_RESAMPLE_ANTIALIAS);
 
+    //audio_init(48000, 4);
+    //mixer_init(16);
+
+    audio_init(32000, 3);
+    mixer_init(32);
+
+	// Initialize wav64 compression level 3 as we're going to use it
+	//wav64_init_compression(3);
+
     rdpq_init();
     //rdpq_debug_start();
     Fonts::fonts_init();
     t3d_init((T3DInitParams){});
     //tpx_init((TPXInitParams){});
+
+    global::audioManager = new Audio();
 
     global::GameInterruptStack = new std::vector<GameInterrupt*>();
 
@@ -63,6 +74,7 @@ int main(void)
         rdpq_attach_clear(global::disp, zbuf);
 
         joypad_poll();
+        mixer_try_play();
 
         //remove interrupts that are finished
         for (int i = 0; i < global::GameInterruptStack->size(); i++) {

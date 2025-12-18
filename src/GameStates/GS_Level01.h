@@ -1,7 +1,7 @@
 #pragma once
 
 #include "GameState.h"
-#include "../GameObjects/GO_Cursor.h"
+
 
 class GS_Level01 : public GameState {
 public:
@@ -20,6 +20,8 @@ public:
     void levelWon() override;
     void levelLost() override;
 
+    
+
 private:
     uint8_t colorAmbient[4] = {80, 80, 100, 0xFF};
 
@@ -34,5 +36,5 @@ private:
     void handleInputCamera() override;
     void updateCamera() override;
 
-    GO_Cursor* theCursor;
+    
 };

@@ -15,6 +15,7 @@ public:
     virtual void update() override;
     virtual void renderT3d() override;
     virtual void renderRdpq() override;
+    virtual void castSuccess() override;
 
     void processEnemy(GO_Enemy* theEnemy);
 

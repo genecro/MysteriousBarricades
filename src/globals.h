@@ -5,6 +5,7 @@
 #include "GameInterrupts/GameInterrupt.h"
 #include "GameObjects/GO_Player.h"
 #include "GameStates/GameState.h"
+#include "Audio.h"
 
 
 #define INTERACTION_ANGLE T3D_PI/6.0f
@@ -23,4 +24,5 @@ namespace global
     extern GameState* gameState;
     extern float frameTimeMultiplier;
     extern surface_t* disp;
+    extern Audio* audioManager;
 }

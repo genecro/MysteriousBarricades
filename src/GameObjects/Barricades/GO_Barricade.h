@@ -16,6 +16,7 @@ public:
     virtual void renderT3d() = 0;
     virtual void renderRdpq() = 0;
     virtual void processEnemy(GO_Enemy* theEnemy) = 0;
+    virtual void castSuccess() = 0;
     bool checkCollision(GO_Enemy* theEnemy);
 
     void checkTimeLeft();

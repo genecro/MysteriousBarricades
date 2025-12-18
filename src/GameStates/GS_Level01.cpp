@@ -83,7 +83,7 @@ void GS_Level01::update() {
     );
     t3d_mat4_to_fixed(envMatFP, &envMat);
 
-    objectList->update();
+    objectList->update(theCursor->groundMarkerPos);
     enemyBarricadeCheck();
     repairableList->update();
     barricadeList->update();

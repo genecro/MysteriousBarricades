@@ -36,11 +36,16 @@ void GameObjectList::handleInput() {
     }
 }
 
-void GameObjectList::update() {
+void GameObjectList::update(T3DVec3 cursorPosition) {
     for(GameObject* i: *gameObjects) {
         
         if(i->timeToDelete) remove(i);
-        else i->update();
+        else {
+            i->update();
+            if(i->takeable_ && t3d_vec3_distance(cursorPosition, i->position_) <= i->objectWidth_) {
+                i->consumeEffect();
+            }
+        }
     }
 }
 
