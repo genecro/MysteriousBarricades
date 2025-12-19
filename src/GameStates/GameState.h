@@ -41,6 +41,7 @@ public:
     T3DViewport viewport;
 
     void enemyBarricadeCheck();
+    void enemyRepairableCheck();
 
     virtual void checkForWinOrLoss();
     virtual void levelWon();

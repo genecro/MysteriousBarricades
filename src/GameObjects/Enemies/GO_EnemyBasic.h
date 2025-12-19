@@ -5,7 +5,7 @@
 
 class GO_EnemyBasic: public GO_Enemy {
 public:
-    GO_EnemyBasic(T3DVec3 pos, T3DVec3 target);
+    GO_EnemyBasic(T3DVec3 pos, GO_Repairable* target);
 
     static T3DModel* enemyModel;
     static uint8_t instanceCount;
@@ -16,6 +16,7 @@ public:
     virtual void renderT3d() override;
     virtual void renderRdpq() override;
     virtual void stun(float stunTimeSeconds) override;
+    virtual void attackTarget() override;
 
 private:
     T3DMat4 enemyMat;

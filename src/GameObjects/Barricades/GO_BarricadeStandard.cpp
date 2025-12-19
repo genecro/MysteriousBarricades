@@ -76,7 +76,7 @@ void GO_BarricadeStandard::processEnemy(GO_Enemy* theEnemy) {
             //theEnemy->HPCurrent_ -= theEnemy->HPTotal_/2.0f;
             theEnemy->receiveDamage(theEnemy->HPTotal_/2);
             theEnemy->stun(2);
-            theEnemy->pushAway(position_, rotation_, 5);
+            theEnemy->pushAwayFromBarricade(position_, rotation_, 5);
             timeToDelete = true;
         }
 

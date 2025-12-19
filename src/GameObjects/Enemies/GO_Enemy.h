@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../GameObject.h"
+#include "../Repairables/GO_Repairable.h"
 //#include "../../globals.h"
 
 class GO_Enemy: public GameObject {
@@ -24,10 +25,20 @@ public:
     void drawHPBar();
     void setGroundCoord(float newGroundCoord);
 
-    void pushAway(T3DVec3 sourcePos, float angle, float distance);
+    void pushAwayFromBarricade(T3DVec3 sourcePos, float angle, float distance);
     void receiveDamage(float damageAmount);
 
-    
+    int enemyState_;
+
+    int getState();
+    void setStateAttacking(GO_Repairable* target);
+    void setStateSeeking(GO_Repairable* target);
+
+    float attackRate;
+    float attackDamage;
+    float attackAnimDistance;
+    T3DVec3 attackAnimOffset{0,0,0};
+    virtual void attackTarget() = 0;
 
     float HPBarTotalLength_;
     float HPBarCurrentLength_;
@@ -42,7 +53,8 @@ public:
 
     bool displayModel_ = true;
 
-    T3DVec3 target_;
+    //T3DVec3 target_;
+    GO_Repairable* target_;
 
     T3DVec3 HPBarPos_ = (T3DVec3){-2, -2, -2};
 

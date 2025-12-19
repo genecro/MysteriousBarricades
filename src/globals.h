@@ -18,6 +18,11 @@ namespace global
         CURSOR_STATE_BARRICADE = 2
     };
 
+    enum {
+        ENEMY_STATE_SEEKING = 0,
+        ENEMY_STATE_ATTACKING = 1
+    };
+
     extern float elapsedSeconds;
     extern std::vector<GameInterrupt*>* GameInterruptStack;
     extern GO_Player* thePlayer;

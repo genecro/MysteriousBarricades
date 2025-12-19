@@ -8,6 +8,7 @@ GO_RepairableTower::GO_RepairableTower(T3DVec3 pos, int HPTotal, int HPCurrent, 
     HPTotal_ = HPTotal;
     HPCurrent_ = HPCurrent;
     objColor_ = objColor;
+    objectWidth_ = 3;
 
     t3d_mat4_identity(towerMat);
     towerMatFP = (T3DMat4FP*)malloc_uncached(sizeof(T3DMat4FP));

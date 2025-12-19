@@ -39,7 +39,7 @@ void GO_Enemy::setGroundCoord(float newGroundCoord) {
     position_.y = newGroundCoord;
 }
 
-void GO_Enemy::pushAway(T3DVec3 sourcePos, float angle, float distance) {
+void GO_Enemy::pushAwayFromBarricade(T3DVec3 sourcePos, float angle, float distance) {
     if(HPCurrent_ > 0) {
         global::audioManager->playSFX("coinLaser2.wav64", {.volume = 0.8f});
         //barricades 180 degrees apart look the same but push in opposite directions
@@ -58,4 +58,20 @@ void GO_Enemy::pushAway(T3DVec3 sourcePos, float angle, float distance) {
 
 void GO_Enemy::receiveDamage(float damageAmount) {
     HPCurrent_ -= damageAmount;
+}
+
+int GO_Enemy::getState() {
+    return enemyState_;
+}
+
+void GO_Enemy::setStateAttacking(GO_Repairable* target) {
+    target_ = target;
+    lifetime_ = 0;
+    enemyState_ = global::ENEMY_STATE_ATTACKING;
+    rotation_ = fm_atan2f(target_->position_.z - position_.z, target_->position_.x - position_.x);
+}
+
+void GO_Enemy::setStateSeeking(GO_Repairable* target) {
+    target_ = target;
+    enemyState_ = global::ENEMY_STATE_SEEKING;
 }

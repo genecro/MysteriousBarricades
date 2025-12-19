@@ -33,10 +33,10 @@ GS_Level01::GS_Level01(T3DVec3 startingCursorPosition) {
     barricadeList = new BarricadeList();
 
     enemyList = new EnemyList(&collisionTris);
-    enemyList->push(new GO_EnemyBasic((T3DVec3){-15, 5, 0}, repairableList->getCurrRepairable()->position_));
-    enemyList->push(new GO_EnemyBasic((T3DVec3){15, 5, -15}, repairableList->getCurrRepairable()->position_));
-    enemyList->push(new GO_EnemyBasic((T3DVec3){0, 5, -15}, repairableList->getCurrRepairable()->position_));
-    enemyList->push(new GO_EnemyBasic((T3DVec3){-15, 5, 15}, repairableList->getCurrRepairable()->position_));
+    enemyList->push(new GO_EnemyBasic((T3DVec3){-15, 5, 0}, repairableList->getCurrRepairable()));
+    enemyList->push(new GO_EnemyBasic((T3DVec3){15, 5, -15}, repairableList->getCurrRepairable()));
+    enemyList->push(new GO_EnemyBasic((T3DVec3){0, 5, -15}, repairableList->getCurrRepairable()));
+    enemyList->push(new GO_EnemyBasic((T3DVec3){-15, 5, 15}, repairableList->getCurrRepairable()));
 }
 
 GS_Level01::~GS_Level01() {
@@ -85,6 +85,7 @@ void GS_Level01::update() {
 
     objectList->update(theCursor->groundMarkerPos);
     enemyBarricadeCheck();
+    enemyRepairableCheck();
     repairableList->update();
     barricadeList->update();
     enemyList->update();

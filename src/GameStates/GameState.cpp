@@ -186,6 +186,16 @@ void GameState::enemyBarricadeCheck() {
     }
 }
 
+void GameState::enemyRepairableCheck() {
+    for(GO_Repairable* r: *(repairableList->repairables)) {
+        for(GO_Enemy* e: *(enemyList->gameObjects_)) {
+            if(e->getState() != global::ENEMY_STATE_ATTACKING && t3d_vec3_distance2(e->position_, r->position_) <= pow(e->objectWidth_+r->objectWidth_, 2)) {
+                e->setStateAttacking(r);
+            }
+        }
+    }
+}
+
 void GameState::checkForWinOrLoss() {
 
 }
