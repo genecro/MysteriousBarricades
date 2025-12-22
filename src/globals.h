@@ -30,4 +30,9 @@ namespace global
     extern float frameTimeMultiplier;
     extern surface_t* disp;
     extern Audio* audioManager;
+
+    //extern joypad_inputs_t joypad;
+    //extern joypad_buttons_t btn;
+    //extern joypad_buttons_t btnRel;
+    //extern joypad_buttons_t btnHeld;
 }

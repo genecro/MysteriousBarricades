@@ -1,5 +1,6 @@
 #include "GO_Enemy.h"
 #include "../../globals.h"
+#include "../../miscMath.h"
 
 GO_Enemy::GO_Enemy() {
 
@@ -15,7 +16,7 @@ void GO_Enemy::updateHPBar() {
 
     float hpRatio = (float)HPCurrent_/(float)HPTotal_;
 
-    HPBarCurrentLength_ = HPBarTotalLength_*hpRatio-1.0f;
+    HPBarCurrentLength_ = HPCurrent_ > 0 ? fmax(HPBarTotalLength_*hpRatio-1.0f, 2.0f) : 0;
     
     if(hpRatio <= 0.25) HPBarColor_ = (color_t){0xFF, 0, 0, 0xFF};
     else if(hpRatio <= 0.5) HPBarColor_ = (color_t){0xFF, 0x7F, 0, 0xFF};
@@ -56,6 +57,22 @@ void GO_Enemy::pushAwayFromBarricade(T3DVec3 sourcePos, float angle, float dista
     }
 }
 
+void GO_Enemy::pushAwayFromRepairable(GO_Repairable* repairable, float distance) {
+    
+    float repelAngle = math::angleBetweenPointsClampedWrapped(
+        position_, 
+        repairable->position_, 
+        repairable->repelEnemyAngleMin_, 
+        repairable->repelEnemyAngleMax_);
+
+    //float repelAngle = atan2f(repairable->position_.z-position_.z, repairable->position_.x - position_.x) ;
+    
+    position_ += (T3DVec3){
+        distance*fm_sinf(repelAngle), 
+        0, 
+        -distance*fm_cosf(repelAngle)};
+}
+
 void GO_Enemy::receiveDamage(float damageAmount) {
     HPCurrent_ -= damageAmount;
 }
@@ -71,7 +88,9 @@ void GO_Enemy::setStateAttacking(GO_Repairable* target) {
     rotation_ = fm_atan2f(target_->position_.z - position_.z, target_->position_.x - position_.x);
 }
 
-void GO_Enemy::setStateSeeking(GO_Repairable* target) {
-    target_ = target;
+void GO_Enemy::setStateSeeking(GO_Repairable* target = nullptr) {
+    if(target) {
+        target_ = target;
+    }
     enemyState_ = global::ENEMY_STATE_SEEKING;
 }

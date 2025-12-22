@@ -5,7 +5,7 @@
 
 class GO_RepairableTower: public GO_Repairable {
 public:
-    GO_RepairableTower(T3DVec3 pos, int HPTotal, int HPCurrent, color_t objColor);
+    GO_RepairableTower(T3DVec3 pos, int HPTotal, int HPCurrent, color_t objColor, float repelAngleMin, float repelAngleMax);
 
     static T3DModel* towerModel;
     static uint8_t instanceCount;

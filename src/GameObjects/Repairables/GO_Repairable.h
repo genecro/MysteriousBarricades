@@ -22,11 +22,16 @@ public:
     void updateHPBar();
     void drawHPBar();
 
+    float repelEnemyAngleMin_;
+    float repelEnemyAngleMax_;
+
     float HPBarTotalLength_;
     float HPBarCurrentLength_;
     float HPBarHeight_ = 5.0;
 
     T3DVec3 HPBarPos_ = (T3DVec3){-2, -2, -2};
+
+    bool fullyRepaired = false;
 
 private:
     color_t HPBarColor_ = (color_t){0,0,0,0};

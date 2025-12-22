@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameObject.h"
+#include "Enemies/GO_Enemy.h"
 
 class GO_Cursor: public GameObject {
 public:
@@ -16,6 +17,12 @@ public:
     float barrierSize = 5.0f;
 
     float healingSpeed_ = 0.2f;
+    bool overARepairable_ = false;
+    bool repellingEnemies_ = false;
+    float repellingEnemiesRate_ = 1.0f*60.0f;
+    float repellingEnemiesDistance_ = 3.0f;
+    float repellingEnemiesTimer = 0;
+    uint8_t repellingEnemiesCtr_ = 3;
 
     float RPCurrent_ = 25;
     float RPTotal_ = 100;
@@ -39,6 +46,8 @@ public:
 
     void handleMovement(T3DVec3 intendedMovement);
 
+    std::vector<GO_Enemy*> enemiesBeingRepelled{};
+
 private:
     T3DMat4 cursorMat;
     T3DMat4 cursorEdgeMat1;
@@ -55,6 +64,11 @@ private:
     T3DMat4FP* groundMarkerEdgeMatFP1;
     T3DMat4FP* groundMarkerEdgeMatFP2;
     static T3DModel* groundMarkerModel;
+
+    T3DMat4 repelRingMat;
+    T3DMat4FP* repelRingMatFP;
+    T3DModel* repelRingModel;
+    float repelRingScale;
     
     static uint8_t instanceCount;
 };

@@ -26,13 +26,14 @@ public:
     void setGroundCoord(float newGroundCoord);
 
     void pushAwayFromBarricade(T3DVec3 sourcePos, float angle, float distance);
+    void pushAwayFromRepairable(GO_Repairable* repairable, float distance);
     void receiveDamage(float damageAmount);
 
     int enemyState_;
 
     int getState();
     void setStateAttacking(GO_Repairable* target);
-    void setStateSeeking(GO_Repairable* target);
+    void setStateSeeking(GO_Repairable* target = nullptr);
 
     float attackRate;
     float attackDamage;

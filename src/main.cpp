@@ -11,8 +11,6 @@
 #include "Fonts.h"
 #include "GameInterrupts/GI_Pause.h"
 
-
-
 int main(void)
 {
     float smoothedDeltaTime = 1.0f/60.0f;
@@ -72,8 +70,9 @@ int main(void)
         surface_t* zbuf = display_get_zbuf();
         //rdpq_attach(disp, &zbuffer);
         rdpq_attach_clear(global::disp, zbuf);
-
+        
         joypad_poll();
+
         mixer_try_play();
 
         //remove interrupts that are finished
@@ -123,6 +122,8 @@ int main(void)
         for(int i = 0; i < global::GameInterruptStack->size(); i++) {
             global::GameInterruptStack->at(i)->renderT3d();
         }
+
+        mixer_try_play();
 
         //render rdpq of all layers starting with the main gameState
         global::gameState->renderRdpq();

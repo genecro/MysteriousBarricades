@@ -35,6 +35,13 @@ GO_Cursor::GO_Cursor(T3DVec3 position, std::vector<Triangle> *newCollisionTris) 
     groundMarkerEdgeMatFP1 = (T3DMat4FP*)malloc_uncached(sizeof(T3DMat4FP));
     groundMarkerEdgeMatFP2 = (T3DMat4FP*)malloc_uncached(sizeof(T3DMat4FP));
 
+
+    repelRingModel = t3d_model_load("rom:/repelRing.t3dm");
+    t3d_mat4_identity(&repelRingMat);
+    repelRingMatFP = (T3DMat4FP*)malloc_uncached(sizeof(T3DMat4FP));
+    repelRingScale = 1.0f;
+
+
     collisionTris = newCollisionTris;
 
     cursorState = global::CURSOR_STATE_BASE;
@@ -50,11 +57,16 @@ GO_Cursor::~GO_Cursor() {
         cursorModel=nullptr;
         groundMarkerModel=nullptr;
     }
+    free_uncached(repelRingMatFP);
+    t3d_model_free(repelRingModel);
 }
 
 void GO_Cursor::handleInput() {
-    joypad_inputs_t joypad = joypad_get_inputs(JOYPAD_PORT_1);
+    
     joypad_buttons_t btn = joypad_get_buttons_pressed(JOYPAD_PORT_1);
+    joypad_buttons_t btnRel = joypad_get_buttons_released(JOYPAD_PORT_1);
+    joypad_buttons_t btnHeld = joypad_get_buttons_held(JOYPAD_PORT_1);
+    joypad_inputs_t joypad = joypad_get_inputs(JOYPAD_PORT_1);
 
     switch (cursorState) {
 
@@ -63,10 +75,92 @@ void GO_Cursor::handleInput() {
             if(btn.a) {
                 cursorState = global::CURSOR_STATE_BARRICADE;
             }
+            if(overARepairable_) {
+                GO_Repairable* temp = global::gameState->repairableList->getCurrRepairable();
+
+                if(btn.b) {
+                    enemiesBeingRepelled.clear();
+                    for (GO_Enemy* e : *global::gameState->enemyList->gameObjects_) {
+                        if(e->getState() == global::ENEMY_STATE_ATTACKING && e->target_ == temp) {
+                            enemiesBeingRepelled.push_back(e);
+                        }
+                    }
+
+                    if(enemiesBeingRepelled.size() > 0) {
+                        repellingEnemies_ = true;
+                        repellingEnemiesTimer = repellingEnemiesRate_ * repellingEnemiesCtr_;
+                        for(GO_Enemy* e : enemiesBeingRepelled) {
+                            e->stun(4);
+                            e->pushAwayFromRepairable(temp, repellingEnemiesDistance_);
+                            //e->setStateSeeking(temp);
+                        }
+                    }
+                    
+                    else if(temp) {
+                        if(temp->HPCurrent_ < temp->HPTotal_) temp->HPCurrent_ += healingSpeed_*global::frameTimeMultiplier;
+                    }
+                }
+
+                if(btnHeld.b) {
+                //if(btn.b) {
+                    if(repellingEnemies_) {
+                        enemiesBeingRepelled.clear();
+                        for (GO_Enemy* e : *global::gameState->enemyList->gameObjects_) {
+                            if(e->getState() == global::ENEMY_STATE_ATTACKING && e->target_ == temp) {
+                                enemiesBeingRepelled.push_back(e);
+                                if(!e->isStunned_) {
+                                    e->stun(4);
+                                    e->pushAwayFromRepairable(temp, repellingEnemiesDistance_);
+                                }
+                            }
+                        }
+                        float prevRepelTimer = repellingEnemiesTimer;
+                        repellingEnemiesTimer -= global::frameTimeMultiplier;
+                        if((int)(prevRepelTimer / repellingEnemiesRate_) != (int)(repellingEnemiesTimer / repellingEnemiesRate_)
+                            || repellingEnemiesTimer <= 0) {
+                            for(GO_Enemy* e : enemiesBeingRepelled) {
+                                e->stun(4);
+                                e->pushAwayFromRepairable(temp, repellingEnemiesDistance_ * repellingEnemiesTimer <= 0? 2 : 1);
+                            }
+                        }
+                        if(repellingEnemiesTimer <= 0) {
+                            repellingEnemies_ = false;
+                            for(GO_Enemy* e : enemiesBeingRepelled) {
+                                e->setStateSeeking();
+                            }
+                            enemiesBeingRepelled.clear();
+                        }
+                    }
+                    else if(temp) {
+                        float enemiesAttacking = false;
+                        for (GO_Enemy* e : *global::gameState->enemyList->gameObjects_) {
+                            if(e->getState() == global::ENEMY_STATE_ATTACKING && e->target_ == temp) {
+                                enemiesAttacking = true;
+                                break;
+                            }
+                        }
+                        if(!enemiesAttacking && temp->HPCurrent_ < temp->HPTotal_) {
+                            temp->HPCurrent_ += healingSpeed_*global::frameTimeMultiplier;
+                        }
+                    }
+                }
+
+                if(btnRel.b) {
+                //if(!btn.b) {
+                    if(repellingEnemies_) {
+                        repellingEnemies_ = false;
+                        for(GO_Enemy* e : enemiesBeingRepelled) {
+                            e->setStateSeeking();
+                        }
+                        enemiesBeingRepelled.clear();
+                    }
+                }
+            }
         break;
 
         //making a barricade
         case global::CURSOR_STATE_BARRICADE:
+            
             if(joypad.stick_x < -STICK_DEADZONE || joypad.stick_x > STICK_DEADZONE) {
                 barricadeEdgeRelativeToCursor.x = -(float)(joypad.stick_x)/60.0f*barrierSize;
             }
@@ -87,27 +181,16 @@ void GO_Cursor::handleInput() {
                         new GO_BarricadeStandard(
                             groundMarkerPos,
                             barricadeEdgeRelativeToCursor, 
-                            (color_t){0xFF, 0, 0, 0x7F}
+                            (color_t){0xFF, 0xFF, 0, 0x7F}
                         )
                     );
                 }
                 cursorState = global::CURSOR_STATE_BASE;
             }
         break;
-
-        //over a repairable
-        case global::CURSOR_STATE_REPAIR:
-            if(joypad.btn.a) {
-                GO_Repairable* temp = global::gameState->repairableList->getCurrRepairable();
-                if(temp) {
-                    if(temp->HPCurrent_ < temp->HPTotal_) temp->HPCurrent_ += healingSpeed_*global::frameTimeMultiplier;
-                }
-            }
-
-        break;
     }
 
-    if(cursorState!=global::CURSOR_STATE_BARRICADE) {
+    if(cursorState!=global::CURSOR_STATE_BARRICADE && !repellingEnemies_) {
         if(btn.r) {
             GO_Repairable* temp = global::gameState->repairableList->getNextRepairable();
             if(temp) {
@@ -125,8 +208,10 @@ void GO_Cursor::handleInput() {
             }
         }
 
+        //debugf("Checking for joystick\n");
         if(joypad.stick_x < -STICK_DEADZONE || joypad.stick_x > STICK_DEADZONE ||
            joypad.stick_y < -STICK_DEADZONE || joypad.stick_y > STICK_DEADZONE) {
+            //debugf("joystick moving\n");
             handleMovement((T3DVec3){
                     (float)(joypad.stick_x)/200.0f*global::frameTimeMultiplier,
                     0,
@@ -159,29 +244,23 @@ void GO_Cursor::update() {
     );
     t3d_mat4_to_fixed(groundMarkerMatFP, &groundMarkerMat);
 
-    bool nearRepairable = false;
+    overARepairable_ = false;
     for(GO_Repairable* i: *(global::gameState->repairableList->repairables)) {
         if(t3d_vec3_distance2((T3DVec3){i->position_.x,0,i->position_.z}, (T3DVec3){position_.x, 0, position_.z}) <=20) {
-            nearRepairable = true;
+            //nearRepairable = true;
+            overARepairable_ = true;
             global::gameState->repairableList->setCurrentRepairable(i);
             break;
         }
     }
 
-    if(nearRepairable) {
-        setStateRepair();
-    }
-    else if(cursorState!=global::CURSOR_STATE_BARRICADE) {
-        setStateBaseState();
-    }
-    
-
     switch (cursorState) {
         case global::CURSOR_STATE_BASE:
-            cursorColor = cursorColorBase;
+            cursorColor = overARepairable_ ? cursorColorRepair : cursorColorBase;
         break;
 
         case global::CURSOR_STATE_BARRICADE:
+            cursorColor = cursorColorBase;
             t3d_mat4_from_srt_euler(&cursorEdgeMat1,
                 (float[3]){0.015f, 0.015f, 0.015f},
                 (float[3]){0.0f, rotation_, 0.0f},
@@ -210,10 +289,15 @@ void GO_Cursor::update() {
             );
             t3d_mat4_to_fixed(groundMarkerEdgeMatFP2, &groundMarkerEdgeMat2);
         break;
+    }
 
-        case global::CURSOR_STATE_REPAIR:
-            cursorColor = cursorColorRepair;
-        break;
+    if(repellingEnemies_) {
+        t3d_mat4_from_srt_euler(&repelRingMat,
+            (float[3]){0.08f*repelRingScale, 0.08f, 0.08f*repelRingScale},
+            (float[3]){0.0f, rotation_, 0.0f},
+            global::gameState->repairableList->getCurrRepairable()->position_.v
+        );
+        t3d_mat4_to_fixed(repelRingMatFP, &repelRingMat);
     }
 }
 
@@ -223,6 +307,11 @@ void GO_Cursor::renderT3d() {
     rdpq_set_prim_color(cursorColor);
     t3d_matrix_set(cursorMatFP, true);
     t3d_model_draw(cursorModel);
+
+    if(repellingEnemies_) {
+        t3d_matrix_set(repelRingMatFP, true);
+        t3d_model_draw(repelRingModel);
+    }
 
     rdpq_set_prim_color(groundMarkerColor);
     t3d_matrix_set(groundMarkerMatFP, true);

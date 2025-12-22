@@ -13,9 +13,14 @@ void GO_Repairable::updateHPBar() {
 
     HPBarTotalLength_ = HPTotal_*40.0f/100.0f;
 
+    if(HPCurrent_ >= HPTotal_) {
+        fullyRepaired = true;
+        HPCurrent_ = HPTotal_;
+    }
+
     float hpRatio = (float)HPCurrent_/(float)HPTotal_;
 
-    HPBarCurrentLength_ = HPBarTotalLength_*hpRatio-1.0f;
+    HPBarCurrentLength_ = HPCurrent_ > 0 ? fmax(HPBarTotalLength_*hpRatio-1.0f, 2.0f) : 0;
     
     if(hpRatio <= 0.25) HPBarColor_ = (color_t){0xFF, 0, 0, 0xFF};
     else if(hpRatio <= 0.5) HPBarColor_ = (color_t){0xFF, 0x7F, 0, 0xFF};

@@ -56,44 +56,47 @@ void GO_EnemyBasic::update() {
     float prevLifetime = lifetime_;
     lifetime_ += global::frameTimeMultiplier;
 
-    switch(enemyState_) {
-        case global::ENEMY_STATE_SEEKING:
-            //not stunned, moves normally
-            if(!isStunned_) {
-                //rotate randomly towards the target every 5 seconds
-                if((int)(prevLifetime / (60.0f*5.0f)) != (int)(lifetime_ / (60.0f*5.0f))) {
-                    rotation_ = fm_atan2f(target_->position_.z - position_.z, target_->position_.x - position_.x) + (((float)rand() / (float)RAND_MAX)*(T3D_PI / 2.0f) - (T3D_PI / 4.0f));
-                }
+    if(isStunned_) {
+        //stunned, model flashes and can't move or be damaged until cooldown reaches 0
+        float prevStunCooldown = stunCooldown_;
+        stunCooldown_ -= global::frameTimeMultiplier;
+        if(stunCooldown_ <= 0) {
+            isStunned_ = false;
+            isInvincible_ = false;
+            stunCooldown_ = 0;
+            displayModel_ = true;
+        }
+        else if((int)(prevStunCooldown / (5.0f)) != (int)(stunCooldown_ / (5.0f))) {
+            displayModel_ = !displayModel_;
+        }     
+    }
 
-                //move forward
-                position_.x += speed_*fm_cosf(rotation_)*global::frameTimeMultiplier;
-                position_.z += speed_*fm_sinf(rotation_)*global::frameTimeMultiplier;
-            }
-            //stunned, model flashes and can't move or be damaged until cooldown reaches 0
-            else {
-                float prevStunCooldown = stunCooldown_;
-                stunCooldown_ -= global::frameTimeMultiplier;
-                if(stunCooldown_ <= 0) {
-                    isStunned_ = false;
-                    isInvincible_ = false;
-                    stunCooldown_ = 0;
-                    displayModel_ = true;
-                }
-                else if((int)(prevStunCooldown / (5.0f)) != (int)(stunCooldown_ / (5.0f))) {
-                    displayModel_ = !displayModel_;
-                }
-            }
-        break;
+    else {
+        switch(enemyState_) {
+            case global::ENEMY_STATE_SEEKING:
+                //not stunned, moves normally
+                if(!isStunned_) {
+                    //rotate randomly towards the target every 5 seconds
+                    if((int)(prevLifetime / (60.0f*5.0f)) != (int)(lifetime_ / (60.0f*5.0f))) {
+                        rotation_ = fm_atan2f(target_->position_.z - position_.z, target_->position_.x - position_.x) + (((float)rand() / (float)RAND_MAX)*(T3D_PI / 2.0f) - (T3D_PI / 4.0f));
+                    }
 
-        case global::ENEMY_STATE_ATTACKING:
-            if((int)(prevLifetime / attackRate) != (int)(lifetime_ / attackRate)) {
-                attackTarget();
-                //play attack sound
-                global::audioManager->playSFX("gutKick6.wav64", {.volume = 0.4f});
-            }
-            float atkWindup = fmod(lifetime_, attackRate);
-            attackAnimOffset = (T3DVec3){attackAnimDistance*atkWindup/attackRate*fm_cosf(rotation_), 0.0f, attackAnimDistance*atkWindup/attackRate*fm_sinf(rotation_)};
-        break;
+                    //move forward
+                    position_.x += speed_*fm_cosf(rotation_)*global::frameTimeMultiplier;
+                    position_.z += speed_*fm_sinf(rotation_)*global::frameTimeMultiplier;
+                }
+                
+            break;
+
+            case global::ENEMY_STATE_ATTACKING:
+                if((int)(prevLifetime / attackRate) != (int)(lifetime_ / attackRate)) {
+                    attackTarget();
+                    global::audioManager->playSFX("gutKick6.wav64", {.volume = 0.4f});
+                }
+                float atkWindup = fmod(lifetime_, attackRate);
+                attackAnimOffset = (T3DVec3){attackAnimDistance*atkWindup/attackRate*fm_cosf(rotation_), 0.0f, attackAnimDistance*atkWindup/attackRate*fm_sinf(rotation_)};
+            break;
+        }
     }
 
     

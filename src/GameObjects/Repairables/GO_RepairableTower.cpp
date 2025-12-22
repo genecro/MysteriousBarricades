@@ -3,12 +3,14 @@
 T3DModel* GO_RepairableTower::towerModel = nullptr;
 uint8_t GO_RepairableTower::instanceCount = 0;
 
-GO_RepairableTower::GO_RepairableTower(T3DVec3 pos, int HPTotal, int HPCurrent, color_t objColor) {
+GO_RepairableTower::GO_RepairableTower(T3DVec3 pos, int HPTotal, int HPCurrent, color_t objColor, float repelAngleMin, float repelAngleMax) {
     position_ = pos;
     HPTotal_ = HPTotal;
     HPCurrent_ = HPCurrent;
     objColor_ = objColor;
-    objectWidth_ = 3;
+    objectWidth_ = 2;
+    repelEnemyAngleMin_ = repelAngleMin;
+    repelEnemyAngleMax_ = repelAngleMax;
 
     t3d_mat4_identity(towerMat);
     towerMatFP = (T3DMat4FP*)malloc_uncached(sizeof(T3DMat4FP));
