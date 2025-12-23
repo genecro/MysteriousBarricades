@@ -4,7 +4,7 @@
 #include "../globals.h"
 #include "../collision.h"
 
-GS_Level01::GS_Level01(T3DVec3 startingCursorPosition) {
+GS_Training04::GS_Training04(T3DVec3 startingCursorPosition) {
     viewport = t3d_viewport_create();
     t3d_mat4_identity(&envMat);
 
@@ -12,8 +12,8 @@ GS_Level01::GS_Level01(T3DVec3 startingCursorPosition) {
     t3d_vec3_norm(&lightDirVec);
 
     envMatFP = (T3DMat4FP*)malloc_uncached(sizeof(T3DMat4FP));
-    envModel = t3d_model_load("rom:/level01.t3dm");
-    collisionTris = collision::loadCollTriangles("rom:/level01.bin");
+    envModel = t3d_model_load("rom:/training04.t3dm");
+    collisionTris = collision::loadCollTriangles("rom:/training04.bin");
     collision::scaleTriangles(&collisionTris, scaleFactor);
 
     envModel->aabbMax[0]*=scaleFactor;
@@ -29,23 +29,11 @@ GS_Level01::GS_Level01(T3DVec3 startingCursorPosition) {
 
     objectList = new GameObjectList();
     repairableList = new RepairableList();
-    repairableList->push(new GO_RepairableTower(collision::findGroundIntersection(collisionTris, (T3DVec3){15,10,15}), 100, 25, (color_t){255, 255, 0, 255}, -T3D_PI/2.0f, 0));
-    repairableList->push(new GO_RepairableTower(collision::findGroundIntersection(collisionTris, (T3DVec3){-15,10,-15}), 100, 25, (color_t){120, 0, 255, 255}, T3D_PI/2.0f, T3D_PI));
-
     barricadeList = new BarricadeList();
-
     enemyList = new EnemyList(&collisionTris);
-    enemyList->push(new GO_EnemyBasic((T3DVec3){-15, 5, 0}, repairableList->getCurrRepairable()));
-    enemyList->push(new GO_EnemyBasic((T3DVec3){15, 5, -15}, repairableList->getCurrRepairable()));
-    enemyList->push(new GO_EnemyBasic((T3DVec3){0, 5, -15}, repairableList->getCurrRepairable()));
-    enemyList->push(new GO_EnemyBasic((T3DVec3){-15, 5, 15}, repairableList->getCurrRepairable()));
-    enemyList->push(new GO_EnemyBasic((T3DVec3){-7, 5, 0}, repairableList->getNextRepairable()));
-    enemyList->push(new GO_EnemyBasic((T3DVec3){8, 5, -15}, repairableList->getCurrRepairable()));
-    enemyList->push(new GO_EnemyBasic((T3DVec3){0, 5, -8}, repairableList->getCurrRepairable()));
-    enemyList->push(new GO_EnemyBasic((T3DVec3){-7, 5, 15}, repairableList->getCurrRepairable()));
 }
 
-GS_Level01::~GS_Level01() {
+GS_Training04::~GS_Training04() {
     t3d_model_free(envModel);
     free_uncached(envMatFP);
     delete objectList;
@@ -53,18 +41,12 @@ GS_Level01::~GS_Level01() {
     delete enemyList;
 }
 
-void GS_Level01::handleInput() {
+void GS_Training04::handleInput() {
     joypad_buttons_t btn = joypad_get_buttons_pressed(JOYPAD_PORT_1);
     //if(keys.start) {
     if(btn.start) {
         global::GameInterruptStack->push_back(new GI_Pause());
     }
-
-    if(btn.c_up) {
-        objectList->push(new GO_Projectile((T3DVec3){0,10,0}, 3.0f*T3D_PI/4.0f, 0.3f));
-    }
-
-    float borderScale = 0.8f;
 
     theCursor->handleInput();
 
@@ -75,7 +57,7 @@ void GS_Level01::handleInput() {
     enemyList->handleInput();
 }
 
-void GS_Level01::update() {
+void GS_Training04::update() {
     theCursor->update();
     updateCamera();
 
@@ -95,7 +77,7 @@ void GS_Level01::update() {
     if(!endStateReached) checkForWinOrLoss();
 }
 
-void GS_Level01::renderT3d() {
+void GS_Training04::renderT3d() {
     t3d_viewport_set_projection(viewport, camera.FOV, 10.0f, 200.0f);
     t3d_viewport_attach(&viewport);
 
@@ -122,58 +104,42 @@ void GS_Level01::renderT3d() {
     t3d_matrix_pop(1);
 }
 
-void GS_Level01::renderRdpq() {
+void GS_Training04::renderRdpq() {
     objectList->renderRdpq();
     repairableList->renderRdpq();
     barricadeList->renderRdpq();
     enemyList->renderRdpq();
 }
 
-void GS_Level01::testFunc() {
-    debugf("Test func Level01\n");
+void GS_Training04::testFunc() {
+    debugf("Test func Training04\n");
 }
 
 
-void GS_Level01::initCamera() {
+void GS_Training04::initCamera() {
     camera.FOV = 0.27*T3D_PI;
     camera.target = theCursor->position_ + (T3DVec3){0, -3, 0};
     camera.pos = theCursor->position_ + (T3DVec3){0, 10, -15};
 }
 
-void GS_Level01::handleInputCamera() {
+void GS_Training04::handleInputCamera() {
     
 }
 
-void GS_Level01::updateCamera() {
+void GS_Training04::updateCamera() {
     camera.target = theCursor->position_ + (T3DVec3){0, -3, 0};
     camera.pos = theCursor->position_ + (T3DVec3){0, 10, -15};
 }
 
-void GS_Level01::levelWon() {
+void GS_Training04::levelWon() {
     enemyList->destroyAllEnemies();
     global::GameInterruptStack->push_back(new GI_Alert("You won!"));
 }
 
-void GS_Level01::levelLost() {
+void GS_Training04::levelLost() {
     global::GameInterruptStack->push_back(new GI_Alert("You lost!"));
 }
 
-void GS_Level01::checkForWinOrLoss() {
-    bool allFullyRepaired = true;
-    for(GO_Repairable* r: *repairableList->repairables) {
-        if(!r->fullyRepaired) {
-            allFullyRepaired = false;
-        }
-        if(r->HPCurrent_<=0) {
-            endStateReached = true;
-            levelLost();
-            break;
-        }
-    }
-
-    if(allFullyRepaired) {
-        //win
-        endStateReached = true;
-        levelWon();
-    }
+void GS_Training04::checkForWinOrLoss() {
+    
 }

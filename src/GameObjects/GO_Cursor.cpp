@@ -35,12 +35,10 @@ GO_Cursor::GO_Cursor(T3DVec3 position, std::vector<Triangle> *newCollisionTris) 
     groundMarkerEdgeMatFP1 = (T3DMat4FP*)malloc_uncached(sizeof(T3DMat4FP));
     groundMarkerEdgeMatFP2 = (T3DMat4FP*)malloc_uncached(sizeof(T3DMat4FP));
 
-
     repelRingModel = t3d_model_load("rom:/repelRing.t3dm");
     t3d_mat4_identity(&repelRingMat);
     repelRingMatFP = (T3DMat4FP*)malloc_uncached(sizeof(T3DMat4FP));
     repelRingScale = 1.0f;
-
 
     collisionTris = newCollisionTris;
 
@@ -370,7 +368,7 @@ void GO_Cursor::handleMovement(T3DVec3 intendedMovement) {
     for (int i = 0; i < 5; i++) {
         bool collided = false;
         T3DVec3 groundLoc = collision::findGroundIntersection(*collisionTris, (T3DVec3){position_.x+intendedMovement.x, position_.y, position_.z+intendedMovement.z}, tempTri);
-        if(groundLoc.y > -100 && fmaxf(tempTri.v0.y, fmaxf(tempTri.v1.y, tempTri.v2.y)) > position_.y-5.0f) {
+        if(groundLoc.y <= -100 || fmaxf(tempTri.v0.y, fmaxf(tempTri.v1.y, tempTri.v2.y)) > position_.y-5.0f) {
             collided = true;
             T3DVec3 triNorm = collision::triangleNormal(tempTri);
             triNorm.y=0;
