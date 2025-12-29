@@ -6,4 +6,5 @@
 
 #include "GS_Training01.h"
 #include "GS_Training02.h"
+#include "GS_Training03.h"
 #include "GS_Training04.h"

@@ -4,7 +4,7 @@
 #include "../globals.h"
 #include "../collision.h"
 
-GS_Training02::GS_Training02(T3DVec3 startingCursorPosition) {
+GS_Training03::GS_Training03(T3DVec3 startingCursorPosition) {
     viewport = t3d_viewport_create();
     t3d_mat4_identity(&envMat);
 
@@ -32,20 +32,28 @@ GS_Training02::GS_Training02(T3DVec3 startingCursorPosition) {
     barricadeList = new BarricadeList();
     enemyList = new EnemyList(&collisionTris);
 
-    enemyList->push(new GO_EnemyBasic((T3DVec3){8,0,-8}, (T3DVec3){0,0,8}, false));
-    enemyList->push(new GO_EnemyBasic((T3DVec3){0,0,8}, (T3DVec3){-8,0,-8}, false));
-    enemyList->push(new GO_EnemyBasic((T3DVec3){-8,0,-8}, (T3DVec3){8,0,-8}, false));
+    repairableList->push(new GO_RepairableTower(
+        (T3DVec3){0,0,8}, 
+        100, 
+        75, 
+        (color_t){0x77, 0, 0xFF, 0xFF}, 
+        -3.0f*T3D_PI/4.0f, 
+        -T3D_PI/4.0f)
+    );
+
+    enemyList->push(new GO_EnemyBasic((T3DVec3){8,0,-8}, repairableList->getCurrRepairable()));
+    enemyList->push(new GO_EnemyBasic((T3DVec3){-8,0,-8}, repairableList->getCurrRepairable()));
 
     global::GameInterruptStack->push_back(
-            (new GI_Alert("Training Tower, 2nd Floor:\nEnemies", true))
+            (new GI_Alert("Training Tower, 3rd Floor:\nStructures", true))
             ->setNextInterrupt(
-            (new GI_Alert("On this floor of the tower, you\ncan practice destroying enemies."))
+            (new GI_Alert("On this floor of the tower, you\ncan practice defending a structure."))
             ->setNextInterrupt(
-            (new GI_Alert("You cannot attack enemies directly.\nYou must place barricades in\nfront of them."))
+            (new GI_Alert("Enemies will advance toward the\nstructure and start attacking it\nwhen close enough."))
             ->setNextInterrupt(
-            (new GI_Alert("An enemy will be damaged, knocked\nback, and stunnned when it makes\ncontact with your barricade."))
+            (new GI_Alert("Cast barricades to prevent\nenemies from reaching the structure."))
             ->setNextInterrupt(
-            (new GI_Alert("When casting a barricade make sure\nit is not touching an enemy,\notheriwse the cast will fail."))
+            (new GI_Alert(""))
             ->setNextInterrupt(
             (new GI_Alert("Destroy all 3 enemies to complete\nthis floor of the Training Tower!"))
         ))))));
@@ -53,7 +61,7 @@ GS_Training02::GS_Training02(T3DVec3 startingCursorPosition) {
     global::GameInterruptStack->push_back(new GI_FadeIn(600));
 }
 
-GS_Training02::~GS_Training02() {
+GS_Training03::~GS_Training03() {
     t3d_model_free(envModel);
     free_uncached(envMatFP);
     delete objectList;
@@ -62,7 +70,7 @@ GS_Training02::~GS_Training02() {
     delete theCursor;
 }
 
-void GS_Training02::handleInput() {
+void GS_Training03::handleInput() {
     joypad_buttons_t btn = joypad_get_buttons_pressed(JOYPAD_PORT_1);
     //if(keys.start) {
     if(btn.start) {
@@ -78,7 +86,7 @@ void GS_Training02::handleInput() {
     enemyList->handleInput();
 }
 
-void GS_Training02::update() {
+void GS_Training03::update() {
     theCursor->update();
     updateCamera();
 
@@ -98,7 +106,7 @@ void GS_Training02::update() {
     if(!endStateReached) checkForWinOrLoss();
 }
 
-void GS_Training02::renderT3d() {
+void GS_Training03::renderT3d() {
     t3d_viewport_set_projection(viewport, camera.FOV, 10.0f, 200.0f);
     t3d_viewport_attach(&viewport);
 
@@ -125,57 +133,69 @@ void GS_Training02::renderT3d() {
     t3d_matrix_pop(1);
 }
 
-void GS_Training02::renderRdpq() {
+void GS_Training03::renderRdpq() {
     objectList->renderRdpq();
     repairableList->renderRdpq();
     barricadeList->renderRdpq();
     enemyList->renderRdpq();
 }
 
-void GS_Training02::testFunc() {
+void GS_Training03::testFunc() {
     debugf("Test func Training04\n");
 }
 
 
-void GS_Training02::initCamera() {
+void GS_Training03::initCamera() {
     camera.FOV = 0.27*T3D_PI;
     camera.target = theCursor->position_ + (T3DVec3){0, -3, 0};
     camera.pos = theCursor->position_ + (T3DVec3){0, 10, -15};
 }
 
-void GS_Training02::handleInputCamera() {
+void GS_Training03::handleInputCamera() {
     
 }
 
-void GS_Training02::updateCamera() {
+void GS_Training03::updateCamera() {
     camera.target = theCursor->position_ + (T3DVec3){0, -3, 0};
     camera.pos = theCursor->position_ + (T3DVec3){0, 10, -15};
 }
 
-void GS_Training02::levelWon() {
+void GS_Training03::levelWon() {
     global::GameInterruptStack->push_back((new GI_Alert("Enemy training complete!"))
         ->setNextInterrupt(
             (
                 new GI_MultiChoice(
                     "Next", new GI_FadeToNextGS<GS_Training03>((T3DVec3){0,10,0}, 600.0f),            
-                    "Retry", new GI_FadeToNextGS<GS_Training02>((T3DVec3){0,10,0}, 600.0f)
+                    "Retry", new GI_FadeToNextGS<GS_Training03>((T3DVec3){0,10,0}, 600.0f)
                 )
             )
         )    
     );
 }
 
-void GS_Training02::levelLost() {
-    global::GameInterruptStack->push_back(new GI_Alert("You lost!"));
+void GS_Training03::levelLost() {
+    global::GameInterruptStack->push_back((new GI_Alert("The structure has fallen!\nThe enemies have prevailed."))
+        ->setNextInterrupt(
+            (new GI_Alert("Please try this training floor again."))
+        ->setNextInterrupt(
+            (new GI_FadeToNextGS<GS_Training03>((T3DVec3){0,10,0}, 600.0f))
+        )));
 }
 
-void GS_Training02::checkForWinOrLoss() {
+void GS_Training03::checkForWinOrLoss() {
     if(enemiesDestroyed >= 3) {
         endStateReached = true;
         levelWon();
     }
+    for(const auto& r : *repairableList->repairables) {
+        if(r->HPCurrent_ <= 0) {
+            endStateReached = true;
+            levelLost();
+            break;
+        }
+    }
 }
 
-void GS_Training02::enemyDestroyed() {
+void GS_Training03::enemyDestroyed() {
     enemiesDestroyed++;
 }
