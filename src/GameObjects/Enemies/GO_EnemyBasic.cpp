@@ -6,7 +6,8 @@
 T3DModel* GO_EnemyBasic::enemyModel = nullptr;
 uint8_t GO_EnemyBasic::instanceCount = 0;
 
-GO_EnemyBasic::GO_EnemyBasic(T3DVec3 pos, GO_Repairable* target) {
+GO_EnemyBasic::GO_EnemyBasic(T3DVec3 pos, GO_Repairable* target, bool dropItem = true) {
+    //debugf("Entering second constructor\n");
     position_ = pos;
     HPTotal_ = 100;
     HPCurrent_ = 100;
@@ -22,7 +23,20 @@ GO_EnemyBasic::GO_EnemyBasic(T3DVec3 pos, GO_Repairable* target) {
     isStunned_ = false;
     isInvincible_ = false;
 
-    rotation_ = fm_atan2f(target_->position_.z - position_.z, target_->position_.x - position_.x) + (((float)rand() / (float)RAND_MAX)*(T3D_PI / 2.0f) - (T3D_PI / 4.0f));
+    dropItem_ = dropItem;
+
+    enemyState_ = global::ENEMY_STATE_SEEKING;
+
+    if(target_) {
+        targetPos_ = target_->position_;
+    }
+
+    //debugf("targetPos_.x = %.2f\n", targetPos_.x);
+    //debugf("targetPos_.z = %.2f\n\n", targetPos_.z);
+
+    //rotation_ = fm_atan2f(target_->position_.z - position_.z, target_->position_.x - position_.x) + (((float)rand() / (float)RAND_MAX)*(T3D_PI / 2.0f) - (T3D_PI / 4.0f));
+    //rotation_ = fm_atan2f(targetPos_.z - position_.z, targetPos_.x - position_.x) + (((float)rand() / (float)RAND_MAX)*(T3D_PI / 2.0f) - (T3D_PI / 4.0f));
+    rotation_ = (float)rand()/(float)RAND_MAX * 2 * T3D_PI;
 
     speed_ = 0.02;
 
@@ -35,8 +49,16 @@ GO_EnemyBasic::GO_EnemyBasic(T3DVec3 pos, GO_Repairable* target) {
     }
 }
 
+GO_EnemyBasic::GO_EnemyBasic(T3DVec3 pos, T3DVec3 targetPos, bool dropItem = true) : GO_EnemyBasic(pos, nullptr, dropItem) {
+    //debugf("Entering first constructor\n");
+    targetPos_ = targetPos;
+    // debugf("targetPos_.x = %.2f\n", targetPos_.x);
+    // debugf("targetPos_.z = %.2f\n\n", targetPos_.z);
+    //GO_EnemyBasic(pos, nullptr, dropItem);
+}
+
 GO_EnemyBasic::~GO_EnemyBasic() {
-    global::gameState->objectList->push(new GO_RepairBoost(position_));
+    if(dropItem_) global::gameState->objectList->push(new GO_RepairBoost(position_));
     global::gameState->objectList->push(new GO_Explosion(position_, 5, (color_t){0xFF, 0x77, 0x00, 0xFF}, 2*60));
     
     
@@ -78,7 +100,8 @@ void GO_EnemyBasic::update() {
                 if(!isStunned_) {
                     //rotate randomly towards the target every 5 seconds
                     if((int)(prevLifetime / (60.0f*5.0f)) != (int)(lifetime_ / (60.0f*5.0f))) {
-                        rotation_ = fm_atan2f(target_->position_.z - position_.z, target_->position_.x - position_.x) + (((float)rand() / (float)RAND_MAX)*(T3D_PI / 2.0f) - (T3D_PI / 4.0f));
+                        //rotation_ = fm_atan2f(target_->position_.z - position_.z, target_->position_.x - position_.x) + (((float)rand() / (float)RAND_MAX)*(T3D_PI / 2.0f) - (T3D_PI / 4.0f));
+                        rotation_ = fm_atan2f(targetPos_.z - position_.z, targetPos_.x- position_.x) + (((float)rand() / (float)RAND_MAX)*(T3D_PI / 2.0f) - (T3D_PI / 4.0f));
                     }
 
                     //move forward
@@ -111,6 +134,7 @@ void GO_EnemyBasic::update() {
     updateHPBar();
     if(HPCurrent_<=0) {
         timeToDelete = true;
+        global::gameState->enemyDestroyed();
         global::audioManager->playSFX("cruncher5.wav64", {.volume = 0.4f});
     }
 }
@@ -136,5 +160,5 @@ void GO_EnemyBasic::stun(float stunTimeSeconds) {
 }
 
 void GO_EnemyBasic::attackTarget() {
-    target_->HPCurrent_ -= attackDamage;
+    if(target_) target_->HPCurrent_ -= attackDamage;
 }

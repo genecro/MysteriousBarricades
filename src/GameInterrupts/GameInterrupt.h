@@ -12,7 +12,10 @@ public:
     bool isPauseInterrupt();
     bool isTimeToDestroy();
 
+    GameInterrupt* setNextInterrupt(GameInterrupt* nextInterrupt);
+
 protected:
     bool pauseInterrupt = false;
     bool timeToDestroy = false;
+    GameInterrupt* nextInterrupt_ = nullptr;
 };

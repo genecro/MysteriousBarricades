@@ -22,6 +22,7 @@ protected:
 
     float fadeAlpha_;
     float fadeTime_;
+    bool started_ = false;
 
     T3DVec3 playerStartingPos_;
 };
@@ -30,7 +31,6 @@ template <typename T> GI_FadeToNextGS<T>::GI_FadeToNextGS(T3DVec3 playerStarting
     fadeTime_ = fadeTime;
     fadeAlpha_ = 1.0f;
     playerStartingPos_ = playerStartingPos;
-    startTime_ = get_ticks();
 }
 
 template <typename T> GI_FadeToNextGS<T>::~GI_FadeToNextGS() {
@@ -42,7 +42,11 @@ template <typename T> void GI_FadeToNextGS<T>::handleInput() {
 }
 
 template <typename T> void GI_FadeToNextGS<T>::update() {
-    timeline_ = (float)(TIMER_MICROS(get_ticks() - startTime_)/1000);
+    if(!started_) {
+        started_ = true;
+        startTime_ = get_ticks();
+    }
+    timeline_ = (float)(TIMER_MICROS(get_ticks() - startTime_)/1000.0f);
     fadeAlpha_ = timeline_/fadeTime_;
 
     if(timeline_ >= fadeTime_) {

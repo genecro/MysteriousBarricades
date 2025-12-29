@@ -66,8 +66,9 @@ filesystem/PixelFraktur.font64:	MKFONT_FLAGS+=--size 36
 filesystem/PixelFraktur16.font64: MKFONT_FLAGS+=--size 16
 filesystem/Tannenberg.font64:	MKFONT_FLAGS+=--size 20
 filesystem/FreePixel.font64:	MKFONT_FLAGS+=--size 12
-filesystem/OwreKynge.font64:	MKFONT_FLAGS+=--size 16
+filesystem/OwreKynge.font64:	MKFONT_FLAGS+=--size 22
 filesystem/BlackForest.font64:	MKFONT_FLAGS+=--size 14
+filesystem/Piacevoli.font64:	MKFONT_FLAGS+=--size 20
 
 filesystem/%.t3dm: assets/models/%.glb
 	@mkdir -p $(dir $@)

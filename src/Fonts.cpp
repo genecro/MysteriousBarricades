@@ -8,14 +8,16 @@ void Fonts::fonts_init() {
     rdpq_font_t* owrekynge = rdpq_font_load("rom:/OwreKynge.font64");
     rdpq_font_t* blackforest = rdpq_font_load("rom:/BlackForest.font64");
     rdpq_font_t* leipzig = rdpq_font_load("rom:/Leipzig.font64");
+    rdpq_font_t* piacevoli = rdpq_font_load("rom:/Piacevoli.font64");
     
     rdpq_text_register_font(FONT_FREE_12, freepixel);
     rdpq_text_register_font(FONT_TANNENBERG_20, tannenberg);
     rdpq_text_register_font(FONT_PIXELFRAKTUR_24, pixelfraktur);
     rdpq_text_register_font(FONT_PIXELFRAKTUR_16, pixelfraktur16);
-    rdpq_text_register_font(FONT_OWREKYNGE_14, owrekynge);
+    rdpq_text_register_font(FONT_OWREKYNGE_20, owrekynge);
     rdpq_text_register_font(FONT_BLACKFOREST_14, blackforest);
     rdpq_text_register_font(FONT_LEIPZIG_14, leipzig);
+    rdpq_text_register_font(FONT_PIACEVOLI_16, piacevoli);
 
     rdpq_font_style(freepixel, FONTSTYLE_WHITE, &(rdpq_fontstyle_t){
         .color = RGBA32(0xFF, 0xFF, 0xFF, 0xFF),
@@ -27,6 +29,19 @@ void Fonts::fonts_init() {
         .color = RGBA32(0x66, 0x66, 0xFF, 0xFF),
     });
     rdpq_font_style(freepixel, FONTSTYLE_GREY, &(rdpq_fontstyle_t){
+        .color = RGBA32(0x88, 0x88, 0x88, 0xFF),
+    });
+
+    rdpq_font_style(piacevoli, FONTSTYLE_WHITE, &(rdpq_fontstyle_t){
+        .color = RGBA32(0xFF, 0xFF, 0xFF, 0xFF),
+    });
+    rdpq_font_style(piacevoli, FONTSTYLE_RED, &(rdpq_fontstyle_t){
+        .color = RGBA32(0xFF, 0x00, 0x00, 0xFF),
+    });
+    rdpq_font_style(piacevoli, FONTSTYLE_BLUE, &(rdpq_fontstyle_t){
+        .color = RGBA32(0x66, 0x66, 0xFF, 0xFF),
+    });
+    rdpq_font_style(piacevoli, FONTSTYLE_GREY, &(rdpq_fontstyle_t){
         .color = RGBA32(0x88, 0x88, 0x88, 0xFF),
     });
 

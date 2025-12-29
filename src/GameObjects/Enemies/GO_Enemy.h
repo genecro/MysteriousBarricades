@@ -45,7 +45,7 @@ public:
     float HPBarCurrentLength_;
     float HPBarHeight_ = 5.0;
     float speed_;
-    float lifetime_;
+    //float lifetime_ = 0;
 
     bool isStunned_;
     float stunCooldown_;
@@ -54,8 +54,10 @@ public:
 
     bool displayModel_ = true;
 
-    //T3DVec3 target_;
-    GO_Repairable* target_;
+    bool dropItem_ = true;
+
+    T3DVec3 targetPos_;
+    GO_Repairable* target_ = nullptr;
 
     T3DVec3 HPBarPos_ = (T3DVec3){-2, -2, -2};
 

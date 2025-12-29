@@ -5,7 +5,8 @@
 
 class GO_EnemyBasic: public GO_Enemy {
 public:
-    GO_EnemyBasic(T3DVec3 pos, GO_Repairable* target);
+    GO_EnemyBasic(T3DVec3 pos, GO_Repairable* target, bool dropItem = true);
+    GO_EnemyBasic(T3DVec3 pos, T3DVec3 targetPos, bool dropItem = true);
 
     static T3DModel* enemyModel;
     static uint8_t instanceCount;

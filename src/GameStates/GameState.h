@@ -49,6 +49,11 @@ public:
     bool endStateReached = false;
 
     GO_Cursor* theCursor;
+
+    virtual void barricadeCreated();
+    virtual void enemyDestroyed();
+
+
     
 
 protected:
@@ -85,6 +90,9 @@ protected:
     virtual void initCamera();
     virtual void updateCamera();
     virtual void handleInputCamera();
+
+    int barricadesCreated = 0;
+    int enemiesDestroyed = 0;
 
     //bool envVisible;
     //int totalObjects;

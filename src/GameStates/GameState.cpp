@@ -205,3 +205,11 @@ void GameState::levelWon() {
 void GameState::levelLost() {
     
 }
+
+void GameState::barricadeCreated() {
+
+}
+
+void GameState::enemyDestroyed() {
+    
+}

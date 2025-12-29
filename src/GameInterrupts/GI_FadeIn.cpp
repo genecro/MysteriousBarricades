@@ -3,11 +3,13 @@
 GI_FadeIn::GI_FadeIn() {
     fadeTime_ = 300.0f;
     fadeAlpha_ = 1.0f;
+    timeline_ = 0;
 }
 
 GI_FadeIn::GI_FadeIn(float fadeTime) {
     fadeTime_ = fadeTime;
     fadeAlpha_ = 1.0f;
+    timeline_ = 0;
 }
 
 GI_FadeIn::~GI_FadeIn() {
@@ -23,12 +25,14 @@ void GI_FadeIn::update() {
         startTime_ = get_ticks();
         started_ = true;
     }
-    timeline_ = (float)(TIMER_MICROS(get_ticks() - startTime_)/1000);
-    fadeAlpha_ = 1.0f - timeline_/fadeTime_;
+    timeline_ = (float)(TIMER_MICROS(get_ticks() - startTime_)/1000.0f);
 
     if(timeline_ >= fadeTime_) {
         timeToDestroy = true;
+        timeline_ = fadeTime_;
     }
+
+    fadeAlpha_ = 1.0f - timeline_/fadeTime_;
 }
 
 void GI_FadeIn::renderT3d() {

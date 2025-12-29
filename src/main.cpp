@@ -8,6 +8,7 @@
 #include "GameStates/GS_MainMenu.h"
 #include "GameStates/GS_Level01.h"
 #include "GameStates/GS_Training04.h"
+#include "GameStates/GS_Training01.h"
 #include "globals.h"
 #include "Fonts.h"
 #include "GameInterrupts/GI_Pause.h"
@@ -48,7 +49,7 @@ int main(void)
     //global::gameState = new GS_Intro();
     //global::gameState = new GS_MainMenu();
     //global::gameState = new GS_Level01((T3DVec3){0, 10, 0});
-    global::gameState = new GS_Training04((T3DVec3){0, 10, 0});
+    global::gameState = new GS_Training01((T3DVec3){0, 10, 0});
 
     //zbuffer = surface_alloc(FMT_RGBA16, display_get_width(), display_get_height());
 
@@ -56,7 +57,7 @@ int main(void)
     float near_plane = 1.0f;
     float far_plane = 50.0f;    
 
-    display_set_fps_limit(30);
+    //display_set_fps_limit(30);
 
     heap_stats_t heapStats = {};
 
