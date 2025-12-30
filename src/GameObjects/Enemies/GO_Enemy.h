@@ -56,6 +56,8 @@ public:
 
     bool dropItem_ = true;
 
+    bool isMoving_ = true;
+
     T3DVec3 targetPos_;
     GO_Repairable* target_ = nullptr;
 

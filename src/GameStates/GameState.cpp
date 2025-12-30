@@ -213,3 +213,7 @@ void GameState::barricadeCreated() {
 void GameState::enemyDestroyed() {
     
 }
+
+void GameState::barricadeCastFailed() {
+    
+}

@@ -21,6 +21,7 @@ public:
     void levelLost() override;
 
     void enemyDestroyed() override;
+    void barricadeCastFailed() override;
 
     
 
@@ -29,6 +30,8 @@ private:
 
     uint8_t colorDir[4]     = {0xEE, 0xAA, 0xAA, 0xFF};
     T3DVec3 lightDirVec;
+
+    bool barricadeHasFailedOnce = false;
 
     
     T3DMat4FP* envMatFP;

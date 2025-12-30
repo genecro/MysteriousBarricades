@@ -39,12 +39,10 @@ GS_Training01::GS_Training01(T3DVec3 startingCursorPosition) {
             ->setNextInterrupt(
             (new GI_Alert("Hold the A button and tilt the\ncontrol stick."))
             ->setNextInterrupt(
-            (new GI_Alert("The floating cursors will\nindicate the orientation\nand size of the barricade."))
-            ->setNextInterrupt(
-            (new GI_Alert("When you are ready, release\nthe A button to cast a barricade\naligned with the floating cursors."))
+            (new GI_Alert("Release the A button to cast a\nbarricade aligned with the\nfloating cursors."))
             ->setNextInterrupt(
             (new GI_Alert("Create 10 barricades to complete\nthis floor of the Training Tower!"))
-        ))))));
+        )))));
     
     global::GameInterruptStack->push_back(new GI_FadeIn(600));
 }

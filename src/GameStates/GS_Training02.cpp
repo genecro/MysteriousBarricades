@@ -36,6 +36,10 @@ GS_Training02::GS_Training02(T3DVec3 startingCursorPosition) {
     enemyList->push(new GO_EnemyBasic((T3DVec3){0,0,8}, (T3DVec3){-8,0,-8}, false));
     enemyList->push(new GO_EnemyBasic((T3DVec3){-8,0,-8}, (T3DVec3){8,0,-8}, false));
 
+    for(auto e : *enemyList->gameObjects_) {
+        e->isMoving_ = false;
+    }
+
     global::GameInterruptStack->push_back(
             (new GI_Alert("Training Tower, 2nd Floor:\nEnemies", true))
             ->setNextInterrupt(
@@ -45,10 +49,8 @@ GS_Training02::GS_Training02(T3DVec3 startingCursorPosition) {
             ->setNextInterrupt(
             (new GI_Alert("An enemy will be damaged, knocked\nback, and stunnned when it makes\ncontact with your barricade."))
             ->setNextInterrupt(
-            (new GI_Alert("When casting a barricade make sure\nit is not touching an enemy,\notheriwse the cast will fail."))
-            ->setNextInterrupt(
             (new GI_Alert("Destroy all 3 enemies to complete\nthis floor of the Training Tower!"))
-        ))))));
+        )))));
 
     global::GameInterruptStack->push_back(new GI_FadeIn(600));
 }
@@ -81,6 +83,13 @@ void GS_Training02::handleInput() {
 void GS_Training02::update() {
     theCursor->update();
     updateCamera();
+
+    if(!introFinished_ && global::GameInterruptStack->size() == 0) {
+        introFinished_ = true;
+        for(auto e : *enemyList->gameObjects_) {
+            e->isMoving_ = true;
+        }
+    }
 
     t3d_mat4_from_srt_euler(&envMat,
         (float[3]){ scaleFactor, scaleFactor, scaleFactor},
@@ -178,4 +187,11 @@ void GS_Training02::checkForWinOrLoss() {
 
 void GS_Training02::enemyDestroyed() {
     enemiesDestroyed++;
+}
+
+void GS_Training02::barricadeCastFailed() {
+    if(!barricadeHasFailedOnce) {
+        barricadeHasFailedOnce = true;
+        global::GameInterruptStack->push_back(new GI_Alert("Be careful! If an enemy is in\nthe way when casting a barricade,\nit won't materialize!"));
+    }
 }

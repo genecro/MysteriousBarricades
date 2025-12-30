@@ -83,6 +83,7 @@ void GO_BarricadeStandard::processEnemy(GO_Enemy* theEnemy) {
         else if(!castSuccess_ && !castHasFailed_) {
             castHasFailed_ = true;
             failedTimer_ = failedTimerMax_;
+            global::gameState->barricadeCastFailed();
             global::audioManager->playSFX("metallicDodgeChance5.wav64", {.volume = 0.4f});
         }
     }

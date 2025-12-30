@@ -63,6 +63,7 @@ void EnemyList::renderRdpq() {
 
 void EnemyList::destroyAllEnemies() {
     for(GO_Enemy* i: *gameObjects_) {
-        i->timeToDelete = true;
+        //i->timeToDelete = true;
+        i->HPCurrent_ = 0;
     }
 }

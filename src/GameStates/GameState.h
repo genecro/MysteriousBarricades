@@ -52,6 +52,7 @@ public:
 
     virtual void barricadeCreated();
     virtual void enemyDestroyed();
+    virtual void barricadeCastFailed();
 
 
     
@@ -93,6 +94,8 @@ protected:
 
     int barricadesCreated = 0;
     int enemiesDestroyed = 0;
+
+    bool introFinished_ = false;
 
     //bool envVisible;
     //int totalObjects;

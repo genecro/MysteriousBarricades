@@ -58,10 +58,6 @@ GO_EnemyBasic::GO_EnemyBasic(T3DVec3 pos, T3DVec3 targetPos, bool dropItem = tru
 }
 
 GO_EnemyBasic::~GO_EnemyBasic() {
-    if(dropItem_) global::gameState->objectList->push(new GO_RepairBoost(position_));
-    global::gameState->objectList->push(new GO_Explosion(position_, 5, (color_t){0xFF, 0x77, 0x00, 0xFF}, 2*60));
-    
-    
     free_uncached(enemyMatFP);
     instanceCount--;
     if(instanceCount==0) {
@@ -97,7 +93,7 @@ void GO_EnemyBasic::update() {
         switch(enemyState_) {
             case global::ENEMY_STATE_SEEKING:
                 //not stunned, moves normally
-                if(!isStunned_) {
+                if(isMoving_ && !isStunned_) {
                     //rotate randomly towards the target every 5 seconds
                     if((int)(prevLifetime / (60.0f*5.0f)) != (int)(lifetime_ / (60.0f*5.0f))) {
                         //rotation_ = fm_atan2f(target_->position_.z - position_.z, target_->position_.x - position_.x) + (((float)rand() / (float)RAND_MAX)*(T3D_PI / 2.0f) - (T3D_PI / 4.0f));
@@ -136,6 +132,8 @@ void GO_EnemyBasic::update() {
         timeToDelete = true;
         global::gameState->enemyDestroyed();
         global::audioManager->playSFX("cruncher5.wav64", {.volume = 0.4f});
+        if(dropItem_) global::gameState->objectList->push(new GO_RepairBoost(position_));
+        global::gameState->objectList->push(new GO_Explosion(position_, 5, (color_t){0xFF, 0x77, 0x00, 0xFF}, 2*60));
     }
 }
 
