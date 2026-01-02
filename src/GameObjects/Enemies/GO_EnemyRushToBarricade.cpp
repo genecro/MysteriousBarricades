@@ -1,18 +1,17 @@
-#include "GO_EnemyBasic.h"
+#include "GO_EnemyRushToBarricade.h"
 #include "../../globals.h"
 #include "../GO_Explosion.h"
 #include "../GO_RepairBoost.h"
-#include <math.h>
 
-T3DModel* GO_EnemyBasic::enemyModel = nullptr;
-uint8_t GO_EnemyBasic::instanceCount = 0;
+T3DModel* GO_EnemyRushToBarricade::enemyModel = nullptr;
+uint8_t GO_EnemyRushToBarricade::instanceCount = 0;
 
-GO_EnemyBasic::GO_EnemyBasic(T3DVec3 pos, GO_Repairable* target, bool dropItem = true) {
+GO_EnemyRushToBarricade::GO_EnemyRushToBarricade(T3DVec3 pos, GO_Repairable* target, bool dropItem = true) {
     //debugf("Entering second constructor\n");
     position_ = pos;
     HPTotal_ = 100;
     HPCurrent_ = 100;
-    objColor_ = color_t{0, 0xFF, 0, 0xFF};
+    objColor_ = color_t{0xFF, 0, 0xFF, 0xFF};
     target_ = target;
 
     attackRate = 3*60;
@@ -48,19 +47,19 @@ GO_EnemyBasic::GO_EnemyBasic(T3DVec3 pos, GO_Repairable* target, bool dropItem =
 
     instanceCount++;
     if(!enemyModel) {
-        enemyModel = t3d_model_load("rom:/enemyBasic.t3dm");
+        enemyModel = t3d_model_load("rom:/enemyRushToBarricade.t3dm");
     }
 }
 
-GO_EnemyBasic::GO_EnemyBasic(T3DVec3 pos, T3DVec3 targetPos, bool dropItem = true) : GO_EnemyBasic(pos, nullptr, dropItem) {
+GO_EnemyRushToBarricade::GO_EnemyRushToBarricade(T3DVec3 pos, T3DVec3 targetPos, bool dropItem = true) : GO_EnemyRushToBarricade(pos, nullptr, dropItem) {
     //debugf("Entering first constructor\n");
     targetPos_ = targetPos;
     // debugf("targetPos_.x = %.2f\n", targetPos_.x);
     // debugf("targetPos_.z = %.2f\n\n", targetPos_.z);
-    //GO_EnemyBasic(pos, nullptr, dropItem);
+    //GO_EnemyRushToBarricade(pos, nullptr, dropItem);
 }
 
-GO_EnemyBasic::~GO_EnemyBasic() {
+GO_EnemyRushToBarricade::~GO_EnemyRushToBarricade() {
     free_uncached(enemyMatFP);
     instanceCount--;
     if(instanceCount==0) {
@@ -69,11 +68,11 @@ GO_EnemyBasic::~GO_EnemyBasic() {
     }
 }
 
-void GO_EnemyBasic::handleInput() {
+void GO_EnemyRushToBarricade::handleInput() {
 
 }
 
-void GO_EnemyBasic::update() {
+void GO_EnemyRushToBarricade::update() {
     float prevLifetime = lifetime_;
     lifetime_ += global::frameTimeMultiplier;
 
@@ -106,14 +105,8 @@ void GO_EnemyBasic::update() {
 
                     //TODO: make sure it rotates the shortest distance
                     if(abs(rotation_-intendedRotation_) <= rotationIncrement_) rotation_ = intendedRotation_;
-                    else if(std::remainder(rotation_ - intendedRotation_, T3D_PI*2.0f) > 0) {
-                        rotation_ -= rotationIncrement_ * global::frameTimeMultiplier;
-                        if(rotation_ < 0) rotation_ += T3D_PI*2.0f;
-                    }
-                    else {
-                        rotation_ += rotationIncrement_ * global::frameTimeMultiplier;
-                        if(rotation_ <= T3D_PI*2.0f) rotation_ -= T3D_PI*2.0f;
-                    }
+                    else if(rotation_ > intendedRotation_) rotation_ -= rotationIncrement_ * global::frameTimeMultiplier;
+                    else if(rotation_ < intendedRotation_) rotation_ += rotationIncrement_ * global::frameTimeMultiplier;
 
                     //move forward
                     position_.x += speed_*fm_cosf(rotation_)*global::frameTimeMultiplier;
@@ -121,6 +114,8 @@ void GO_EnemyBasic::update() {
                 }
                 
             break;
+
+
 
             case global::ENEMY_STATE_ATTACKING:
                 if((int)(prevLifetime / attackRate) != (int)(lifetime_ / attackRate)) {
@@ -152,11 +147,11 @@ void GO_EnemyBasic::update() {
     }
 }
 
-void GO_EnemyBasic::renderRdpq() {
+void GO_EnemyRushToBarricade::renderRdpq() {
     drawHPBar();
 }
 
-void GO_EnemyBasic::renderT3d() {
+void GO_EnemyRushToBarricade::renderT3d() {
     if(displayModel_) {
         rdpq_sync_pipe();
 
@@ -166,12 +161,12 @@ void GO_EnemyBasic::renderT3d() {
     }
 }
 
-void GO_EnemyBasic::stun(float stunTimeSeconds) {
+void GO_EnemyRushToBarricade::stun(float stunTimeSeconds) {
     isStunned_ = true;
     isInvincible_ = true;
     stunCooldown_ = stunTimeSeconds*60.f;
 }
 
-void GO_EnemyBasic::attackTarget() {
+void GO_EnemyRushToBarricade::attackTarget() {
     if(target_) target_->HPCurrent_ -= attackDamage;
 }

@@ -40,6 +40,9 @@ GO_Cursor::GO_Cursor(T3DVec3 position, std::vector<Triangle> *newCollisionTris) 
     repelRingMatFP = (T3DMat4FP*)malloc_uncached(sizeof(T3DMat4FP));
     repelRingScale = 1.0f;
 
+    barricadeIndicatorFull = sprite_load("rom:/sprites/barricadeIndicatorFull.rgba16.sprite");
+    barricadeIndicatorEmpty = sprite_load("rom:/sprites/barricadeIndicatorEmpty.rgba16.sprite");
+
     collisionTris = newCollisionTris;
 
     cursorState = global::CURSOR_STATE_BASE;
@@ -57,6 +60,8 @@ GO_Cursor::~GO_Cursor() {
     }
     free_uncached(repelRingMatFP);
     t3d_model_free(repelRingModel);
+    sprite_free(barricadeIndicatorFull);
+    sprite_free(barricadeIndicatorEmpty);
 }
 
 void GO_Cursor::handleInput() {
@@ -70,9 +75,7 @@ void GO_Cursor::handleInput() {
 
         //moving around
         case global::CURSOR_STATE_BASE:
-            if(btn.a) {
-                cursorState = global::CURSOR_STATE_BARRICADE;
-            }
+            
             if(overARepairable_) {
                 GO_Repairable* temp = global::gameState->repairableList->getCurrRepairable();
 
@@ -95,11 +98,14 @@ void GO_Cursor::handleInput() {
                     }
                     
                     else if(temp) {
-                        if(temp->HPCurrent_ < temp->HPTotal_) temp->HPCurrent_ += healingSpeed_*global::frameTimeMultiplier;
+                        if(temp->HPCurrent_ < temp->HPTotal_ && RPCurrent_ > 0) {
+                            temp->HPCurrent_ += healingSpeed_*global::frameTimeMultiplier;
+                            RPCurrent_ -= healingSpeed_*global::frameTimeMultiplier;
+                        }
                     }
                 }
 
-                if(btnHeld.b) {
+                else if(btnHeld.b) {
                 //if(btn.b) {
                     if(repellingEnemies_) {
                         enemiesBeingRepelled.clear();
@@ -137,10 +143,15 @@ void GO_Cursor::handleInput() {
                                 break;
                             }
                         }
-                        if(!enemiesAttacking && temp->HPCurrent_ < temp->HPTotal_) {
+                        if(!enemiesAttacking && temp->HPCurrent_ < temp->HPTotal_ && RPCurrent_ > 0) {
                             temp->HPCurrent_ += healingSpeed_*global::frameTimeMultiplier;
+                            RPCurrent_ -= healingSpeed_*global::frameTimeMultiplier;
                         }
                     }
+                }
+
+                else if(btn.a) {
+                    cursorState = global::CURSOR_STATE_BARRICADE;
                 }
 
                 if(btnRel.b) {
@@ -153,6 +164,9 @@ void GO_Cursor::handleInput() {
                         enemiesBeingRepelled.clear();
                     }
                 }
+            }
+            else if(btn.a) {
+                cursorState = global::CURSOR_STATE_BARRICADE;
             }
         break;
 
@@ -174,14 +188,20 @@ void GO_Cursor::handleInput() {
             }
 
             if(!joypad.btn.a) {
-                if(abs(barricadeEdgeRelativeToCursor.x) + abs(barricadeEdgeRelativeToCursor.z) > 2) {
-                    global::gameState->barricadeList->push(
-                        new GO_BarricadeStandard(
-                            groundMarkerPos,
-                            barricadeEdgeRelativeToCursor, 
-                            (color_t){0xFF, 0xFF, 0, 0x7F}
-                        )
-                    );
+                if(global::gameState->barricadeList->gameObjects_->size() < totalBarricadeCt) {
+                    if(abs(barricadeEdgeRelativeToCursor.x) + abs(barricadeEdgeRelativeToCursor.z) > 2) {
+                        global::gameState->barricadeList->push(
+                            new GO_BarricadeStandard(
+                                groundMarkerPos,
+                                barricadeEdgeRelativeToCursor, 
+                                (color_t){0xFF, 0xFF, 0, 0x7F}
+                            )
+                        );
+                    }
+                }
+                else {
+                    barricadeIndicatorBlinkTimer = barricadeIndicatorBlinkTimerMax;
+                    global::audioManager->playSFX("metallicDodgeChance5.wav64", {.volume = 0.4f});
                 }
                 cursorState = global::CURSOR_STATE_BASE;
             }
@@ -297,6 +317,17 @@ void GO_Cursor::update() {
         );
         t3d_mat4_to_fixed(repelRingMatFP, &repelRingMat);
     }
+
+    if(barricadeIndicatorBlinkTimer > 0) {
+        float prevBlinkTimer = barricadeIndicatorBlinkTimer;
+        barricadeIndicatorBlinkTimer -= global::frameTimeMultiplier;
+        if((int)(prevBlinkTimer / (5.0f)) != (int)(barricadeIndicatorBlinkTimer / (5.0f))) {
+            displayBarricadeIndicator = !displayBarricadeIndicator;
+        }
+        if(barricadeIndicatorBlinkTimer <= 0) {
+            displayBarricadeIndicator = true;
+        }
+    }
 }
 
 void GO_Cursor::renderT3d() {
@@ -341,6 +372,29 @@ void GO_Cursor::renderT3d() {
 
 void GO_Cursor::renderRdpq() {
 
+    //draw barricade tracker
+    rdpq_set_mode_standard();
+    rdpq_mode_alphacompare(1);
+    if(displayBarricadeIndicator) {
+        int numFreeBarricades = totalBarricadeCt-global::gameState->barricadeList->gameObjects_->size();
+
+        for(int i = 0; i < totalBarricadeCt; i++) {
+            rdpq_sprite_blit(i+1 > numFreeBarricades ? barricadeIndicatorEmpty : barricadeIndicatorFull,
+                27 + i*16,
+                27, 
+                &(rdpq_blitparms_t){
+                    .theta = T3D_PI/4.0f
+                }
+            );
+        }
+    }
+
+    //draw RP bar
+    rdpq_set_mode_fill((color_t){0,0,0,0xFF});
+    rdpq_fill_rectangle(25, 10, 25+RPRectangleBaseLength*100.0f/RPTotal_, 10+RPRectangleHeight);
+
+    rdpq_set_fill_color((color_t){0,0xFF,0,0xFF});
+    rdpq_fill_rectangle(25+1, 10+1, 25+RPRectangleBaseLength*RPCurrent_/RPTotal_, 10+RPRectangleHeight-1);
 }
 
 void GO_Cursor::setPosition(T3DVec3 newPos) {

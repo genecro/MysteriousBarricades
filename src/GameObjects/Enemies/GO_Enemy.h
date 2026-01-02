@@ -11,6 +11,8 @@ public:
     float HPTotal_;
     float HPCurrent_;
     float height_;
+    float intendedRotation_;
+    float rotationIncrement_;
 
     color_t objColor_ = (color_t){0,0,0,0};
 

@@ -127,6 +127,7 @@ void GS_Level01::renderRdpq() {
     repairableList->renderRdpq();
     barricadeList->renderRdpq();
     enemyList->renderRdpq();
+    theCursor->renderRdpq();
 }
 
 void GS_Level01::testFunc() {

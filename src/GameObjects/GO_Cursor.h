@@ -26,6 +26,15 @@ public:
 
     float RPCurrent_ = 25;
     float RPTotal_ = 100;
+    float RPRectangleBaseLength = 100;
+    float RPRectangleHeight = 10;
+
+    int totalBarricadeCt = 3;
+    sprite_t* barricadeIndicatorFull;
+    sprite_t* barricadeIndicatorEmpty;
+    bool displayBarricadeIndicator;
+    float barricadeIndicatorBlinkTimer = 0;
+    float barricadeIndicatorBlinkTimerMax = 3*60;
 
     void setStateRepair();
     void setStateBaseState();

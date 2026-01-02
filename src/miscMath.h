@@ -6,12 +6,12 @@
 namespace math{
     float normalizeAngle(float angle)
     {
-        return std::remainder(angle, 2.0f * M_PI);
+        return std::remainder(angle, 2.0f * T3D_PI);
     }
 
     float angleDelta(float from, float to)
     {
-        return std::remainder(to - from, 2.0f * M_PI);
+        return std::remainder(to - from, 2.0f * T3D_PI);
     }
 
     bool isAngleInRange(float angle, float minAngle, float maxAngle)
