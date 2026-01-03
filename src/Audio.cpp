@@ -50,6 +50,14 @@ uint32_t Audio::playSFX(std::string name, SfxConf conf = {}) {
         return 0;
     }
 
+    if(!conf.concurrent) {
+        for(auto & instance : it->second.instances) {
+            if(mixer_ch_playing(instance.channel)) {
+                return 0;
+            }
+        }
+    }
+    
     for(auto & instance : it->second.instances) {
         if(instance.channel == 0 || !mixer_ch_playing(instance.channel)) {
             instance.channel = ch;
@@ -59,6 +67,7 @@ uint32_t Audio::playSFX(std::string name, SfxConf conf = {}) {
             return 0;
         }
     }
+    
 
     debugf("No free instance\n");
     return 0;

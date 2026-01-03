@@ -11,6 +11,9 @@ public:
     static T3DModel* enemyModel;
     static uint8_t instanceCount;
 
+    float baseSpeed_ = 0.03f;
+    float chasingCursorSpeed_ = 0.15f;
+
     virtual ~GO_EnemyRushToBarricade();
     virtual void handleInput() override;
     virtual void update() override;
@@ -18,6 +21,8 @@ public:
     virtual void renderRdpq() override;
     virtual void stun(float stunTimeSeconds) override;
     virtual void attackTarget() override;
+    virtual void cursorMakingBarricade(T3DVec3 cursorPos) override;
+    virtual void cursorNotMakingBarricade() override;
 
 private:
     T3DMat4 enemyMat;

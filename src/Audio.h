@@ -11,6 +11,7 @@ struct SfxConf {
   uint8_t loop{0};
   uint8_t is2D{0};
   uint8_t variation{0};
+  bool concurrent{true};
 };
 
 class Audio {

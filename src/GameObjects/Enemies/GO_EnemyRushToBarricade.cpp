@@ -40,7 +40,7 @@ GO_EnemyRushToBarricade::GO_EnemyRushToBarricade(T3DVec3 pos, GO_Repairable* tar
     intendedRotation_ = rotation_;
     rotationIncrement_ = T3D_PI / 128.0f;
 
-    speed_ = 0.02;
+    speed_ = baseSpeed_;
 
     t3d_mat4_identity(enemyMat);
     enemyMatFP = (T3DMat4FP*)malloc_uncached(sizeof(T3DMat4FP));
@@ -93,7 +93,7 @@ void GO_EnemyRushToBarricade::update() {
 
     else {
         switch(enemyState_) {
-            case global::ENEMY_STATE_SEEKING:
+            case global::ENEMY_STATE_SEEKING: {
                 //not stunned, moves normally
                 if(isMoving_ && !isStunned_) {
                     //rotate randomly towards the target every 5 seconds
@@ -103,28 +103,51 @@ void GO_EnemyRushToBarricade::update() {
                         intendedRotation_ = fm_atan2f(targetPos_.z - position_.z, targetPos_.x- position_.x) + (((float)rand() / (float)RAND_MAX)*(T3D_PI / 2.0f) - (T3D_PI / 4.0f));
                     }
 
-                    //TODO: make sure it rotates the shortest distance
                     if(abs(rotation_-intendedRotation_) <= rotationIncrement_) rotation_ = intendedRotation_;
-                    else if(rotation_ > intendedRotation_) rotation_ -= rotationIncrement_ * global::frameTimeMultiplier;
-                    else if(rotation_ < intendedRotation_) rotation_ += rotationIncrement_ * global::frameTimeMultiplier;
+                    else if(std::remainder(rotation_ - intendedRotation_, T3D_PI*2.0f) > 0) {
+                        rotation_ -= rotationIncrement_ * global::frameTimeMultiplier;
+                        if(rotation_ < 0) rotation_ += T3D_PI*2.0f;
+                    }
+                    else {
+                        rotation_ += rotationIncrement_ * global::frameTimeMultiplier;
+                        if(rotation_ <= T3D_PI*2.0f) rotation_ -= T3D_PI*2.0f;
+                    }
 
                     //move forward
                     position_.x += speed_*fm_cosf(rotation_)*global::frameTimeMultiplier;
                     position_.z += speed_*fm_sinf(rotation_)*global::frameTimeMultiplier;
                 }
                 
-            break;
+            } break;
 
 
 
-            case global::ENEMY_STATE_ATTACKING:
+            case global::ENEMY_STATE_ATTACKING: {
                 if((int)(prevLifetime / attackRate) != (int)(lifetime_ / attackRate)) {
                     attackTarget();
                     global::audioManager->playSFX("gutKick6.wav64", {.volume = 0.4f});
                 }
                 float atkWindup = fmod(lifetime_, attackRate);
                 attackAnimOffset = (T3DVec3){attackAnimDistance*atkWindup/attackRate*fm_cosf(rotation_), 0.0f, attackAnimDistance*atkWindup/attackRate*fm_sinf(rotation_)};
-            break;
+            } break;
+
+            case global::ENEMY_STATE_CHASING_CURSOR: {
+                intendedRotation_ = fm_atan2f(targetPos_.z - position_.z, targetPos_.x- position_.x);
+                
+                if(abs(rotation_-intendedRotation_) <= rotationIncrement_ * speed_ / baseSpeed_ * global::frameTimeMultiplier) rotation_ = intendedRotation_;
+                else if(std::remainder(rotation_ - intendedRotation_, T3D_PI*2.0f) > 0) {
+                    rotation_ -= rotationIncrement_ * speed_ / baseSpeed_ * global::frameTimeMultiplier;
+                    if(rotation_ < 0) rotation_ += T3D_PI*2.0f;
+                }
+                else {
+                    rotation_ += rotationIncrement_ * speed_ / baseSpeed_ * global::frameTimeMultiplier;
+                    if(rotation_ <= T3D_PI*2.0f) rotation_ -= T3D_PI*2.0f;
+                }
+
+                //move forward
+                position_.x += speed_*fm_cosf(rotation_)*global::frameTimeMultiplier;
+                position_.z += speed_*fm_sinf(rotation_)*global::frameTimeMultiplier;
+            } break;
         }
     }
 
@@ -169,4 +192,16 @@ void GO_EnemyRushToBarricade::stun(float stunTimeSeconds) {
 
 void GO_EnemyRushToBarricade::attackTarget() {
     if(target_) target_->HPCurrent_ -= attackDamage;
+}
+
+void GO_EnemyRushToBarricade::cursorMakingBarricade(T3DVec3 cursorPos) {
+    targetPos_ = cursorPos;
+    enemyState_ = global::ENEMY_STATE_CHASING_CURSOR;
+    speed_ = chasingCursorSpeed_;
+}
+
+void GO_EnemyRushToBarricade::cursorNotMakingBarricade() {
+    targetPos_ = target_->position_;
+    enemyState_ = global::ENEMY_STATE_SEEKING;
+    speed_ = baseSpeed_;
 }

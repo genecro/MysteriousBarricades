@@ -94,3 +94,7 @@ void GO_Enemy::setStateSeeking(GO_Repairable* target = nullptr) {
     }
     enemyState_ = global::ENEMY_STATE_SEEKING;
 }
+
+void GO_Enemy::summon() {
+    global::audioManager->playSFX("sharpSummon5.wav64", {.volume=0.4f, .concurrent=false});
+}

@@ -10,4 +10,5 @@
 #include "Repairables/GO_RepairableTower.h"
 #include "Barricades/GO_BarricadeStandard.h"
 #include "Enemies/GO_EnemyBasic.h"
+#include "Enemies/GO_EnemyRushToBarricade.h"
 #include "GO_Projectile.h"

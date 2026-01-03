@@ -23,6 +23,8 @@ public:
     virtual void renderRdpq() = 0;
     virtual void stun(float stunTimeSeconds) = 0;
 
+    void summon();
+
     void updateHPBar();
     void drawHPBar();
     void setGroundCoord(float newGroundCoord);
@@ -30,6 +32,9 @@ public:
     void pushAwayFromBarricade(T3DVec3 sourcePos, float angle, float distance);
     void pushAwayFromRepairable(GO_Repairable* repairable, float distance);
     void receiveDamage(float damageAmount);
+
+    virtual void cursorMakingBarricade(T3DVec3 cursorPos) = 0;
+    virtual void cursorNotMakingBarricade() = 0;
 
     int enemyState_;
 

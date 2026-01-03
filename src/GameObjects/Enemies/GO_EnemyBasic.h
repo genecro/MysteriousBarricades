@@ -18,6 +18,8 @@ public:
     virtual void renderRdpq() override;
     virtual void stun(float stunTimeSeconds) override;
     virtual void attackTarget() override;
+    virtual void cursorMakingBarricade(T3DVec3 cursorPos) override;
+    virtual void cursorNotMakingBarricade() override;
 
 private:
     T3DMat4 enemyMat;

@@ -189,10 +189,23 @@ void GameState::enemyBarricadeCheck() {
 void GameState::enemyRepairableCheck() {
     for(GO_Repairable* r: *(repairableList->repairables)) {
         for(GO_Enemy* e: *(enemyList->gameObjects_)) {
-            if(e->getState() != global::ENEMY_STATE_ATTACKING && t3d_vec3_distance2(e->position_, r->position_) <= pow(e->objectWidth_+r->objectWidth_, 2)) {
+            if(e->getState() != global::ENEMY_STATE_ATTACKING && e->getState() != global::ENEMY_STATE_CHASING_CURSOR && t3d_vec3_distance2(e->position_, r->position_) <= pow(e->objectWidth_+r->objectWidth_, 2)) {
                 e->setStateAttacking(r);
             }
         }
+    }
+}
+
+void GameState::updateTimeline() {
+    timelineCtr += global::frameTimeMultiplier;
+    if(!timeline.empty() && timelineCtr >= timeline.front().time) {
+        if(timeline.front().action()) {
+            timeline.erase(timeline.begin());
+        }
+        else {
+            timeline.front().time = 5*60; // try again in 5 seconds
+        }
+        timelineCtr = 0;
     }
 }
 

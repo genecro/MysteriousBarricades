@@ -17,6 +17,8 @@ EnemyList::~EnemyList() {
 void EnemyList::push(GO_Enemy* newGO) {
     newGO->id_ = nextId_++;
     gameObjects_->push_back(newGO);
+    //TODO: play summoning sound and animation
+    newGO->summon();
 }
 
 void EnemyList::remove(GO_Enemy* delObj) {
@@ -65,5 +67,17 @@ void EnemyList::destroyAllEnemies() {
     for(GO_Enemy* i: *gameObjects_) {
         //i->timeToDelete = true;
         i->HPCurrent_ = 0;
+    }
+}
+
+void EnemyList::cursorMakingBarricade(T3DVec3 cursorPos) {
+    for(GO_Enemy* i: *gameObjects_) {
+        i->cursorMakingBarricade(cursorPos);
+    }
+}
+
+void EnemyList::cursorNotMakingBarricade() {
+    for(GO_Enemy* i: *gameObjects_) {
+        i->cursorNotMakingBarricade();
     }
 }

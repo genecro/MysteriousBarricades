@@ -2,12 +2,19 @@
 
 #include <libdragon.h>
 #include <vector>
+#include <functional>
+#include <algorithm>
 #include "../GameObjects/GameObjectList.h"
 #include "../GameObjects/Repairables/RepairableList.h"
 #include "../GameObjects/Barricades/BarricadeList.h"
 #include "../GameObjects/Enemies/EnemyList.h"
 #include "../collision.h"
 #include "../GameObjects/GO_Cursor.h"
+
+struct TimedEvent {
+    float time;
+    std::function<bool()> action; //return true if action can be completed
+};
 
 class GameState
 {
@@ -43,10 +50,14 @@ public:
     void enemyBarricadeCheck();
     void enemyRepairableCheck();
 
+    void updateTimeline();
+
     virtual void checkForWinOrLoss();
     virtual void levelWon();
     virtual void levelLost();
     bool endStateReached = false;
+
+    int remainingEnemies;
 
     GO_Cursor* theCursor;
 
@@ -96,6 +107,9 @@ protected:
     int enemiesDestroyed = 0;
 
     bool introFinished_ = false;
+
+    std::vector<TimedEvent> timeline;
+    float timelineCtr = 0;
 
     //bool envVisible;
     //int totalObjects;

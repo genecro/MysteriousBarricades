@@ -16,6 +16,9 @@ public:
     void renderT3d();
     void renderRdpq();
 
+    void cursorMakingBarricade(T3DVec3 cusorPos);
+    void cursorNotMakingBarricade();
+
     void destroyAllEnemies();
 
     std::vector<GO_Enemy*>* gameObjects_;

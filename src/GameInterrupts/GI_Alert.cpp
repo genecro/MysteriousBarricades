@@ -45,7 +45,6 @@ void GI_Alert::renderRdpq() {
 
     rdpq_text_printf(&(rdpq_textparms_t) {
             .style_id= titleText_ ? FONTSTYLE_RED : FONTSTYLE_WHITE,
-        //.valign = VALIGN_CENTER,
         }, 
         titleText_ ? FONT_OWREKYNGE_20 : FONT_PIACEVOLI_16, 
         SCREEN_PADDING+20, 

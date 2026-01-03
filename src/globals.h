@@ -20,7 +20,8 @@ namespace global
 
     enum {
         ENEMY_STATE_SEEKING = 0,
-        ENEMY_STATE_ATTACKING = 1
+        ENEMY_STATE_ATTACKING = 1,
+        ENEMY_STATE_CHASING_CURSOR = 2
     };
 
     extern float elapsedSeconds;

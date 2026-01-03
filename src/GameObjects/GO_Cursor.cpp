@@ -167,6 +167,8 @@ void GO_Cursor::handleInput() {
             }
             else if(btn.a) {
                 cursorState = global::CURSOR_STATE_BARRICADE;
+                //tell gamestate cursor is making a barricade
+                global::gameState->enemyList->cursorMakingBarricade(position_);
             }
         break;
 
@@ -188,6 +190,9 @@ void GO_Cursor::handleInput() {
             }
 
             if(!joypad.btn.a) {
+                //tell gamestate cursor is not making a barricade
+                global::gameState->enemyList->cursorNotMakingBarricade();
+
                 if(global::gameState->barricadeList->gameObjects_->size() < totalBarricadeCt) {
                     if(abs(barricadeEdgeRelativeToCursor.x) + abs(barricadeEdgeRelativeToCursor.z) > 2) {
                         global::gameState->barricadeList->push(

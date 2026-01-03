@@ -103,8 +103,7 @@ void GO_EnemyBasic::update() {
                         //rotation_ = fm_atan2f(targetPos_.z - position_.z, targetPos_.x- position_.x) + (((float)rand() / (float)RAND_MAX)*(T3D_PI / 2.0f) - (T3D_PI / 4.0f));
                         intendedRotation_ = fm_atan2f(targetPos_.z - position_.z, targetPos_.x- position_.x) + (((float)rand() / (float)RAND_MAX)*(T3D_PI / 2.0f) - (T3D_PI / 4.0f));
                     }
-
-                    //TODO: make sure it rotates the shortest distance
+                    
                     if(abs(rotation_-intendedRotation_) <= rotationIncrement_) rotation_ = intendedRotation_;
                     else if(std::remainder(rotation_ - intendedRotation_, T3D_PI*2.0f) > 0) {
                         rotation_ -= rotationIncrement_ * global::frameTimeMultiplier;
@@ -174,4 +173,12 @@ void GO_EnemyBasic::stun(float stunTimeSeconds) {
 
 void GO_EnemyBasic::attackTarget() {
     if(target_) target_->HPCurrent_ -= attackDamage;
+}
+
+void GO_EnemyBasic::cursorMakingBarricade(T3DVec3 cursorPos) {
+
+}
+
+void GO_EnemyBasic::cursorNotMakingBarricade() {
+
 }
