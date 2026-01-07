@@ -37,5 +37,5 @@ void GI_Pause::renderRdpq() {
 
     rdpq_text_printf(&(rdpq_textparms_t) {
         .style_id=FONTSTYLE_RED,
-    }, FONT_TANNENBERG_20, display_get_width()/2-20, display_get_height()/2, pauseStr);
+    }, FONT_OWREKYNGE_20, display_get_width()/2-20, display_get_height()/2, pauseStr);
 }

@@ -1,12 +1,28 @@
 #include "GO_Repairable.h"
 #include "../../globals.h"
 
+T3DModel* GO_Repairable::repelRingModel = nullptr;
+uint8_t GO_Repairable::rRingInstanceCount = 0;
+
 GO_Repairable::GO_Repairable() {
+    t3d_mat4_identity(repelRingMat);
+    repelRingMatFP = (T3DMat4FP*)malloc_uncached(sizeof(T3DMat4FP));
+    repelRingScale = 1.0f;
+
+    rRingInstanceCount++;
+    if(!repelRingModel) {
+        repelRingModel = t3d_model_load("rom:/repelRing.t3dm");
+    }
 
 }
 
 GO_Repairable::~GO_Repairable() {
-    
+    free_uncached(repelRingMatFP);
+    rRingInstanceCount--;
+    if(rRingInstanceCount == 0) {
+        t3d_model_free(repelRingModel);
+        repelRingModel = nullptr;
+    }
 }
 
 void GO_Repairable::updateHPBar() {
@@ -38,4 +54,19 @@ void GO_Repairable::drawHPBar() {
 
     rdpq_set_mode_fill(HPBarColor_);
     rdpq_fill_rectangle(HPBarPos_.v[0]+1, HPBarPos_.v[1]+1, HPBarPos_.v[0]+HPBarCurrentLength_, HPBarPos_.v[1]+HPBarHeight_-1);
+}
+
+void GO_Repairable::updateRepelRing() {
+    repelRingRotation += 0.007;
+    t3d_mat4_from_srt_euler(&repelRingMat,
+        (float[3]){0.08f*repelRingScale, 0.08f, 0.08f*repelRingScale},
+        (float[3]){0.0f, rotation_, 0.0f},
+        position_.v
+    );
+    t3d_mat4_to_fixed(repelRingMatFP, &repelRingMat);
+}
+
+void GO_Repairable::renderRepelRing() {
+    t3d_matrix_set(repelRingMatFP, true);
+    t3d_model_draw(repelRingModel);
 }

@@ -13,6 +13,7 @@ public:
     GO_Repairable* getCurrRepairable();
     GO_Repairable* getNextRepairable();
     GO_Repairable* getPrevRepairable();
+    GO_Repairable* getRandDamagedRep();
     void setCurrentRepairable(GO_Repairable* newCurr);
 
     void handleInput();

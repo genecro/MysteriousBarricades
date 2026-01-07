@@ -21,7 +21,7 @@ public:
     virtual void update() = 0;
     virtual void renderT3d() = 0;
     virtual void renderRdpq() = 0;
-    virtual void stun(float stunTimeSeconds) = 0;
+    virtual void stun(float stunTimeSeconds);
 
     void summon();
 

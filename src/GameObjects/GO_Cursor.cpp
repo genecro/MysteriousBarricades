@@ -46,6 +46,10 @@ GO_Cursor::GO_Cursor(T3DVec3 position, std::vector<Triangle> *newCollisionTris) 
     collisionTris = newCollisionTris;
 
     cursorState = global::CURSOR_STATE_BASE;
+
+    RPTotal_ = global::gameProgress.rpCapacity;
+    totalBarricadeCt = global::gameProgress.numBarricades;
+    repairSpeed_ = global::gameProgress.repairSpeedMultiplier;
 }
 
 GO_Cursor::~GO_Cursor() {
@@ -99,8 +103,8 @@ void GO_Cursor::handleInput() {
                     
                     else if(temp) {
                         if(temp->HPCurrent_ < temp->HPTotal_ && RPCurrent_ > 0) {
-                            temp->HPCurrent_ += healingSpeed_*global::frameTimeMultiplier;
-                            RPCurrent_ -= healingSpeed_*global::frameTimeMultiplier;
+                            temp->HPCurrent_ += repairSpeed_*global::frameTimeMultiplier;
+                            RPCurrent_ -= repairSpeed_*global::frameTimeMultiplier;
                         }
                     }
                 }
@@ -130,7 +134,7 @@ void GO_Cursor::handleInput() {
                         if(repellingEnemiesTimer <= 0) {
                             repellingEnemies_ = false;
                             for(GO_Enemy* e : enemiesBeingRepelled) {
-                                e->setStateSeeking();
+                                e->setStateSeeking(e->target_);
                             }
                             enemiesBeingRepelled.clear();
                         }
@@ -144,8 +148,8 @@ void GO_Cursor::handleInput() {
                             }
                         }
                         if(!enemiesAttacking && temp->HPCurrent_ < temp->HPTotal_ && RPCurrent_ > 0) {
-                            temp->HPCurrent_ += healingSpeed_*global::frameTimeMultiplier;
-                            RPCurrent_ -= healingSpeed_*global::frameTimeMultiplier;
+                            temp->HPCurrent_ += repairSpeed_*global::frameTimeMultiplier;
+                            RPCurrent_ -= repairSpeed_*global::frameTimeMultiplier;
                         }
                     }
                 }
@@ -159,7 +163,7 @@ void GO_Cursor::handleInput() {
                     if(repellingEnemies_) {
                         repellingEnemies_ = false;
                         for(GO_Enemy* e : enemiesBeingRepelled) {
-                            e->setStateSeeking();
+                            e->setStateSeeking(e->target_);
                         }
                         enemiesBeingRepelled.clear();
                     }
@@ -323,6 +327,12 @@ void GO_Cursor::update() {
         t3d_mat4_to_fixed(repelRingMatFP, &repelRingMat);
     }
 
+    for(auto& r : *global::gameState->repairableList->repairables) {
+        if(r->fullyRepaired) {
+            r->updateRepelRing();
+        }
+    }
+
     if(barricadeIndicatorBlinkTimer > 0) {
         float prevBlinkTimer = barricadeIndicatorBlinkTimer;
         barricadeIndicatorBlinkTimer -= global::frameTimeMultiplier;
@@ -345,6 +355,12 @@ void GO_Cursor::renderT3d() {
     if(repellingEnemies_) {
         t3d_matrix_set(repelRingMatFP, true);
         t3d_model_draw(repelRingModel);
+    }
+
+    for(auto& r : *global::gameState->repairableList->repairables) {
+        if(r->fullyRepaired) {
+            r->renderRepelRing();
+        }
     }
 
     rdpq_set_prim_color(groundMarkerColor);
@@ -378,9 +394,10 @@ void GO_Cursor::renderT3d() {
 void GO_Cursor::renderRdpq() {
 
     //draw barricade tracker
-    rdpq_set_mode_standard();
-    rdpq_mode_alphacompare(1);
+    
     if(displayBarricadeIndicator) {
+        rdpq_set_mode_standard();
+        rdpq_mode_alphacompare(1);
         int numFreeBarricades = totalBarricadeCt-global::gameState->barricadeList->gameObjects_->size();
 
         for(int i = 0; i < totalBarricadeCt; i++) {

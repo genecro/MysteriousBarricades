@@ -1,7 +1,6 @@
 #pragma once
 
 #include "GO_Repairable.h"
-//#include "../globals.h"
 
 class GO_RepairableTower: public GO_Repairable {
 public:

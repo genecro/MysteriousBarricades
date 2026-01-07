@@ -16,7 +16,7 @@ public:
     int cursorState;
     float barrierSize = 5.0f;
 
-    float healingSpeed_ = 0.2f;
+    float repairSpeed_;
     bool overARepairable_ = false;
     bool repellingEnemies_ = false;
     float repellingEnemiesRate_ = 1.0f*60.0f;
@@ -25,11 +25,11 @@ public:
     uint8_t repellingEnemiesCtr_ = 3;
 
     float RPCurrent_ = 25;
-    float RPTotal_ = 100;
+    float RPTotal_;
     float RPRectangleBaseLength = 100;
     float RPRectangleHeight = 10;
 
-    int totalBarricadeCt = 3;
+    int totalBarricadeCt;
     sprite_t* barricadeIndicatorFull;
     sprite_t* barricadeIndicatorEmpty;
     bool displayBarricadeIndicator;

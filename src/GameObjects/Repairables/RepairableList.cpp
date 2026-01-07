@@ -95,6 +95,17 @@ GO_Repairable* RepairableList::getPrevRepairable() {
     }
 }
 
+GO_Repairable* RepairableList::getRandDamagedRep() {
+    std::vector<GO_Repairable*> damagedList{};
+    for(auto& r : *repairables) {
+        if(!r->fullyRepaired) {
+            damagedList.push_back(r);
+        }
+    }
+    if(damagedList.size() == 0) return nullptr;
+    return damagedList.at(rand()*damagedList.size()/(RAND_MAX+1));
+}
+
 void RepairableList::setCurrentRepairable(GO_Repairable* newCurr) {
     currentId_ = newCurr->id_;
 }

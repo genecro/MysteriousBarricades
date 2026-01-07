@@ -22,6 +22,9 @@ public:
     void updateHPBar();
     void drawHPBar();
 
+    void updateRepelRing();
+    void renderRepelRing();
+
     float repelEnemyAngleMin_;
     float repelEnemyAngleMax_;
 
@@ -33,6 +36,14 @@ public:
 
     bool fullyRepaired = false;
 
+    static T3DModel* repelRingModel;
+    static uint8_t rRingInstanceCount;
+
 private:
     color_t HPBarColor_ = (color_t){0,0,0,0};
+
+    T3DMat4 repelRingMat;
+    T3DMat4FP* repelRingMatFP;
+    float repelRingScale;
+    float repelRingRotation = 0.0f;
 };

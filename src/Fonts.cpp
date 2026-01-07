@@ -44,6 +44,9 @@ void Fonts::fonts_init() {
     rdpq_font_style(piacevoli, FONTSTYLE_GREY, &(rdpq_fontstyle_t){
         .color = RGBA32(0x88, 0x88, 0x88, 0xFF),
     });
+    rdpq_font_style(piacevoli, FONTSTYLE_BLACK, &(rdpq_fontstyle_t){
+        .color = RGBA32(0x00, 0x00, 0x00, 0xFF),
+    });
 
 
     rdpq_font_style(pixelfraktur, FONTSTYLE_WHITE, &(rdpq_fontstyle_t){

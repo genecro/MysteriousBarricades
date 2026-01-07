@@ -30,6 +30,9 @@ GO_EnemyRushToBarricade::GO_EnemyRushToBarricade(T3DVec3 pos, GO_Repairable* tar
     if(target_) {
         targetPos_ = target_->position_;
     }
+    else {
+        targetPos_ = (T3DVec3){0,0,0};
+    }
 
     //debugf("targetPos_.x = %.2f\n", targetPos_.x);
     //debugf("targetPos_.z = %.2f\n\n", targetPos_.z);
@@ -76,6 +79,13 @@ void GO_EnemyRushToBarricade::update() {
     float prevLifetime = lifetime_;
     lifetime_ += global::frameTimeMultiplier;
 
+    if(target_ && target_->fullyRepaired) {
+        target_ = global::gameState->repairableList->getRandDamagedRep();
+        if(target_) targetPos_ = target_->position_;
+        else targetPos_ = (T3DVec3){0,0,0};
+        enemyState_ = global::ENEMY_STATE_SEEKING;
+    }
+
     if(isStunned_) {
         //stunned, model flashes and can't move or be damaged until cooldown reaches 0
         float prevStunCooldown = stunCooldown_;
@@ -116,6 +126,10 @@ void GO_EnemyRushToBarricade::update() {
                     //move forward
                     position_.x += speed_*fm_cosf(rotation_)*global::frameTimeMultiplier;
                     position_.z += speed_*fm_sinf(rotation_)*global::frameTimeMultiplier;
+
+                    if(target_ && !target_->fullyRepaired && t3d_vec3_distance2(position_, target_->position_) <= pow(objectWidth_+target_->objectWidth_, 2)) {
+                        setStateAttacking(target_);
+                    }
                 }
                 
             } break;
@@ -182,12 +196,6 @@ void GO_EnemyRushToBarricade::renderT3d() {
         t3d_matrix_set(enemyMatFP, true);
         t3d_model_draw(enemyModel);
     }
-}
-
-void GO_EnemyRushToBarricade::stun(float stunTimeSeconds) {
-    isStunned_ = true;
-    isInvincible_ = true;
-    stunCooldown_ = stunTimeSeconds*60.f;
 }
 
 void GO_EnemyRushToBarricade::attackTarget() {

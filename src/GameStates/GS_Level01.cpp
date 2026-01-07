@@ -38,16 +38,16 @@ GS_Level01::GS_Level01(T3DVec3 startingCursorPosition) {
 
 
 
-    enemyList->push(new GO_EnemyBasic((T3DVec3){-15, 5, 0}, repairableList->getCurrRepairable()));
-    enemyList->push(new GO_EnemyBasic((T3DVec3){15, 5, -15}, repairableList->getNextRepairable()));
+    enemyList->push(new GO_EnemyBasic((T3DVec3){-15, 5, 0}, repairableList->getRandDamagedRep()));
+    enemyList->push(new GO_EnemyBasic((T3DVec3){15, 5, -15}, repairableList->getRandDamagedRep()));
 
     remainingEnemies = 16;
 
     timeline.push_back({20*60,
         [&](){
-            if(enemyList->gameObjects_->size() >= 6) return false;
-            enemyList->push(new GO_EnemyBasic((T3DVec3){0, 5, -15}, repairableList->getCurrRepairable()));
-            enemyList->push(new GO_EnemyRushToBarricade((T3DVec3){-15, 5, 15}, repairableList->getNextRepairable()));
+            if(enemyList->gameObjects_->size() >= 6 || endStateReached) return false;
+            enemyList->push(new GO_EnemyBasic((T3DVec3){0, 5, -15}, repairableList->getRandDamagedRep()));
+            enemyList->push(new GO_EnemyRushToBarricade((T3DVec3){-15, 5, 15}, repairableList->getRandDamagedRep()));
             remainingEnemies -= 2;
             return true;
         }
@@ -55,9 +55,9 @@ GS_Level01::GS_Level01(T3DVec3 startingCursorPosition) {
 
     timeline.push_back({20*60,
         [&](){
-            if(enemyList->gameObjects_->size() >= 6) return false;
-            enemyList->push(new GO_EnemyBasic((T3DVec3){-7, 5, 0}, repairableList->getCurrRepairable()));
-            enemyList->push(new GO_EnemyBasic((T3DVec3){8, 5, -15}, repairableList->getNextRepairable()));
+            if(enemyList->gameObjects_->size() >= 6 || endStateReached) return false;
+            enemyList->push(new GO_EnemyBasic((T3DVec3){-7, 5, 0}, repairableList->getRandDamagedRep()));
+            enemyList->push(new GO_EnemyBasic((T3DVec3){8, 5, -15}, repairableList->getRandDamagedRep()));
             remainingEnemies -= 2;
             return true;
         }
@@ -65,9 +65,9 @@ GS_Level01::GS_Level01(T3DVec3 startingCursorPosition) {
 
     timeline.push_back({20*60,
         [&](){
-            if(enemyList->gameObjects_->size() >= 6) return false;
-            enemyList->push(new GO_EnemyBasic((T3DVec3){0, 5, -8}, repairableList->getCurrRepairable()));
-            enemyList->push(new GO_EnemyRushToBarricade((T3DVec3){-7, 5, 15}, repairableList->getNextRepairable()));
+            if(enemyList->gameObjects_->size() >= 6 || endStateReached) return false;
+            enemyList->push(new GO_EnemyBasic((T3DVec3){0, 5, -8}, repairableList->getRandDamagedRep()));
+            enemyList->push(new GO_EnemyRushToBarricade((T3DVec3){-7, 5, 15}, repairableList->getRandDamagedRep()));
             remainingEnemies -= 2;
             return true;
         }
@@ -75,10 +75,10 @@ GS_Level01::GS_Level01(T3DVec3 startingCursorPosition) {
 
     timeline.push_back({20*60,
         [&](){
-            if(enemyList->gameObjects_->size() >= 5) return false;
-            enemyList->push(new GO_EnemyRushToBarricade((T3DVec3){-15, 5, 0}, repairableList->getCurrRepairable()));
-            enemyList->push(new GO_EnemyRushToBarricade((T3DVec3){15, 5, -15}, repairableList->getNextRepairable()));
-            enemyList->push(new GO_EnemyRushToBarricade((T3DVec3){0, 5, -15}, repairableList->getCurrRepairable()));
+            if(enemyList->gameObjects_->size() >= 5 || endStateReached) return false;
+            enemyList->push(new GO_EnemyRushToBarricade((T3DVec3){-15, 5, 0}, repairableList->getRandDamagedRep()));
+            enemyList->push(new GO_EnemyRushToBarricade((T3DVec3){15, 5, -15}, repairableList->getRandDamagedRep()));
+            enemyList->push(new GO_EnemyRushToBarricade((T3DVec3){0, 5, -15}, repairableList->getRandDamagedRep()));
             remainingEnemies -= 3;
             return true;
         }
@@ -86,10 +86,10 @@ GS_Level01::GS_Level01(T3DVec3 startingCursorPosition) {
 
     timeline.push_back({20*60,
         [&](){
-            if(enemyList->gameObjects_->size() >= 5) return false;
-            enemyList->push(new GO_EnemyBasic((T3DVec3){-15, 5, 15}, repairableList->getNextRepairable()));
-            enemyList->push(new GO_EnemyBasic((T3DVec3){-7, 5, 0}, repairableList->getCurrRepairable()));
-            enemyList->push(new GO_EnemyBasic((T3DVec3){8, 5, -15}, repairableList->getNextRepairable()));
+            if(enemyList->gameObjects_->size() >= 5 || endStateReached) return false;
+            enemyList->push(new GO_EnemyBasic((T3DVec3){-15, 5, 15}, repairableList->getRandDamagedRep()));
+            enemyList->push(new GO_EnemyBasic((T3DVec3){-7, 5, 0}, repairableList->getRandDamagedRep()));
+            enemyList->push(new GO_EnemyBasic((T3DVec3){8, 5, -15}, repairableList->getRandDamagedRep()));
             remainingEnemies -= 3;
             return true;
         }
@@ -97,11 +97,11 @@ GS_Level01::GS_Level01(T3DVec3 startingCursorPosition) {
 
     timeline.push_back({20*60,
         [&](){
-            if(enemyList->gameObjects_->size() >= 4) return false;
-            enemyList->push(new GO_EnemyBasic((T3DVec3){0, 5, -8}, repairableList->getCurrRepairable()));
-            enemyList->push(new GO_EnemyRushToBarricade((T3DVec3){-7, 5, 15}, repairableList->getNextRepairable()));
-            enemyList->push(new GO_EnemyBasic((T3DVec3){-15, 5, 0}, repairableList->getCurrRepairable()));
-            enemyList->push(new GO_EnemyBasic((T3DVec3){15, 5, -15}, repairableList->getNextRepairable()));
+            if(enemyList->gameObjects_->size() >= 4 || endStateReached) return false;
+            enemyList->push(new GO_EnemyBasic((T3DVec3){0, 5, -8}, repairableList->getRandDamagedRep()));
+            enemyList->push(new GO_EnemyRushToBarricade((T3DVec3){-7, 5, 15}, repairableList->getRandDamagedRep()));
+            enemyList->push(new GO_EnemyBasic((T3DVec3){-15, 5, 0}, repairableList->getRandDamagedRep()));
+            enemyList->push(new GO_EnemyBasic((T3DVec3){15, 5, -15}, repairableList->getRandDamagedRep()));
             remainingEnemies -= 4;
             return true;
         }
@@ -139,6 +139,7 @@ void GS_Level01::handleInput() {
 }
 
 void GS_Level01::update() {
+    repairableList->update();
     theCursor->update();
     updateCamera();
     updateTimeline();
@@ -152,10 +153,9 @@ void GS_Level01::update() {
 
     objectList->update(theCursor->groundMarkerPos);
     enemyBarricadeCheck();
-    enemyRepairableCheck();
-    repairableList->update();
     barricadeList->update();
     enemyList->update();
+    //enemyRepairableCheck();
     if(!endStateReached) checkForWinOrLoss();
 }
 

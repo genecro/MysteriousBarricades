@@ -83,6 +83,7 @@ int GO_Enemy::getState() {
 
 void GO_Enemy::setStateAttacking(GO_Repairable* target) {
     target_ = target;
+    targetPos_ = target->position_;
     lifetime_ = 0;
     enemyState_ = global::ENEMY_STATE_ATTACKING;
     rotation_ = fm_atan2f(target_->position_.z - position_.z, target_->position_.x - position_.x);
@@ -91,10 +92,20 @@ void GO_Enemy::setStateAttacking(GO_Repairable* target) {
 void GO_Enemy::setStateSeeking(GO_Repairable* target = nullptr) {
     if(target) {
         target_ = target;
+        targetPos_ = target_->position_;
+    }
+    else {
+        targetPos_ = (T3DVec3){0,0,0};
     }
     enemyState_ = global::ENEMY_STATE_SEEKING;
 }
 
 void GO_Enemy::summon() {
     global::audioManager->playSFX("sharpSummon5.wav64", {.volume=0.4f, .concurrent=false});
+}
+
+void GO_Enemy::stun(float stunTimeSeconds) {
+    isStunned_ = true;
+    isInvincible_ = true;
+    stunCooldown_ = stunTimeSeconds*60.f;
 }

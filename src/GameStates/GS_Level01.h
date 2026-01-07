@@ -35,6 +35,4 @@ private:
     void initCamera() override;
     void handleInputCamera() override;
     void updateCamera() override;
-
-    
 };
