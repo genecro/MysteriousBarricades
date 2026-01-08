@@ -113,14 +113,16 @@ GS_Level01::~GS_Level01() {
     free_uncached(envMatFP);
     delete objectList;
     delete repairableList;
+    delete barricadeList;
     delete enemyList;
+    delete theCursor;
 }
 
 void GS_Level01::handleInput() {
     joypad_buttons_t btn = joypad_get_buttons_pressed(JOYPAD_PORT_1);
     //if(keys.start) {
     if(btn.start) {
-        global::GameInterruptStack->push_back(new GI_Pause());
+        global::GameInterruptStack->push_back(new GI_Pause<GS_Level01>());
     }
 
     if(btn.c_up) {
@@ -228,6 +230,8 @@ void GS_Level01::updateCamera() {
 void GS_Level01::levelWon() {
     enemyList->destroyAllEnemies();
     global::GameInterruptStack->push_back(new GI_Alert("You won!"));
+    global::gameProgress.level2Unlocked = true;
+    remainingEnemies = 0;
 }
 
 void GS_Level01::levelLost() {

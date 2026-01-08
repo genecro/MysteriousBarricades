@@ -393,6 +393,8 @@ void GO_Cursor::renderT3d() {
 
 void GO_Cursor::renderRdpq() {
 
+    rdpq_sync_pipe();
+
     //draw barricade tracker
     
     if(displayBarricadeIndicator) {
@@ -403,7 +405,7 @@ void GO_Cursor::renderRdpq() {
         for(int i = 0; i < totalBarricadeCt; i++) {
             rdpq_sprite_blit(i+1 > numFreeBarricades ? barricadeIndicatorEmpty : barricadeIndicatorFull,
                 27 + i*16,
-                27, 
+                32, 
                 &(rdpq_blitparms_t){
                     .theta = T3D_PI/4.0f
                 }
@@ -413,10 +415,10 @@ void GO_Cursor::renderRdpq() {
 
     //draw RP bar
     rdpq_set_mode_fill((color_t){0,0,0,0xFF});
-    rdpq_fill_rectangle(25, 10, 25+RPRectangleBaseLength*100.0f/RPTotal_, 10+RPRectangleHeight);
+    rdpq_fill_rectangle(25, 15, 25+RPRectangleBaseLength*100.0f/RPTotal_, 15+RPRectangleHeight);
 
     rdpq_set_fill_color((color_t){0,0xFF,0,0xFF});
-    rdpq_fill_rectangle(25+1, 10+1, 25+RPRectangleBaseLength*RPCurrent_/RPTotal_, 10+RPRectangleHeight-1);
+    rdpq_fill_rectangle(25+1, 15+1, 25+RPRectangleBaseLength*RPCurrent_/RPTotal_, 15+RPRectangleHeight-1);
 }
 
 void GO_Cursor::setPosition(T3DVec3 newPos) {

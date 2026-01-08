@@ -53,7 +53,7 @@ void GS_Training04::handleInput() {
     joypad_buttons_t btn = joypad_get_buttons_pressed(JOYPAD_PORT_1);
     //if(keys.start) {
     if(btn.start) {
-        global::GameInterruptStack->push_back(new GI_Pause());
+        global::GameInterruptStack->push_back(new GI_Pause<GS_Training04>());
     }
 
     theCursor->handleInput();

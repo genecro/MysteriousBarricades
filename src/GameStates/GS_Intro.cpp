@@ -60,7 +60,7 @@ void GS_Intro::update() {
             //all logos have been displayed
             if(i >= NUM_INTRO_SPRITES) {
                 //debugf("Going to main menu\n");
-                nextState = new GS_MainMenu();
+                nextState = new GS_Menu();
             }
             //more logo(s) need to be displayed
             else {

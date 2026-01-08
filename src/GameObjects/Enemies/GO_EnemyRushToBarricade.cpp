@@ -178,7 +178,7 @@ void GO_EnemyRushToBarricade::update() {
     if(HPCurrent_<=0) {
         timeToDelete = true;
         global::gameState->enemyDestroyed();
-        global::audioManager->playSFX("cruncher5.wav64", {.volume = 0.4f});
+        global::audioManager->playSFX("cruncher5.wav64", {.volume = 0.4f, .concurrent=false});
         if(dropItem_) global::gameState->objectList->push(new GO_RepairBoost(position_));
         global::gameState->objectList->push(new GO_Explosion(position_, 5, (color_t){0xFF, 0x77, 0x00, 0xFF}, 2*60));
     }

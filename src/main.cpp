@@ -5,7 +5,6 @@
 #include <t3d/t3dmath.h>
 #include <t3d/t3dmodel.h>
 #include "GameStates/GS_Intro.h"
-#include "GameStates/GS_MainMenu.h"
 #include "GameStates/GS_Level01.h"
 #include "GameStates/GS_Training04.h"
 #include "GameStates/GS_Training01.h"
@@ -140,6 +139,7 @@ int main(void)
 
         rdpq_sync_pipe();
         //display stats
+        /*
         
         if(global::thePlayer) {
             rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, 25, 25, "Player position:");
@@ -148,15 +148,16 @@ int main(void)
             rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, 25, 61, "Z: %.2f", global::thePlayer->position_.z);
             rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, 25, 73, "ROT: %.2f", global::thePlayer->rotation_);
         }
+            */
         //rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, display_get_width()-110, display_get_height()-52, "%.2f FPS", display_get_fps());
         sys_get_heap_stats(&heapStats);
         rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, display_get_width()-110, 25, "%.2f FPS", display_get_fps());
         rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, display_get_width()-110, 37, "Total: %d", heapStats.total);
         rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, display_get_width()-110, 49, "Used:  %d", heapStats.used);
         rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, display_get_width()-110, 61, "Ratio: %.2f%%", 100.0f*heapStats.used/heapStats.total);
-        if(global::gameState && global::gameState->envModel) {
-            rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, display_get_width()-110, 73, "EnvVertCt: %d", global::gameState->envModel->totalVertCount);
-        }
+        
+
+        
 
         //if current gameState has nextState, point to nextState and delete current gameState
         if(global::gameState->nextState != nullptr)
@@ -168,6 +169,10 @@ int main(void)
             global::gameState = nextState;
             global::gameState->testFunc();
             debugf("Next state has been set\n");
+        }
+
+        if(global::gameState && global::gameState->envModel) {
+            rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, display_get_width()-110, 73, "EnvVertCt: %d", global::gameState->envModel->totalVertCount);
         }
 
         rdpq_detach_show();

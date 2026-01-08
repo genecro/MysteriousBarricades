@@ -60,13 +60,14 @@ void GO_Repairable::updateRepelRing() {
     repelRingRotation += 0.007;
     t3d_mat4_from_srt_euler(&repelRingMat,
         (float[3]){0.08f*repelRingScale, 0.08f, 0.08f*repelRingScale},
-        (float[3]){0.0f, rotation_, 0.0f},
+        (float[3]){0.0f, repelRingRotation, 0.0f},
         position_.v
     );
     t3d_mat4_to_fixed(repelRingMatFP, &repelRingMat);
 }
 
 void GO_Repairable::renderRepelRing() {
+    rdpq_set_prim_color((color_t){0x00, 0xFF, 0x00, 0xFF});
     t3d_matrix_set(repelRingMatFP, true);
     t3d_model_draw(repelRingModel);
 }

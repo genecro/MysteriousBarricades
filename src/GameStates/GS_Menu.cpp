@@ -1,6 +1,6 @@
 //#include "GS_Menu.h"
 //#include "GS_001ChurchSquare.h"
-#include "GS.h"
+#include "GS_Menu.h"
 #include "../globals.h"
 
 enum {
@@ -136,6 +136,7 @@ void GS_Menu::updateMainMenuState() {
                 nameEntry.caps = true;
                 nameEntry.newPlayerName = "";
                 nameEntry.nameCursor = 0;
+                global::audioManager->playSFX("rom:/zapSelect5.wav64", {.volume = 0.7f});
                 break;
             case MENU_ITEM_OPTIONS:
                 debugf("Options selected\n");
@@ -143,6 +144,7 @@ void GS_Menu::updateMainMenuState() {
             case MENU_ITEM_CREDITS:
                 debugf("Credits selected\n");
                 currState = MENU_ITEM_CREDITS;
+                global::audioManager->playSFX("rom:/zapSelect5.wav64", {.volume = 0.7f});
                 break;
         }
     }
@@ -161,21 +163,25 @@ void GS_Menu::updateNewGameState() {
 
     if(keys.d_down || yAxisPressed < 0) {
         nameCursorNext += nameEntry.numCols;
+        global::audioManager->playSFX("rom:/bootsOnGenericGround6.wav64", {.volume = 0.4f});
     }
     else if(keys.d_up || yAxisPressed > 0) {
         nameCursorNext -= nameEntry.numCols;
+        global::audioManager->playSFX("rom:/bootsOnGenericGround6.wav64", {.volume = 0.4f});
     }
     else if(keys.d_left || xAxisPressed < 0) {
         nameCursorNext--;
         if(nameCursorNext%nameEntry.numCols==nameEntry.numCols-1) {
             nameCursorNext+=nameEntry.numCols;
         }
+        global::audioManager->playSFX("rom:/bootsOnGenericGround6.wav64", {.volume = 0.4f});
     }
     else if(keys.d_right || xAxisPressed > 0) {
         nameCursorNext++;
         if(nameCursorNext%nameEntry.numCols==0) {
             nameCursorNext-=nameEntry.numCols;
         }
+        global::audioManager->playSFX("rom:/bootsOnGenericGround6.wav64", {.volume = 0.4f});
     }
 
     if(nameCursorNext >= 0 && nameCursorNext < nameEntry.LETTERS_IN_ALPHABET) {
@@ -187,18 +193,22 @@ void GS_Menu::updateNewGameState() {
 
     if(keys.r) {
         nameEntry.caps = !nameEntry.caps;
+        global::audioManager->playSFX("rom:/strongClick26.wav64", {.volume = 0.7f});
     }
 
     if(keys.a && nameEntry.newPlayerName.size() < nameEntry.maxNameLen) {
         nameEntry.newPlayerName += ('a'+nameEntry.nameCursor+nameEntry.caps*nameEntry.capsConv);
+        global::audioManager->playSFX("rom:/zapSelect5.wav64", {.volume = 0.7f});
     }
 
     if(keys.b && nameEntry.newPlayerName.size() > 0) {
         nameEntry.newPlayerName = nameEntry.newPlayerName.substr(0, nameEntry.newPlayerName.size()-1);
+        global::audioManager->playSFX("rom:/zapSelect2.wav64", {.volume = 0.7f});
     }
 
     if(keys.l) {
         currState = MENU_ITEM_MAIN_MENU;
+        global::audioManager->playSFX("rom:/zapSelect2.wav64", {.volume = 0.7f});
     }
 
     if(keys.start) {
@@ -207,7 +217,8 @@ void GS_Menu::updateNewGameState() {
             //TODO:
             //global::GameInterruptStack->push_back(new GI_FadeToNextGS<GS_001ChurchSquare>(GS_001ChurchSquare::startPos.CHURCH_INTERIOR));//, 0.5*T3D_PI));
             //global::GameInterruptStack->push_back(new GI_FadeToNextGS<GS_002ChurchInterior>((T3DVec3){{0,0,-150}}));
-            global::GameInterruptStack->push_back(new GI_FadeToNextGS<GS_SelectLevel>((T3DVec3){0,0,0}));
+            global::audioManager->playSFX("rom:/pierce6.wav64", {.volume = 0.7f});
+            global::GameInterruptStack->push_back(new GI_FadeToNextGS<GS_SelectLevel>((T3DVec3){0,0,0}, 1200.0f));
         }
     }
 }
@@ -217,9 +228,11 @@ void GS_Menu::updateCreditsGameState() {
 
     if(keys.a) {
         currCreditsPage = (currCreditsPage + 1) % NUM_CREDITS_PAGES;
+        global::audioManager->playSFX("rom:/zapSelect5.wav64", {.volume = 0.7f});
     }
     if(keys.b) {
         currState = MENU_ITEM_MAIN_MENU;
+        global::audioManager->playSFX("rom:/zapSelect2.wav64", {.volume = 0.7f});
     }
 }
 
@@ -367,6 +380,7 @@ int GS_Menu::moveCursor(int currCursor, int direction) {
             done = true;
         }
     }
+    global::audioManager->playSFX("rom:/bootsOnGenericGround6.wav64", {.volume = 0.4f});
     return nextCursor;
 }
 

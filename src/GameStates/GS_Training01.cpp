@@ -61,7 +61,7 @@ void GS_Training01::handleInput() {
     joypad_buttons_t btn = joypad_get_buttons_pressed(JOYPAD_PORT_1);
     //if(keys.start) {
     if(btn.start) {
-        global::GameInterruptStack->push_back(new GI_Pause());
+        global::GameInterruptStack->push_back(new GI_Pause<GS_Training01>());
     }
 
     theCursor->handleInput();
@@ -125,6 +125,7 @@ void GS_Training01::renderRdpq() {
     repairableList->renderRdpq();
     barricadeList->renderRdpq();
     enemyList->renderRdpq();
+    theCursor->renderRdpq();
 }
 
 void GS_Training01::testFunc() {
@@ -154,7 +155,8 @@ void GS_Training01::levelWon() {
             (
                 new GI_MultiChoice(
                     "Next", new GI_FadeToNextGS<GS_Training02>((T3DVec3){0,10,0}, 600.0f),            
-                    "Retry", new GI_FadeToNextGS<GS_Training01>((T3DVec3){0,10,0}, 600.0f)
+                    "Retry", new GI_FadeToNextGS<GS_Training01>((T3DVec3){0,10,0}, 600.0f),
+                    "Quit", new GI_FadeToNextGS<GS_SelectLevel>((T3DVec3){0,0,0}, 600.0f)
                 )
             )
         )    

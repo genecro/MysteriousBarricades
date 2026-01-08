@@ -1,4 +1,4 @@
-//adapted from HailtoDodongo's 2024 game jam entry
+//adapted from HailtoDodongo's 2024 game jam entry audio manager
 #include "Audio.h"
 
 namespace {

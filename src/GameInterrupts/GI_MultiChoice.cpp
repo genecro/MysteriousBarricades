@@ -17,7 +17,16 @@ void GI_MultiChoice::handleInput() {
 
     if(yAxisPressed) {
         currentChoice_ -= yAxisPressed;
-        currentChoice_ %= numChoices_;
+        if(currentChoice_<0) {
+            currentChoice_ = 0;
+        }
+        else if(currentChoice_>=numChoices_) {
+            currentChoice_ = numChoices_ - 1;
+        }
+        else {
+            global::audioManager->playSFX("rom:/positiveClick3.wav64", {.volume = 0.7f});
+        }
+        //currentChoice_ %= numChoices_;
     }
 
     if(btn.a) {

@@ -35,7 +35,7 @@ GS_Training03::GS_Training03(T3DVec3 startingCursorPosition) {
     repairableList->push(new GO_RepairableTower(
         (T3DVec3){0,0,8}, 
         100, 
-        10, 
+        80, 
         (color_t){0x77, 0, 0xFF, 0xFF}, 
         -3.0f*T3D_PI/4.0f, 
         -T3D_PI/4.0f)
@@ -77,7 +77,7 @@ void GS_Training03::handleInput() {
     joypad_buttons_t btn = joypad_get_buttons_pressed(JOYPAD_PORT_1);
     //if(keys.start) {
     if(btn.start) {
-        global::GameInterruptStack->push_back(new GI_Pause());
+        global::GameInterruptStack->push_back(new GI_Pause<GS_Training03>());
     }
 
     theCursor->handleInput();
@@ -148,6 +148,7 @@ void GS_Training03::renderRdpq() {
     repairableList->renderRdpq();
     barricadeList->renderRdpq();
     enemyList->renderRdpq();
+    theCursor->renderRdpq();
 }
 
 void GS_Training03::testFunc() {
@@ -176,7 +177,8 @@ void GS_Training03::levelWon() {
             (
                 new GI_MultiChoice(
                     "Next", new GI_FadeToNextGS<GS_Training03>((T3DVec3){0,10,0}, 600.0f),            
-                    "Retry", new GI_FadeToNextGS<GS_Training03>((T3DVec3){0,10,0}, 600.0f)
+                    "Retry", new GI_FadeToNextGS<GS_Training03>((T3DVec3){0,10,0}, 600.0f),
+                    "Quit", new GI_FadeToNextGS<GS_SelectLevel>((T3DVec3){0,0,0}, 600.0f)
                 )
             )
         )    
