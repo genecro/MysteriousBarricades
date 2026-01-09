@@ -24,9 +24,8 @@ void GI_MultiChoice::handleInput() {
             currentChoice_ = numChoices_ - 1;
         }
         else {
-            global::audioManager->playSFX("rom:/positiveClick3.wav64", {.volume = 0.7f});
+            global::audioManager->playSFX("rom:/bootsOnGenericGround6.wav64", {.volume = 0.4f});
         }
-        //currentChoice_ %= numChoices_;
     }
 
     if(btn.a) {
@@ -52,8 +51,6 @@ void GI_MultiChoice::renderRdpq() {
     rdpq_set_prim_color(RGBA32(0, 0, 0, 128));
     rdpq_fill_rectangle(SCREEN_PADDING, display_get_height()/2.0f - numChoices_/2.0f*LINE_HEIGHT, display_get_width()-SCREEN_PADDING, display_get_height()/2.0f + numChoices_/2.0f*LINE_HEIGHT);
 
-    
-
     int i = 0;
     for(auto const& [key, value] : menuChoices) {
         rdpq_text_printf(&(rdpq_textparms_t) {
@@ -64,8 +61,3 @@ void GI_MultiChoice::renderRdpq() {
     }
     
 }
-
-// GI_MultiChoice* GI_MultiChoice::setNextAlert(GI_MultiChoice* nextAlert) {
-//     nextAlert_ = nextAlert;
-//     return this;
-// }

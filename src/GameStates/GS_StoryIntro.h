@@ -14,8 +14,6 @@ public:
     virtual void renderT3d() override;
     virtual void renderRdpq() override;
 
-    virtual void testFunc() override;
-
 private:
 
     uint8_t currPage = 0;

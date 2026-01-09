@@ -383,7 +383,3 @@ int GS_Menu::moveCursor(int currCursor, int direction) {
     global::audioManager->playSFX("rom:/bootsOnGenericGround6.wav64", {.volume = 0.4f});
     return nextCursor;
 }
-
-void GS_Menu::testFunc() { 
-    debugf("Test func main menu\n");
-}

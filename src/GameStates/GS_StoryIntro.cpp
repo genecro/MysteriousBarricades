@@ -31,7 +31,3 @@ void GS_StoryIntro::renderRdpq() {
 
     
 }
-
-void GS_StoryIntro::testFunc() {
-    debugf("Test func Training04\n");
-}

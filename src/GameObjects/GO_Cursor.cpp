@@ -194,7 +194,7 @@ void GO_Cursor::handleInput() {
             }
 
             if(!joypad.btn.a) {
-                //tell gamestate cursor is not making a barricade
+                //tell the enemies that the cursor is not making a barricade anymore
                 global::gameState->enemyList->cursorNotMakingBarricade();
 
                 if(global::gameState->barricadeList->gameObjects_->size() < totalBarricadeCt) {
@@ -211,6 +211,7 @@ void GO_Cursor::handleInput() {
                 else {
                     barricadeIndicatorBlinkTimer = barricadeIndicatorBlinkTimerMax;
                     global::audioManager->playSFX("metallicDodgeChance5.wav64", {.volume = 0.4f});
+                    global::gameState->triedToCastWithoutSlots();
                 }
                 cursorState = global::CURSOR_STATE_BASE;
             }

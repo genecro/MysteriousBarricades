@@ -151,11 +151,6 @@ void GS_Training03::renderRdpq() {
     theCursor->renderRdpq();
 }
 
-void GS_Training03::testFunc() {
-    debugf("Test func Training04\n");
-}
-
-
 void GS_Training03::initCamera() {
     camera.FOV = 0.27*T3D_PI;
     camera.target = theCursor->position_ + (T3DVec3){0, -3, 0};

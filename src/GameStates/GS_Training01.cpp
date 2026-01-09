@@ -128,11 +128,6 @@ void GS_Training01::renderRdpq() {
     theCursor->renderRdpq();
 }
 
-void GS_Training01::testFunc() {
-    debugf("Test func Training04\n");
-}
-
-
 void GS_Training01::initCamera() {
     camera.FOV = 0.27*T3D_PI;
     camera.target = theCursor->position_ + (T3DVec3){0, -3, 0};
@@ -176,4 +171,12 @@ void GS_Training01::checkForWinOrLoss() {
 
 void GS_Training01::barricadeCreated() {
     barricadesCreated++;
+}
+
+void GS_Training01::triedToCastWithoutSlots() {
+    if(!slotsAlertHasBeenShown) {
+    global::GameInterruptStack->push_back((new GI_Alert("You can only have " + std::to_string(global::gameProgress.numBarricades) + " active\nbarricades at one time."))
+                            ->setNextInterrupt(new GI_Alert("Keep an eye on your barricade\ntracker at the top of the screen.")));
+    slotsAlertHasBeenShown = true;
+    }
 }

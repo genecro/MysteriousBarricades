@@ -13,14 +13,14 @@ public:
     virtual void renderT3d() override;
     virtual void renderRdpq() override;
 
-    virtual void testFunc() override;
-
     void checkForWinOrLoss() override;
 
     void levelWon() override;
     void levelLost() override;
 
     void barricadeCreated() override;
+
+    void triedToCastWithoutSlots() override;
 
     
 
@@ -38,5 +38,5 @@ private:
     void handleInputCamera() override;
     void updateCamera() override;
 
-    
+    bool slotsAlertHasBeenShown = false;
 };

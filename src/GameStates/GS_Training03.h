@@ -13,8 +13,6 @@ public:
     virtual void renderT3d() override;
     virtual void renderRdpq() override;
 
-    virtual void testFunc() override;
-
     void checkForWinOrLoss() override;
 
     void levelWon() override;

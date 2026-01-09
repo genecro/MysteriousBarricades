@@ -17,8 +17,6 @@ public:
     virtual void renderT3d() override;
     virtual void renderRdpq() override;
 
-    virtual void testFunc() override;
-
 private:
     bool firstUpdate = true;
     float m_timeElapsed = 0;

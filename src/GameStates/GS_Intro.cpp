@@ -117,7 +117,3 @@ void GS_Intro::renderRdpq() {
     rdpq_sprite_blit(currSprite, display_get_width()/2, display_get_height()/2, &sprParams);
     //debugf("finished blitting sprite\n");
 }
-
-void GS_Intro::testFunc() { 
-    debugf("Test func intro\n");
-}

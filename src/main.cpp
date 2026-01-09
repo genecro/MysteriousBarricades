@@ -167,7 +167,6 @@ int main(void)
             rspq_wait();
             delete global::gameState;
             global::gameState = nextState;
-            global::gameState->testFunc();
             debugf("Next state has been set\n");
         }
 

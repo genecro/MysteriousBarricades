@@ -208,11 +208,6 @@ void GS_Level01::renderRdpq() {
     );
 }
 
-void GS_Level01::testFunc() {
-    debugf("Test func Level01\n");
-}
-
-
 void GS_Level01::initCamera() {
     camera.FOV = 0.27*T3D_PI;
     camera.target = theCursor->position_ + (T3DVec3){0, -3, 0};

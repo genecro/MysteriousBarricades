@@ -176,11 +176,6 @@ void GS_SelectLevel::renderRdpq() {
     }
 }
 
-void GS_SelectLevel::testFunc() {
-    debugf("Test func Training04\n");
-}
-
-
 void GS_SelectLevel::initCamera() {
     
 }

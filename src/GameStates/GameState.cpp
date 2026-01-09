@@ -10,11 +10,7 @@
 
 GameState::GameState()
 {
-    //textureMan::clearTextures();
-    //modelMan::clearModels();
 
-    //wav64_open(&m_cursorMove, "rom:/cursor)move.wav64");
-    //mixer_ch_set_vol(AUDIO_CHANNEL_SFX, 0.50f, 0.50f);
 }
 
 GameState::~GameState()
@@ -228,5 +224,9 @@ void GameState::enemyDestroyed() {
 }
 
 void GameState::barricadeCastFailed() {
+    
+}
+
+void GameState::triedToCastWithoutSlots() {
     
 }

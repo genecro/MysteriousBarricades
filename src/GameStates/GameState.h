@@ -28,8 +28,6 @@ public:
     GameState* nextState = nullptr;
     bool pausable = true;
 
-    virtual void testFunc() = 0;
-
     //std::vector<AABB> mapColl_;
 
     //std::vector<GameObject*>* objectList;
@@ -64,6 +62,7 @@ public:
     virtual void barricadeCreated();
     virtual void enemyDestroyed();
     virtual void barricadeCastFailed();
+    virtual void triedToCastWithoutSlots();
 
 
     

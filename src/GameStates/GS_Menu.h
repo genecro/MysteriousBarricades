@@ -31,8 +31,6 @@ public:
     virtual void renderT3d() override;
     virtual void renderRdpq() override;
 
-    virtual void testFunc() override;
-
 private:
     /*struct camera_t {
         T3DVec3 pos;
