@@ -2,6 +2,7 @@
 
 #include "GS_Intro.h"
 #include "GS_Menu.h"
+#include "GS_StoryIntro.h"
 #include "GS_SelectLevel.h"
 #include "GS_Level01.h"
 
