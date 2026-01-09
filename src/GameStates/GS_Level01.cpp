@@ -106,6 +106,7 @@ GS_Level01::GS_Level01(T3DVec3 startingCursorPosition) {
             return true;
         }
     });
+    global::GameInterruptStack->push_back(new GI_FadeIn(600));
 }
 
 GS_Level01::~GS_Level01() {

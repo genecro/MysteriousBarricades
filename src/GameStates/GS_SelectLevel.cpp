@@ -7,6 +7,7 @@
 GS_SelectLevel::GS_SelectLevel(T3DVec3 startingPos) {
     levelLockedSprite = sprite_load("rom:/sprites/lockedLevel.rgba32.sprite");
     envModel = nullptr;
+    global::GameInterruptStack->push_back(new GI_FadeIn(600));
 }
 
 GS_SelectLevel::~GS_SelectLevel() {

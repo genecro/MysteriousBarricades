@@ -32,7 +32,7 @@ public:
     int totalBarricadeCt;
     sprite_t* barricadeIndicatorFull;
     sprite_t* barricadeIndicatorEmpty;
-    bool displayBarricadeIndicator;
+    bool displayBarricadeIndicator = true;
     float barricadeIndicatorBlinkTimer = 0;
     float barricadeIndicatorBlinkTimerMax = 3*60;
 
