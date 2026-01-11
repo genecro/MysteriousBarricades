@@ -12,3 +12,5 @@
 #include "Enemies/GO_EnemyBasic.h"
 #include "Enemies/GO_EnemyRushToBarricade.h"
 #include "GO_Projectile.h"
+#include "GO_RepairBoost.h"
+#include "GO_RepairBoostInf.h"

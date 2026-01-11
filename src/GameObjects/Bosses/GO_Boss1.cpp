@@ -1,6 +1,7 @@
 #include "GO_Boss1.h"
 #include "../../globals.h"
 #include "../GO_Explosion.h"
+#include "../GO_RepairBoostInf.h"
 #include <math.h>
 
 GO_Boss1::GO_Boss1(T3DVec3 pos, float rotation) {
@@ -147,6 +148,7 @@ void GO_Boss1::update() {
 
     if(HPCurrent_ <= 0) {
         global::audioManager->playSFX("bossDying.wav64", {.volume = 0.4f});
+        global::gameState->objectList->push(new GO_RepairBoostInf((T3DVec3){0,position_.y,0}));
         global::gameState->objectList->push(new GO_Explosion((T3DVec3){2,position_.y,0}, 10.0f, (color_t){0xFF, 0x77, 0x00, 0xFF}, 4*60));
         global::gameState->objectList->push(new GO_Explosion((T3DVec3){-2,position_.y,2}, 10.0f, (color_t){0xFF, 0x77, 0x00, 0xFF}, 4*60));
         global::gameState->objectList->push(new GO_Explosion((T3DVec3){-2,position_.y,-2}, 10.0f, (color_t){0xFF, 0x77, 0x00, 0xFF}, 4*60));
