@@ -16,7 +16,9 @@ public:
     void renderT3d();
     void renderRdpq();
 
-private:
     std::vector<GameObject*>* gameObjects;
+
+private:
+    
     int nextId_;
 };

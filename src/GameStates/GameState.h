@@ -11,6 +11,7 @@
 #include "../collision.h"
 #include "../GameObjects/GO_Cursor.h"
 
+
 struct TimedEvent {
     float time;
     std::function<bool()> action; //return true if action can be completed
@@ -36,6 +37,7 @@ public:
     BarricadeList* barricadeList;
     EnemyList* enemyList;
 
+
     GO_Repairable* currentRepairable;
 
     T3DModel* envModel;
@@ -45,6 +47,9 @@ public:
 
     T3DViewport viewport;
 
+    void projectileEnemyCheck();
+    void projectileRepairableCheck();
+    void projectileBarricadeCheck();
     void enemyBarricadeCheck();
     void enemyRepairableCheck();
 
@@ -55,9 +60,10 @@ public:
     virtual void levelLost();
     bool endStateReached = false;
 
-    int remainingEnemies;
+    int remainingEnemies = 0;
 
     GO_Cursor* theCursor;
+    
 
     virtual void barricadeCreated();
     virtual void enemyDestroyed();

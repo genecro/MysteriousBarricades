@@ -9,7 +9,8 @@
 template <typename T> class GI_Pause : public GameInterrupt
 {
 public:
-    GI_Pause();
+    //GI_Pause();
+    GI_Pause(T3DVec3 startingPos = (T3DVec3){0,10,0});
     ~GI_Pause();
     virtual void handleInput() override;
     virtual void update() override;
@@ -30,8 +31,10 @@ protected:
 
     uint8_t currSelection = 0;
     uint8_t totalSelections = 3;
-};
 
+    T3DVec3 startingPos_;
+};
+/*
 template <typename T> GI_Pause<T>::GI_Pause() {
     global::audioManager->playSFX("rom:/castingBuff2.wav64", {.volume = 0.5f});
     pauseStr = "Paused";
@@ -39,6 +42,18 @@ template <typename T> GI_Pause<T>::GI_Pause() {
     retryStr = "Retry";
     quitStr = "Quit";
     pauseInterrupt = true;
+    startingPos_ = (T3DVec3){0,10,0};
+}
+    */
+
+template <typename T> GI_Pause<T>::GI_Pause(T3DVec3 startingPos = (T3DVec3){0,10,0}) {
+    global::audioManager->playSFX("rom:/castingBuff2.wav64", {.volume = 0.5f});
+    pauseStr = "Paused";
+    contStr = "Continue";
+    retryStr = "Retry";
+    quitStr = "Quit";
+    pauseInterrupt = true;
+    startingPos_ = startingPos;
 }
 
 template <typename T> GI_Pause<T>::~GI_Pause() {
@@ -75,7 +90,7 @@ template <typename T> void GI_Pause<T>::handleInput() {
             break;
 
             case PAUSE_SELECTION_RETRY:
-                global::GameInterruptStack->push_back(new GI_FadeToNextGS<T>((T3DVec3){0,10,0}, 600.0f));
+                global::GameInterruptStack->push_back(new GI_FadeToNextGS<T>(startingPos_, 600.0f));
                 timeToDestroy = true;
             break;
 

@@ -71,3 +71,7 @@ void GO_Repairable::renderRepelRing() {
     t3d_matrix_set(repelRingMatFP, true);
     t3d_model_draw(repelRingModel);
 }
+
+void GO_Repairable::processProjectile(GO_Projectile* theProjectile) {
+
+}

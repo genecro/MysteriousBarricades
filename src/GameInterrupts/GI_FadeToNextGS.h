@@ -31,6 +31,7 @@ template <typename T> GI_FadeToNextGS<T>::GI_FadeToNextGS(T3DVec3 playerStarting
     fadeTime_ = fadeTime;
     fadeAlpha_ = 1.0f;
     playerStartingPos_ = playerStartingPos;
+    pauseInterrupt = true;
 }
 
 template <typename T> GI_FadeToNextGS<T>::~GI_FadeToNextGS() {

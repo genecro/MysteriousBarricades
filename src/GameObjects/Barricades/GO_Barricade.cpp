@@ -23,7 +23,22 @@ void GO_Barricade::checkTimeLeft() {
     }
 }
 
-bool GO_Barricade::checkCollision(GO_Enemy* theEnemy) {
+void GO_Barricade::processProjectile(GO_Projectile* theProjectile) {
+    if(theProjectile->justReflected) {
+        theProjectile->justReflected = false;
+    }
+    else {
+        if(checkCollision(theProjectile)) {
+            theProjectile->angle_ = 2*rotation_ - theProjectile->angle_;
+            theProjectile->justReflected = true;
+            theProjectile->reflected = true;
+            global::audioManager->playSFX("magicStep6.wav64", {.volume = 0.4f});
+        }
+    }
+}
+
+//bool GO_Barricade::checkCollision(GO_Enemy* theEnemy) {
+bool GO_Barricade::checkCollision(GameObject* theEnemy) {
     
     float xDiff = position_.x-theEnemy->position_.x;
     float yDiff = position_.z-theEnemy->position_.z;

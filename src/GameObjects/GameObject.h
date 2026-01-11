@@ -45,4 +45,5 @@ public:
     float lifetime_ = 0.0f;
 
     bool takeable_ = false;
+    bool isProjectile_ = false;
 };

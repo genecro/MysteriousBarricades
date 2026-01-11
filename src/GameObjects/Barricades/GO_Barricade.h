@@ -3,6 +3,7 @@
 #include "../GameObject.h"
 //#include "../globals.h"
 #include "../Enemies/GO_Enemy.h"
+#include "../GO_Projectile.h"
 
 class GO_Barricade: public GameObject {
 public:
@@ -16,8 +17,10 @@ public:
     virtual void renderT3d() = 0;
     virtual void renderRdpq() = 0;
     virtual void processEnemy(GO_Enemy* theEnemy) = 0;
+    virtual void processProjectile(GO_Projectile* theProjectile);
     virtual void castSuccess() = 0;
-    bool checkCollision(GO_Enemy* theEnemy);
+    //bool checkCollision(GO_Enemy* theEnemy);
+    bool checkCollision(GameObject* theEnemy);
 
     void checkTimeLeft();
 

@@ -198,7 +198,7 @@ void GO_Cursor::handleInput() {
                 global::gameState->enemyList->cursorNotMakingBarricade();
 
                 if(global::gameState->barricadeList->gameObjects_->size() < totalBarricadeCt) {
-                    if(abs(barricadeEdgeRelativeToCursor.x) + abs(barricadeEdgeRelativeToCursor.z) > 2) {
+                    if(abs(barricadeEdgeRelativeToCursor.x) + abs(barricadeEdgeRelativeToCursor.z) > 1) {
                         global::gameState->barricadeList->push(
                             new GO_BarricadeStandard(
                                 groundMarkerPos,

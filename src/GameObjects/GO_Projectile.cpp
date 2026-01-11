@@ -4,14 +4,16 @@
 T3DModel* GO_Projectile::projectileModel = nullptr;
 uint8_t GO_Projectile::instanceCount = 0;
 
-GO_Projectile::GO_Projectile(T3DVec3 position, float angle, float speed) {
+GO_Projectile::GO_Projectile(T3DVec3 position, float angle, float speed, GameObject* origin, float damage=20) {
     position_ = position;
     lifetime_ = 0;
 
     angle_ = angle - T3D_PI/2.0f;
     speed_ = speed;
 
-    objectWidth_ = 3;
+    objectWidth_ = 1;
+
+    damage_ = damage;
 
     objColor_ = (color_t){0xFF, 0, 0, 0xFF};
 
@@ -22,6 +24,9 @@ GO_Projectile::GO_Projectile(T3DVec3 position, float angle, float speed) {
     if(!projectileModel) {
         projectileModel = t3d_model_load("rom:/projectile.t3dm");
     }
+
+    isProjectile_ = true;
+    origin_ = origin;
 }
 
 GO_Projectile::~GO_Projectile() {

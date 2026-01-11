@@ -36,8 +36,8 @@ namespace global
 
     extern struct gameProgress_t {
         bool level1Unlocked = true;
-        bool level2Unlocked = false;
-        bool boss1Unlocked = false;
+        bool level2Unlocked = true;
+        bool boss1Unlocked = true;
         uint8_t numBarricades = 3;
         uint8_t rpCapacity = 100;
         float repairSpeedMultiplier = 0.2f;

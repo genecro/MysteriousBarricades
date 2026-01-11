@@ -33,8 +33,8 @@ public:
     void pushAwayFromRepairable(GO_Repairable* repairable, float distance);
     void receiveDamage(float damageAmount);
 
-    virtual void cursorMakingBarricade(T3DVec3 cursorPos) = 0;
-    virtual void cursorNotMakingBarricade() = 0;
+    virtual void cursorMakingBarricade(T3DVec3 cursorPos);
+    virtual void cursorNotMakingBarricade();
 
     int enemyState_;
 
@@ -46,7 +46,9 @@ public:
     float attackDamage;
     float attackAnimDistance;
     T3DVec3 attackAnimOffset{0,0,0};
-    virtual void attackTarget() = 0;
+    virtual void attackTarget();
+
+    virtual void processProjectile(GO_Projectile* theProjectile);
 
     float HPBarTotalLength_;
     float HPBarCurrentLength_;
@@ -54,10 +56,10 @@ public:
     float speed_;
     //float lifetime_ = 0;
 
-    bool isStunned_;
-    float stunCooldown_;
+    bool isStunned_ = false;
+    float stunCooldown_ = 0.0f;
 
-    bool isInvincible_;
+    bool isInvincible_ = false;
 
     bool displayModel_ = true;
 

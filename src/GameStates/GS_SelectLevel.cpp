@@ -73,7 +73,7 @@ void GS_SelectLevel::handleInput() {
             }
             else if(btn.a) {
                 global::audioManager->playSFX("rom:/pierce6.wav64", {.volume = 0.7f});
-                //global::GameInterruptStack->push_back(new GI_FadeToNextGS<GS_Boss01>((T3DVec3){0,0,0}, 1200.0f));
+                global::GameInterruptStack->push_back(new GI_FadeToNextGS<GS_Boss1>((T3DVec3){10,10,-10}, 1200.0f));
             }
         break;
     }

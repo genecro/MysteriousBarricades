@@ -1,4 +1,5 @@
 #include "GO_RepairableTower.h"
+#include "../../globals.h"
 
 T3DModel* GO_RepairableTower::towerModel = nullptr;
 uint8_t GO_RepairableTower::instanceCount = 0;
@@ -55,4 +56,13 @@ void GO_RepairableTower::renderT3d() {
     rdpq_set_prim_color(objColor_);
     t3d_matrix_set(towerMatFP, true);
     t3d_model_draw(towerModel);
+}
+
+void GO_RepairableTower::processProjectile(GO_Projectile* theProjectile) {
+    if(abs(theProjectile->position_.x - position_.x) < theProjectile->objectWidth_ + objectWidth_ &&
+        abs(theProjectile->position_.z - position_.z) < theProjectile->objectWidth_ + objectWidth_) {
+        HPCurrent_ -= theProjectile->damage_;
+        global::audioManager->playSFX("thud5.wav64", {.volume = 0.4f});
+        theProjectile->timeToDelete = true;
+    }
 }

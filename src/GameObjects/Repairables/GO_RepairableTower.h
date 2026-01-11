@@ -15,6 +15,8 @@ public:
     virtual void renderT3d() override;
     virtual void renderRdpq() override;
 
+    virtual void processProjectile(GO_Projectile* theProjectile);
+
 private:
     T3DMat4 towerMat;
     T3DMat4FP *towerMatFP;

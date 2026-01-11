@@ -1,6 +1,7 @@
 #pragma once
 
 #include "../GameObject.h"
+#include "../GO_Projectile.h"
 //#include "../../globals.h"
 
 class GO_Repairable: public GameObject {
@@ -24,6 +25,8 @@ public:
 
     void updateRepelRing();
     void renderRepelRing();
+
+    virtual void processProjectile(GO_Projectile* theProjectile);
 
     float repelEnemyAngleMin_;
     float repelEnemyAngleMax_;

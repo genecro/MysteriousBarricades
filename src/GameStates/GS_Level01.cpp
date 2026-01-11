@@ -127,7 +127,7 @@ void GS_Level01::handleInput() {
     }
 
     if(btn.c_up) {
-        objectList->push(new GO_Projectile((T3DVec3){0,10,0}, 3.0f*T3D_PI/4.0f, 0.3f));
+        objectList->push(new GO_Projectile((T3DVec3){0,5,0}, 3.0f*T3D_PI/4.0f, 0.3f, nullptr));
     }
 
     float borderScale = 0.8f;
@@ -156,6 +156,7 @@ void GS_Level01::update() {
 
     objectList->update(theCursor->groundMarkerPos);
     enemyBarricadeCheck();
+    projectileBarricadeCheck();
     barricadeList->update();
     enemyList->update();
     //enemyRepairableCheck();

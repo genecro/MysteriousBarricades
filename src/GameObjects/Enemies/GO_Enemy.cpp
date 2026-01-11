@@ -71,6 +71,8 @@ void GO_Enemy::pushAwayFromRepairable(GO_Repairable* repairable, float distance)
         distance*fm_sinf(repelAngle), 
         0, 
         -distance*fm_cosf(repelAngle)};
+
+    attackAnimOffset = {0, 0, 0};
 }
 
 void GO_Enemy::receiveDamage(float damageAmount) {
@@ -108,4 +110,19 @@ void GO_Enemy::stun(float stunTimeSeconds) {
     isStunned_ = true;
     isInvincible_ = true;
     stunCooldown_ = stunTimeSeconds*60.f;
+}
+
+void GO_Enemy::cursorMakingBarricade(T3DVec3 cursorPos) {
+
+}
+void GO_Enemy::cursorNotMakingBarricade() {
+
+}
+
+void GO_Enemy::attackTarget() {
+
+}
+
+void GO_Enemy::processProjectile(GO_Projectile* theProjectile) {
+
 }

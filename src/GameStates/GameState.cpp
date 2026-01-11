@@ -2,6 +2,7 @@
 //#include "../GameObjects/GO.h"
 //#include "../GameInterrupts/GI.h"
 #include "../globals.h"
+//#include "GameObject.h"
 
 #define CAMERA_ROTATE_SPEED 0.05f
 #define CAMERA_DISTANCE_SPEED 5.0f
@@ -171,6 +172,36 @@ void GameState::updateCamera() {
     }
 }
 
+void GameState::projectileBarricadeCheck() {
+    for(GameObject* p : *(objectList->gameObjects)) {
+        if(p->isProjectile_) {
+            for(GO_Barricade* b: *(barricadeList->gameObjects_)) {
+                b->processProjectile((GO_Projectile*)p);
+            }
+        }
+    }
+}
+
+void GameState::projectileEnemyCheck() {
+    for(GameObject* p : *(objectList->gameObjects)) {
+        if(p->isProjectile_) {
+            for(GO_Enemy* e: *(enemyList->gameObjects_)) {
+                e->processProjectile((GO_Projectile*)p);
+            }
+        }
+    }
+}
+
+void GameState::projectileRepairableCheck() {
+    for(GameObject* p : *(objectList->gameObjects)) {
+        if(p->isProjectile_) {
+            for(GO_Repairable* r: *(repairableList->repairables)) {
+                r->processProjectile((GO_Projectile*)p);
+            }
+        }
+    }
+}
+
 void GameState::enemyBarricadeCheck() {
     for(GO_Barricade* b: *(barricadeList->gameObjects_)) {
         for(GO_Enemy* e: *(enemyList->gameObjects_)) {
@@ -228,5 +259,5 @@ void GameState::barricadeCastFailed() {
 }
 
 void GameState::triedToCastWithoutSlots() {
-    
+
 }
