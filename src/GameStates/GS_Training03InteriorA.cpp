@@ -36,12 +36,17 @@ GS_Training03InteriorA::GS_Training03InteriorA(T3DVec3 startingPlayerPos) {
     initCamera();
 
     objectList = new GameObjectList();
+    barricadeList = new BarricadeList();
+    enemyList = new EnemyList(&collisionTris);
 }
 
 GS_Training03InteriorA::~GS_Training03InteriorA() {
     t3d_model_free(envModel);
     free_uncached(envMatFP);
     delete objectList;
+    delete barricadeList;
+    delete enemyList;
+    delete thePlayer_;
 }
 
 void GS_Training03InteriorA::handleInput() {
@@ -57,6 +62,7 @@ void GS_Training03InteriorA::handleInput() {
     thePlayer_->handleInput();
     handleInputCamera();
     objectList->handleInput();
+    barricadeList->handleInput();
 }
 
 void GS_Training03InteriorA::update() {
@@ -73,6 +79,9 @@ void GS_Training03InteriorA::update() {
     t3d_mat4_to_fixed(envMatFP, &envMat);
 
     objectList->update(thePlayer_->position_);
+    barricadeList->update();
+    enemyBarricadeCheck();
+    projectileBarricadeCheck();
 }
 
 void GS_Training03InteriorA::renderT3d() {
@@ -92,11 +101,13 @@ void GS_Training03InteriorA::renderT3d() {
     t3d_matrix_set(envMatFP, true);
     t3d_model_draw(envModel);
     thePlayer_->renderT3d();
+    barricadeList->renderT3d();
     t3d_matrix_pop(1);
 }
 
 void GS_Training03InteriorA::renderRdpq() {
     objectList->renderRdpq();
+    barricadeList->renderRdpq();
     thePlayer_->renderRdpq();
 }
 

@@ -54,6 +54,7 @@ protected:
     int frameIdx = 0;
 
     int playerState_ = PLAYER_STATE_BASE;
+    float barrierSize = 5.0f;
 
     T3DVec3 moveDir;
     bool grounded;
@@ -77,6 +78,16 @@ protected:
     T3DMat4FP* groundMarkerEdgeMatFP1;
     T3DMat4FP* groundMarkerEdgeMatFP2;
     T3DModel* groundMarkerModel;
+
+    int totalBarricadeCt;
+    sprite_t* barricadeIndicatorFull;
+    sprite_t* barricadeIndicatorEmpty;
+    bool displayBarricadeIndicator = true;
+    float barricadeIndicatorBlinkTimer = 0;
+    float barricadeIndicatorBlinkTimerMax = 3*60;
+
+    T3DVec3 groundMarkerPos = (T3DVec3){0,0,0};
+    T3DVec3 barricadeEdgeRelativeToCursor = (T3DVec3){0,0,0};
 
     color_t cursorColorBase = color_t{255, 40, 0, 150};
     color_t cursorColorRepair = color_t{0, 255, 0, 150};
