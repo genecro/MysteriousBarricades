@@ -4,11 +4,6 @@
 #include <t3d/t3d.h>
 #include <t3d/t3dmath.h>
 #include <t3d/t3dmodel.h>
-#include "GameStates/GS_Intro.h"
-#include "GameStates/GS_Level01.h"
-#include "GameStates/GS_Training04.h"
-#include "GameStates/GS_Training01.h"
-#include "GameStates/GS_Training02.h"
 #include "GameStates/GS.h"
 #include "globals.h"
 #include "Fonts.h"
@@ -48,9 +43,10 @@ int main(void)
     global::GameInterruptStack = new std::vector<GameInterrupt*>();
 
     //global::gameState = new GS_Intro();
-    global::gameState = new GS_Menu();
+    //global::gameState = new GS_Menu();
     //global::gameState = new GS_Level01((T3DVec3){0, 10, 0});
     //global::gameState = new GS_Training02((T3DVec3){0, 10, 0});
+    global::gameState = new GS_Training03InteriorA((T3DVec3){0,0,0});
 
     //zbuffer = surface_alloc(FMT_RGBA16, display_get_width(), display_get_height());
 

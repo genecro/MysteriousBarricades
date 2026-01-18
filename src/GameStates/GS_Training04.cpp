@@ -33,11 +33,11 @@ GS_Training04::GS_Training04(T3DVec3 startingCursorPosition) {
     enemyList = new EnemyList(&collisionTris);
 
     global::GameInterruptStack->push_back(
-            (new GI_Alert("Training Tower, 4th Floor:\nProjectiles", true))
+            (new GI_Alert("Training Tower, 4th Floor:\nProjectiles", true, true))
             ->setNextInterrupt(
-            (new GI_Alert("Test 02"))
+            (new GI_Alert("Test 02", true))
             ->setNextInterrupt(
-            (new GI_Alert("Test 03"))
+            (new GI_Alert("Test 03", true))
         )));
 }
 
@@ -136,11 +136,11 @@ void GS_Training04::updateCamera() {
 
 void GS_Training04::levelWon() {
     enemyList->destroyAllEnemies();
-    global::GameInterruptStack->push_back(new GI_Alert("You won!"));
+    global::GameInterruptStack->push_back(new GI_Alert("You won!", false));
 }
 
 void GS_Training04::levelLost() {
-    global::GameInterruptStack->push_back(new GI_Alert("You lost!"));
+    global::GameInterruptStack->push_back(new GI_Alert("You lost!", false));
 }
 
 void GS_Training04::checkForWinOrLoss() {

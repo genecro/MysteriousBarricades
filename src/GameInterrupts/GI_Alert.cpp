@@ -5,11 +5,13 @@
 #define SCREEN_PADDING 25
 #define BOX_HEIGHT 75
 
-GI_Alert::GI_Alert(std::string name, bool titleText = false) {
+GI_Alert::GI_Alert(std::string name, bool isPause, bool titleText = false) {
     titleText_ = titleText;
     name_ = name;
 
     numLines = std::count(name_.begin(), name_.end(), '\n') + 1;
+
+    pauseInterrupt = isPause;
 }
 
 GI_Alert::~GI_Alert() {

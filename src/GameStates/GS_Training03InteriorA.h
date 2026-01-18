@@ -1,34 +1,25 @@
 #pragma once
 
 #include "GameState.h"
+//#include "../GameObjects/GO_Player.h"
 
-
-class GS_Level01 : public GameState {
+class GS_Training03InteriorA : public GameState {
 public:
-    GS_Level01(T3DVec3 startingCursorPosition);
-    ~GS_Level01();
+    GS_Training03InteriorA(T3DVec3 playerStartingPos);
+    ~GS_Training03InteriorA();
 
     virtual void handleInput() override;
     virtual void update() override;
     virtual void renderT3d() override;
     virtual void renderRdpq() override;
 
-    void checkForWinOrLoss() override;
-
-    void levelWon() override;
-    void levelLost() override;
-
-    
+    //GO_Player* thePlayer_;
 
 private:
     uint8_t colorAmbient[4] = {80, 80, 100, 0xFF};
 
-    uint8_t colorDir[4]     = {0xEE, 0xAA, 0xAA, 0xFF};
-    T3DVec3 lightDirVec;
-
-    
+    T3DViewport viewport;
     T3DMat4FP* envMatFP;
-    float scaleFactor;
 
     void initCamera() override;
     void handleInputCamera() override;

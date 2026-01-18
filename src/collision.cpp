@@ -211,7 +211,9 @@ bool collision::raycastGround(const T3DVec3& playerPos, const std::vector<Triang
 
 T3DVec3 collision::closestPointOnSegment(const T3DVec3& p, const T3DVec3& lineA, const T3DVec3& lineB, T3DVec3 best = (T3DVec3){{9999.0f, 9999.0f, 9999.0f}}){
     T3DVec3 ab = lineB - lineA;
-    float t = t3d_vec3_dot(p - lineA, ab) / t3d_vec3_dot(ab, ab);
+    float denom = t3d_vec3_dot(ab,ab);
+    if(denom==0) denom = 0.0000001;
+    float t = t3d_vec3_dot(p - lineA, ab) / denom;//t3d_vec3_dot(ab, ab);
     
     if(t < 0.0f) {
         t = 0.0f;

@@ -89,6 +89,7 @@ void GO_Enemy::setStateAttacking(GO_Repairable* target) {
     lifetime_ = 0;
     enemyState_ = global::ENEMY_STATE_ATTACKING;
     rotation_ = fm_atan2f(target_->position_.z - position_.z, target_->position_.x - position_.x);
+    global::gameState->enemiesAttackingStructure();
 }
 
 void GO_Enemy::setStateSeeking(GO_Repairable* target = nullptr) {

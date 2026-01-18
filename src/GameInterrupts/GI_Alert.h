@@ -9,7 +9,7 @@
 class GI_Alert : public GameInterrupt
 {
 public:
-    GI_Alert(std::string name, bool titleText = false);
+    GI_Alert(std::string name, bool isPause, bool titleText = false);
     virtual ~GI_Alert();
     virtual void handleInput() override;
     virtual void update() override;

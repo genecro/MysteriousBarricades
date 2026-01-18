@@ -16,7 +16,6 @@ public:
     void checkForWinOrLoss() override;
 
     void levelWon() override;
-    void levelLost() override;
 
     void barricadeCreated() override;
 

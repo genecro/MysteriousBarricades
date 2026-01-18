@@ -41,15 +41,15 @@ GS_Training02::GS_Training02(T3DVec3 startingCursorPosition) {
     }
 
     global::GameInterruptStack->push_back(
-            (new GI_Alert("Training Tower, 2nd Floor:\nEnemies", true))
+            (new GI_Alert("Training Tower, 2nd Floor:\nEnemies", true, true))
             ->setNextInterrupt(
-            (new GI_Alert("On this floor of the tower, you\ncan practice destroying enemies."))
+            (new GI_Alert("On this floor of the tower, you\ncan practice destroying enemies.", true))
             ->setNextInterrupt(
-            (new GI_Alert("You cannot attack enemies directly.\nYou must place barricades in\nfront of them."))
+            (new GI_Alert("You cannot attack enemies directly.\nYou must place barricades in\nfront of them.", true))
             ->setNextInterrupt(
-            (new GI_Alert("An enemy will be damaged, knocked\nback, and stunnned when it makes\ncontact with your barricade."))
+            (new GI_Alert("An enemy will be damaged, knocked\nback, and stunnned when it makes\ncontact with your barricade.", true))
             ->setNextInterrupt(
-            (new GI_Alert("Destroy all 3 enemies to complete\nthis floor of the Training Tower!"))
+            (new GI_Alert("Destroy all 3 enemies to complete\nthis floor of the Training Tower!", true))
         )))));
 
     global::GameInterruptStack->push_back(new GI_FadeIn(600));
@@ -158,7 +158,7 @@ void GS_Training02::updateCamera() {
 }
 
 void GS_Training02::levelWon() {
-    global::GameInterruptStack->push_back((new GI_Alert("Enemy training complete!"))
+    global::GameInterruptStack->push_back((new GI_Alert("Enemy training complete!", false))
         ->setNextInterrupt(
             (
                 new GI_MultiChoice(
@@ -169,10 +169,6 @@ void GS_Training02::levelWon() {
             )
         )    
     );
-}
-
-void GS_Training02::levelLost() {
-    global::GameInterruptStack->push_back(new GI_Alert("You lost!"));
 }
 
 void GS_Training02::checkForWinOrLoss() {
@@ -189,6 +185,6 @@ void GS_Training02::enemyDestroyed() {
 void GS_Training02::barricadeCastFailed() {
     if(!barricadeHasFailedOnce) {
         barricadeHasFailedOnce = true;
-        global::GameInterruptStack->push_back(new GI_Alert("Be careful! If an enemy is in\nthe way when casting a barricade,\nit won't materialize!"));
+        global::GameInterruptStack->push_back(new GI_Alert("Be careful! If an enemy is in\nthe way when casting a barricade,\nit won't materialize!", false));
     }
 }

@@ -49,7 +49,7 @@ template <typename T> void GO_Door<T>::handleInput() {
     joypad_buttons_t keys = joypad_get_buttons_pressed(JOYPAD_PORT_1);
 
     if(keys.a) {
-        float rotDiff = (this->rotation_ - T3D_PI) - global::thePlayer->rotation_;
+        float rotDiff = (this->rotation_ - T3D_PI) - global::gameState->thePlayer_->rotation_;
         if(rotDiff > T3D_PI) { 
             rotDiff -= 2.0f*T3D_PI;
         }
@@ -60,7 +60,7 @@ template <typename T> void GO_Door<T>::handleInput() {
         if(playerContact() &&
             abs(rotDiff) <= INTERACTION_ANGLE) {
             if(locked_) {
-                global::GameInterruptStack->push_back(new GI_Alert("You need a key."));
+                global::GameInterruptStack->push_back(new GI_Alert("You need a key.", false));
             }
             else {
                 global::GameInterruptStack->push_back(new GI_FadeToNextGS<T>(this->playerStartingPos_));

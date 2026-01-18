@@ -7,6 +7,12 @@ enum {
     CAM_MID = 1,
 };
 
+enum {
+    PLAYER_STATE_BASE = 0,
+    PLAYER_STATE_CURSOR = 1,
+    PLAYER_STATE_BARRICADE = 2,
+};
+
 class GO_Player : public GameObject
 {
 public:
@@ -36,11 +42,44 @@ public:
     int addItem(int id, int qty);
 
 protected:
-    T3DMat4 playerMat;
     T3DMat4FP* playerMatFP;
     T3DModel *modelPlayer;
     rspq_block_t *dplPlayer;
 
+    T3DSkeleton skel;
+    T3DSkeleton skelBlend;
+    T3DAnim animIdle;
+    T3DAnim animWalk;
+    float animBlend = 0.0f;
+    int frameIdx = 0;
+
+    int playerState_ = PLAYER_STATE_BASE;
+
     T3DVec3 moveDir;
     bool grounded;
+
+    T3DVec3 cursorPos_;
+    float cursorRotation_ = 0;
+    float cursorHeight_ = 12.0f;
+
+    T3DMat4 cursorMat;
+    T3DMat4 cursorEdgeMat1;
+    T3DMat4 cursorEdgeMat2;
+    T3DMat4FP* cursorMatFP;
+    T3DMat4FP* cursorEdgeMatFP1;
+    T3DMat4FP* cursorEdgeMatFP2;
+    T3DModel* cursorModel;
+
+    T3DMat4 groundMarkerMat;
+    T3DMat4 groundMarkerEdgeMat1;
+    T3DMat4 groundMarkerEdgeMat2;
+    T3DMat4FP* groundMarkerMatFP;
+    T3DMat4FP* groundMarkerEdgeMatFP1;
+    T3DMat4FP* groundMarkerEdgeMatFP2;
+    T3DModel* groundMarkerModel;
+
+    color_t cursorColorBase = color_t{255, 40, 0, 150};
+    color_t cursorColorRepair = color_t{0, 255, 0, 150};
+    color_t cursorColor = cursorColorBase;
+    color_t groundMarkerColor = color_t{0, 255, 255, 255};
 };

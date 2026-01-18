@@ -33,15 +33,15 @@ GS_Training01::GS_Training01(T3DVec3 startingCursorPosition) {
     enemyList = new EnemyList(&collisionTris);
 
     global::GameInterruptStack->push_back(
-            (new GI_Alert("Training Tower, 1st Floor:\nBarricades", true))
+            (new GI_Alert("Training Tower, 1st Floor:\nBarricades", false, true))
             ->setNextInterrupt(
-            (new GI_Alert("On this floor of the tower, you can\npractice casting barricades."))
+            (new GI_Alert("On this floor of the tower, you can\npractice casting barricades.", false))
             ->setNextInterrupt(
-            (new GI_Alert("Hold the A button and tilt the\ncontrol stick."))
+            (new GI_Alert("Hold the A button and tilt the\ncontrol stick.", false))
             ->setNextInterrupt(
-            (new GI_Alert("Release the A button to cast a\nbarricade aligned with the\nfloating cursors."))
+            (new GI_Alert("Release the A button to cast a\nbarricade aligned with the\nfloating cursors.", false))
             ->setNextInterrupt(
-            (new GI_Alert("Create 10 barricades to complete\nthis floor of the Training Tower!"))
+            (new GI_Alert("Create 10 barricades to complete\nthis floor of the Training Tower!", false))
         )))));
     
     global::GameInterruptStack->push_back(new GI_FadeIn(600));
@@ -145,7 +145,7 @@ void GS_Training01::updateCamera() {
 
 void GS_Training01::levelWon() {
     //enemyList->destroyAllEnemies();
-    global::GameInterruptStack->push_back((new GI_Alert("Barricade training complete!"))
+    global::GameInterruptStack->push_back((new GI_Alert("Barricade training complete!", false))
         ->setNextInterrupt(
             (
                 new GI_MultiChoice(
@@ -156,10 +156,6 @@ void GS_Training01::levelWon() {
             )
         )    
     );
-}
-
-void GS_Training01::levelLost() {
-    global::GameInterruptStack->push_back(new GI_Alert("You lost!"));
 }
 
 void GS_Training01::checkForWinOrLoss() {
@@ -175,8 +171,8 @@ void GS_Training01::barricadeCreated() {
 
 void GS_Training01::triedToCastWithoutSlots() {
     if(!slotsAlertHasBeenShown) {
-    global::GameInterruptStack->push_back((new GI_Alert("You can only have " + std::to_string(global::gameProgress.numBarricades) + " active\nbarricades at one time."))
-                            ->setNextInterrupt(new GI_Alert("Keep an eye on your barricade\ntracker at the top of the screen.")));
+    global::GameInterruptStack->push_back((new GI_Alert("You can only have " + std::to_string(global::gameProgress.numBarricades) + " active\nbarricades at one time.", false))
+                            ->setNextInterrupt(new GI_Alert("Keep an eye on your barricade\ntracker at the top of the screen.", false)));
     slotsAlertHasBeenShown = true;
     }
 }

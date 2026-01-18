@@ -30,9 +30,11 @@ GO_EnemyBasic::GO_EnemyBasic(T3DVec3 pos, GO_Repairable* target, bool dropItem =
 
     if(target_) {
         targetPos_ = target_->position_;
+        rotation_ = fm_atan2f(targetPos_.z - position_.z, targetPos_.x - position_.x) + (((float)rand() / (float)RAND_MAX)*(T3D_PI / 2.0f) - (T3D_PI / 4.0f));
     }
     else {
         targetPos_ = (T3DVec3){0,0,0};
+        rotation_ = (float)rand()/(float)RAND_MAX * 2 * T3D_PI;
     }
 
     //debugf("targetPos_.x = %.2f\n", targetPos_.x);
@@ -40,7 +42,7 @@ GO_EnemyBasic::GO_EnemyBasic(T3DVec3 pos, GO_Repairable* target, bool dropItem =
 
     //rotation_ = fm_atan2f(target_->position_.z - position_.z, target_->position_.x - position_.x) + (((float)rand() / (float)RAND_MAX)*(T3D_PI / 2.0f) - (T3D_PI / 4.0f));
     //rotation_ = fm_atan2f(targetPos_.z - position_.z, targetPos_.x - position_.x) + (((float)rand() / (float)RAND_MAX)*(T3D_PI / 2.0f) - (T3D_PI / 4.0f));
-    rotation_ = (float)rand()/(float)RAND_MAX * 2 * T3D_PI;
+    //rotation_ = (float)rand()/(float)RAND_MAX * 2 * T3D_PI;
     intendedRotation_ = rotation_;
     rotationIncrement_ = T3D_PI / 128.0f;
 

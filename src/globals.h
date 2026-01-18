@@ -27,7 +27,7 @@ namespace global
 
     extern float elapsedSeconds;
     extern std::vector<GameInterrupt*>* GameInterruptStack;
-    extern GO_Player* thePlayer;
+    //extern GO_Player* thePlayer;
     extern GameState* gameState;
     extern std::stack<GameState*>* GameStateStack;
     extern float frameTimeMultiplier;
@@ -35,9 +35,11 @@ namespace global
     extern Audio* audioManager;
 
     extern struct gameProgress_t {
+        bool training2Unlocked = false;
+        bool training3Unlocked = false;
         bool level1Unlocked = true;
-        bool level2Unlocked = true;
-        bool boss1Unlocked = true;
+        bool level2Unlocked = false;
+        bool boss1Unlocked = false;
         uint8_t numBarricades = 3;
         uint8_t rpCapacity = 100;
         float repairSpeedMultiplier = 0.2f;

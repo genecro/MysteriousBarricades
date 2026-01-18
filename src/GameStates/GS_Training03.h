@@ -19,6 +19,8 @@ public:
     void levelLost() override;
 
     void barricadeCastFailed() override;
+    void enemiesAttackingStructure() override;
+    void enemyDestroyed() override;
 
     
 
@@ -29,6 +31,8 @@ private:
     T3DVec3 lightDirVec;
 
     bool barricadeHasFailedOnce = false;
+    bool alertedEnemiesAttackingOnce = false;
+    bool alertedRPBoostOnce = false;
 
     T3DMat4FP* envMatFP;
     float scaleFactor = 0.05f;
@@ -37,5 +41,6 @@ private:
     void handleInputCamera() override;
     void updateCamera() override;
 
+    bool introAlertShown = false;
     
 };

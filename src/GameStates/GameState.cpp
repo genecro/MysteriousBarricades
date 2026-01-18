@@ -44,43 +44,43 @@ void GameState::handleInputCamera() {
     joypad_buttons_t keys = joypad_get_buttons_pressed(JOYPAD_PORT_1);
     
     if(keys.c_left) {
-        if(global::thePlayer->camState_.followPlayerRot) {
-            global::thePlayer->camState_.followPlayerRot = false;
+        if(global::gameState->thePlayer_->camState_.followPlayerRot) {
+            global::gameState->thePlayer_->camState_.followPlayerRot = false;
             camera.targetRotAngle = round(camera.rotAngle * 4.0 / T3D_PI) * T3D_PI * 0.25;
         }
         camera.targetRotAngle -= constants.cRotAngle;
     }
 
     if(keys.c_right) {
-        if(global::thePlayer->camState_.followPlayerRot) {
-            global::thePlayer->camState_.followPlayerRot = false;
+        if(global::gameState->thePlayer_->camState_.followPlayerRot) {
+            global::gameState->thePlayer_->camState_.followPlayerRot = false;
             camera.targetRotAngle = round(camera.rotAngle * 4.0 / T3D_PI) * T3D_PI * 0.25;
         }
         camera.targetRotAngle += constants.cRotAngle;
     }
 
     if(keys.r) {
-        global::thePlayer->camState_.followPlayerRot = !global::thePlayer->camState_.followPlayerRot;
-        if(!global::thePlayer->camState_.followPlayerRot) {
+        global::gameState->thePlayer_->camState_.followPlayerRot = !global::gameState->thePlayer_->camState_.followPlayerRot;
+        if(!global::gameState->thePlayer_->camState_.followPlayerRot) {
             camera.targetRotAngle = round(camera.rotAngle * 4.0 / T3D_PI) * T3D_PI * 0.25;
         }
         else {
-            camera.rotAngle = -global::thePlayer->rotation_;
+            camera.rotAngle = -global::gameState->thePlayer_->rotation_;
         }
     }
 
-    if(keys.c_down && global::thePlayer->camState_.closeness < CAM_MID) {
-        global::thePlayer->camState_.closeness++;
-        if(global::thePlayer->camState_.closeness==CAM_MID) {
+    if(keys.c_down && global::gameState->thePlayer_->camState_.closeness < CAM_MID) {
+        global::gameState->thePlayer_->camState_.closeness++;
+        if(global::gameState->thePlayer_->camState_.closeness==CAM_MID) {
             camera.targetDistanceFromPlayer=constants.midDistanceFromPlayer;
             camera.targetHeightFromPlayer=constants.midHeightFromPlayer;
             camera.targetFOV = constants.midFOV;
         }
     }
 
-    if(keys.c_up && global::thePlayer->camState_.closeness > CAM_CLOSE) {
-        global::thePlayer->camState_.closeness--;
-        if(global::thePlayer->camState_.closeness==CAM_CLOSE) {
+    if(keys.c_up && global::gameState->thePlayer_->camState_.closeness > CAM_CLOSE) {
+        global::gameState->thePlayer_->camState_.closeness--;
+        if(global::gameState->thePlayer_->camState_.closeness==CAM_CLOSE) {
             camera.targetDistanceFromPlayer=constants.closeDistanceFromPlayer;
             camera.targetHeightFromPlayer=constants.closeHeightFromPlayer;
             camera.targetFOV = constants.closeFOV;
@@ -151,23 +151,23 @@ void GameState::updateCamera() {
         }
     }
 
-    if(global::thePlayer->camState_.followPlayerRot){
-        camera.rotAngle = -global::thePlayer->rotation_ - 0.5*T3D_PI;
+    if(global::gameState->thePlayer_->camState_.followPlayerRot){
+        camera.rotAngle = -global::gameState->thePlayer_->rotation_ - 0.5*T3D_PI;
     }
     
     camera.pos = {{
-        global::thePlayer->position_.x + camera.distanceFromPlayer * fm_sinf(camera.rotAngle),
-        global::thePlayer->position_.y + camera.heightFromPlayer,
-        global::thePlayer->position_.z + camera.distanceFromPlayer * fm_cosf(camera.rotAngle)
+        global::gameState->thePlayer_->position_.x + camera.distanceFromPlayer * fm_sinf(camera.rotAngle),
+        global::gameState->thePlayer_->position_.y + camera.heightFromPlayer,
+        global::gameState->thePlayer_->position_.z + camera.distanceFromPlayer * fm_cosf(camera.rotAngle)
     }};
 
-    camera.target = global::thePlayer->position_ - (T3DVec3){{0, global::thePlayer->objectWidth_, 0}};
+    camera.target = global::gameState->thePlayer_->position_ - (T3DVec3){{0, global::gameState->thePlayer_->objectWidth_, 0}};
 
-    if(global::thePlayer->camState_.closeness==CAM_MID) {
+    if(global::gameState->thePlayer_->camState_.closeness==CAM_MID) {
         camera.target += {{0,5,0}};
     }
 
-    if(global::thePlayer->camState_.closeness==CAM_CLOSE) {
+    if(global::gameState->thePlayer_->camState_.closeness==CAM_CLOSE) {
         camera.target += {{0,10,0}};
     }
 }
@@ -259,5 +259,9 @@ void GameState::barricadeCastFailed() {
 }
 
 void GameState::triedToCastWithoutSlots() {
+
+}
+
+void GameState::enemiesAttackingStructure() {
 
 }

@@ -22,9 +22,11 @@ public:
 
     enum {
         SELECTION_TRAINING = 0,
-        SELECTION_LEVEL_1 = 1,
-        SELECTION_LEVEL_2 = 2,
-        SELECTION_BOSS1 = 3
+        SELECTION_TRAINING_2 = 1,
+        SELECTION_TRAINING_3 = 2,
+        SELECTION_LEVEL_1 = 3,
+        SELECTION_LEVEL_2 = 4,
+        SELECTION_BOSS1 = 5
     };
 
     uint8_t currSelection = SELECTION_TRAINING;
@@ -47,6 +49,10 @@ private:
 
     uint8_t trainingBoxX = 80;
     uint8_t trainingBoxY = 70;
+    uint8_t training2BoxX = 120;
+    uint8_t training2BoxY = 70;
+    uint8_t training3BoxX = 160;
+    uint8_t training3BoxY = 70;
     uint8_t level01BoxX = 80;
     uint8_t level01BoxY = 110;
     uint8_t level02BoxX = 120;

@@ -164,13 +164,13 @@ void GS_Boss1::updateCamera() {
 
 void GS_Boss1::levelWon() {
     enemyList->destroyAllEnemies();
-    global::GameInterruptStack->push_back(new GI_Alert("You won!"));
+    global::GameInterruptStack->push_back(new GI_Alert("You won!", false));
     global::gameProgress.level2Unlocked = true;
     remainingEnemies = 0;
 }
 
 void GS_Boss1::levelLost() {
-    global::GameInterruptStack->push_back((new GI_Alert("A structure has fallen!\nThe enemies have prevailed!"))->setNextInterrupt(
+    global::GameInterruptStack->push_back((new GI_Alert("A structure has fallen!\nThe enemies have prevailed!", false))->setNextInterrupt(
         new GI_MultiChoice("Retry", new GI_FadeToNextGS<GS_Boss1>((T3DVec3){-10,10,10}, 1200.0f),
                         "Quit", new GI_FadeToNextGS<GS_SelectLevel>((T3DVec3){0,0,0}, 1200.0f)))
     );

@@ -11,6 +11,8 @@ GS_Level01::GS_Level01(T3DVec3 startingCursorPosition) {
     lightDirVec = {{-1.0f, 1.0f, 1.0f}};
     t3d_vec3_norm(&lightDirVec);
 
+    scaleFactor = 0.05f;
+
     envMatFP = (T3DMat4FP*)malloc_uncached(sizeof(T3DMat4FP));
     envModel = t3d_model_load("rom:/level01.t3dm");
     collisionTris = collision::loadCollTriangles("rom:/level01.bin");
@@ -226,13 +228,13 @@ void GS_Level01::updateCamera() {
 
 void GS_Level01::levelWon() {
     enemyList->destroyAllEnemies();
-    global::GameInterruptStack->push_back(new GI_Alert("You won!"));
+    global::GameInterruptStack->push_back(new GI_Alert("You won!", false));
     global::gameProgress.level2Unlocked = true;
     remainingEnemies = 0;
 }
 
 void GS_Level01::levelLost() {
-    global::GameInterruptStack->push_back(new GI_Alert("You lost!"));
+    global::GameInterruptStack->push_back(new GI_Alert("You lost!", false));
 }
 
 void GS_Level01::checkForWinOrLoss() {

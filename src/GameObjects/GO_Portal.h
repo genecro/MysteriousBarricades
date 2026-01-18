@@ -81,8 +81,8 @@ template <typename T> void GO_Portal<T>::renderRdpq() {
 }
 
 template <typename T> bool GO_Portal<T>::playerContact() {
-    float xp = global::thePlayer->position_.x;
-    float yp = global::thePlayer->position_.z;
+    float xp = global::gameState->thePlayer_->position_.x;
+    float yp = global::gameState->thePlayer_->position_.z;
 
     if(xp <= xmax+PADDING && xp >= xmin-PADDING && yp <= ymax+PADDING && yp >= ymin-PADDING) {
         return abs(A*xp+B*yp+C)/objectWidth_ <= TOUCHING_DISTANCE;

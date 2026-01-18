@@ -41,27 +41,11 @@ GS_Training03::GS_Training03(T3DVec3 startingCursorPosition) {
         -T3D_PI/4.0f)
     );
 
-    enemyList->push(new GO_EnemyBasic((T3DVec3){8,0,-8}, repairableList->getCurrRepairable()));
-    enemyList->push(new GO_EnemyBasic((T3DVec3){-8,0,-8}, repairableList->getCurrRepairable()));
+    enemyList->push(new GO_EnemyBasic((T3DVec3){4,0,2}, repairableList->getCurrRepairable()));
+    enemyList->push(new GO_EnemyBasic((T3DVec3){-4,0,2}, repairableList->getCurrRepairable()));
     for(auto e : *enemyList->gameObjects_) {
         e->isMoving_ = false;
     }
-
-    global::GameInterruptStack->push_back(
-            (new GI_Alert("Training Tower, 3rd Floor:\nStructures", true))
-            ->setNextInterrupt(
-            (new GI_Alert("On this floor of the Training Tower,\nyou can practice defending\nand repairing a structure."))
-            ->setNextInterrupt(
-            (new GI_Alert("Enemies will advance toward the\nstructure. If they get too close,\nthey will start attacking it."))
-            ->setNextInterrupt(
-            (new GI_Alert("Cast barricades to prevent\nenemies from reaching the structure."))
-            ->setNextInterrupt(
-            (new GI_Alert("Hold the B button over the structure\nto repair it with your Repair Points."))
-            ->setNextInterrupt(
-            (new GI_Alert("Destroy both enemies to complete\nthis floor of the Training Tower!"))
-        ))))));
-
-    global::GameInterruptStack->push_back(new GI_FadeIn(600));
 }
 
 GS_Training03::~GS_Training03() {
@@ -114,6 +98,24 @@ void GS_Training03::update() {
     barricadeList->update();
     enemyList->update();
     if(!endStateReached) checkForWinOrLoss();
+
+    if(!introAlertShown) {
+        introAlertShown = true;
+        global::GameInterruptStack->push_back(
+            (new GI_Alert("Training Tower, 3rd Floor:\nStructures", true, true))
+            ->setNextInterrupt(
+            (new GI_Alert("On this floor of the Training Tower,\nyou can practice defending\nand repairing a structure.", true))
+            ->setNextInterrupt(
+            (new GI_Alert("Enemies will advance toward the\nstructure. If they get too close,\nthey will start attacking it.", true))
+            ->setNextInterrupt(
+            (new GI_Alert("Cast barricades to prevent\nenemies from reaching the structure.", true))
+            ->setNextInterrupt(
+            (new GI_Alert("Hold the B button over the structure\nto repair it with your Repair Points.", true))
+            ->setNextInterrupt(
+            (new GI_Alert("Destroy both enemies to complete\nthis floor of the Training Tower!", true))
+        ))))));
+        global::GameInterruptStack->push_back(new GI_FadeIn(600));
+    }
 }
 
 void GS_Training03::renderT3d() {
@@ -167,23 +169,31 @@ void GS_Training03::updateCamera() {
 }
 
 void GS_Training03::levelWon() {
-    global::GameInterruptStack->push_back((new GI_Alert("Structure training complete!"))
+    /*
+    global::GameInterruptStack->push_back((new GI_Alert("Structure training complete!", false))
         ->setNextInterrupt(
             (
-                new GI_MultiChoice(
-                    "Next", new GI_FadeToNextGS<GS_Training03>((T3DVec3){0,10,0}, 600.0f),            
+                new GI_MultiChoice(         
                     "Retry", new GI_FadeToNextGS<GS_Training03>((T3DVec3){0,10,0}, 600.0f),
-                    "Quit", new GI_FadeToNextGS<GS_SelectLevel>((T3DVec3){0,0,0}, 600.0f)
+                    "Return to Level Select", new GI_FadeToNextGS<GS_SelectLevel>((T3DVec3){0,0,0}, 600.0f)
                 )
             )
         )    
-    );
+    );*/
+
+    /*if(repairableList->repairables->at(0)->HPCurrent_ < repairableList->repairables->at(0)->HPTotal_) {
+        global::GameInterruptStack->push_back((new GI_Alert("")))
+    }*/
+
+    global::GameInterruptStack->push_back((new GI_Alert("You have defeated the enemies!\nUse your repair points to repair\nthe structure.", false))->setNextInterrupt(
+        new GI_Alert("Structures with a treasure icon\nabove them will reward you\nfor fully repairing them.", false)
+    ));
 }
 
 void GS_Training03::levelLost() {
-    global::GameInterruptStack->push_back((new GI_Alert("The structure has fallen!\nThe enemies have prevailed."))
+    global::GameInterruptStack->push_back((new GI_Alert("The structure has fallen!\nThe enemies have prevailed.", false))
         ->setNextInterrupt(
-            (new GI_Alert("Please try this training floor again."))
+            (new GI_Alert("Please try this training floor again.", false))
         ->setNextInterrupt(
             (new GI_FadeToNextGS<GS_Training03>((T3DVec3){0,10,0}, 600.0f))
         )));
@@ -192,6 +202,7 @@ void GS_Training03::levelLost() {
 void GS_Training03::checkForWinOrLoss() {
     //if(enemiesDestroyed >= 2) {
     if(enemyList->gameObjects_->size() == 0) {
+    //if(repairableList->repairables->at(0)->HPCurrent_ >= repairableList->repairables->at(0)->HPTotal_ || theCursor->RPCurrent_ <= 0) {
         endStateReached = true;
         levelWon();
         return;
@@ -208,6 +219,22 @@ void GS_Training03::checkForWinOrLoss() {
 void GS_Training03::barricadeCastFailed() {
     if(!barricadeHasFailedOnce) {
         barricadeHasFailedOnce = true;
-        global::GameInterruptStack->push_back(new GI_Alert("Be careful! If an enemy is in\nthe way when casting a barricade,\nit won't materialize!"));
+        global::GameInterruptStack->push_back(new GI_Alert("Be careful! If an enemy is in\nthe way when casting a barricade,\nit won't materialize!", false));
+    }
+}
+
+void GS_Training03::enemiesAttackingStructure() {
+    if(!alertedEnemiesAttackingOnce) {
+        alertedEnemiesAttackingOnce = true;
+
+        global::GameInterruptStack->push_back((new GI_Alert("Enemies have started attacking\nthe structure! Move onto it\nand hold B to repel them.", true)));
+    }
+}
+
+void GS_Training03::enemyDestroyed() {
+    if(!alertedRPBoostOnce) {
+        alertedRPBoostOnce = true;
+
+        global::GameInterruptStack->push_back((new GI_Alert("Enemies drop Repair Points (RP).\nPick them up and use them\nto repair structures.", true)));
     }
 }

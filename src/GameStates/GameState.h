@@ -10,6 +10,7 @@
 #include "../GameObjects/Enemies/EnemyList.h"
 #include "../collision.h"
 #include "../GameObjects/GO_Cursor.h"
+#include "../GameObjects/GO_Player.h"
 
 
 struct TimedEvent {
@@ -63,12 +64,14 @@ public:
     int remainingEnemies = 0;
 
     GO_Cursor* theCursor;
+    GO_Player* thePlayer_;
     
 
     virtual void barricadeCreated();
     virtual void enemyDestroyed();
     virtual void barricadeCastFailed();
     virtual void triedToCastWithoutSlots();
+    virtual void enemiesAttackingStructure();
 
 
     
