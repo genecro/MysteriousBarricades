@@ -19,6 +19,10 @@ GO_RepairBoost::GO_RepairBoost(T3DVec3 position) {
     if(!repairModel) {
         repairModel = t3d_model_load("rom:/repairPoints.t3dm");
     }
+
+    rspq_block_begin();
+    t3d_model_draw(repairModel);
+    dplRepairBoost = rspq_block_end();
 }
 
 GO_RepairBoost::~GO_RepairBoost() {
@@ -28,6 +32,8 @@ GO_RepairBoost::~GO_RepairBoost() {
         t3d_model_free(repairModel);
         repairModel=nullptr;
     }
+
+    rspq_block_free(dplRepairBoost);
 }
 
 void GO_RepairBoost::handleInput() {
@@ -46,7 +52,8 @@ void GO_RepairBoost::update() {
 
 void GO_RepairBoost::renderT3d() {
     t3d_matrix_set(repairMatFP, true);
-    t3d_model_draw(repairModel);
+    //t3d_model_draw(repairModel);
+    rspq_block_run(dplRepairBoost);
 }
 
 void GO_RepairBoost::renderRdpq() {
@@ -55,6 +62,11 @@ void GO_RepairBoost::renderRdpq() {
 
 void GO_RepairBoost::consumeEffect() {
     global::audioManager->playSFX("mechaLevelUp3.wav64", {.volume = 0.4f});
-    global::gameState->theCursor->RPCurrent_ += 10;
+    if(global::gameState->theCursor->RPCurrent_ + repairAmount_ > global::gameState->theCursor->RPTotal_) {
+        global::gameState->theCursor->RPCurrent_ = global::gameState->theCursor->RPTotal_;
+    }
+    else {
+        global::gameState->theCursor->RPCurrent_ += repairAmount_;
+    }
     timeToDelete = true;
 }

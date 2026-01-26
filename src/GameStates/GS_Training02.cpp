@@ -41,18 +41,19 @@ GS_Training02::GS_Training02(T3DVec3 startingCursorPosition) {
     }
 
     global::GameInterruptStack->push_back(
-            (new GI_Alert("Training Tower, 2nd Floor:\nEnemies", true, true))
+            (new GI_Alert("Training Tower, 2nd Floor:\nEnemies", false, true))
             ->setNextInterrupt(
-            (new GI_Alert("On this floor of the tower, you\ncan practice destroying enemies.", true))
+            (new GI_Alert("On this floor of the tower, you\ncan practice destroying enemies.", false))
             ->setNextInterrupt(
-            (new GI_Alert("You cannot attack enemies directly.\nYou must place barricades in\nfront of them.", true))
+            (new GI_Alert("You cannot attack enemies directly.\nYou must place barricades in\nfront of them.", false))
             ->setNextInterrupt(
-            (new GI_Alert("An enemy will be damaged, knocked\nback, and stunnned when it makes\ncontact with your barricade.", true))
+            (new GI_Alert("An enemy will be damaged, knocked\nback, and stunnned when it makes\ncontact with your barricade.", false))
             ->setNextInterrupt(
-            (new GI_Alert("Destroy all 3 enemies to complete\nthis floor of the Training Tower!", true))
+            (new GI_Alert("Destroy all 3 enemies to complete\nthis floor of the Training Tower!", false))
         )))));
 
     global::GameInterruptStack->push_back(new GI_FadeIn(600));
+    global::audioManager->playBGM(BGM_TRAINING, 0.4f);
 }
 
 GS_Training02::~GS_Training02() {
@@ -60,6 +61,7 @@ GS_Training02::~GS_Training02() {
     free_uncached(envMatFP);
     delete objectList;
     delete repairableList;
+    delete barricadeList;
     delete enemyList;
     delete theCursor;
 }
@@ -158,6 +160,7 @@ void GS_Training02::updateCamera() {
 }
 
 void GS_Training02::levelWon() {
+    global::gameProgress.training3Unlocked = true;
     global::GameInterruptStack->push_back((new GI_Alert("Enemy training complete!", false))
         ->setNextInterrupt(
             (

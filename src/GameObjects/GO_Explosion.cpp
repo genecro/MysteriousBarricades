@@ -16,6 +16,10 @@ GO_Explosion::GO_Explosion(T3DVec3 position, float size, color_t color, float li
     if(!explosionModel) {
         explosionModel = t3d_model_load("rom:/explosion.t3dm");
     }
+
+    rspq_block_begin();
+    t3d_model_draw(explosionModel);
+    dplExplosion = rspq_block_end();
 }
 
 GO_Explosion::~GO_Explosion() {
@@ -25,6 +29,8 @@ GO_Explosion::~GO_Explosion() {
         t3d_model_free(explosionModel);
         explosionModel=nullptr;
     }
+
+    rspq_block_free(dplExplosion);
 }
 
 void GO_Explosion::handleInput() {
@@ -57,5 +63,6 @@ void GO_Explosion::renderT3d() {
 
     rdpq_set_prim_color(explosionColor_);
     t3d_matrix_set(explosionMatFP, true);
-    t3d_model_draw(explosionModel);
+    //t3d_model_draw(explosionModel);
+    rspq_block_run(dplExplosion);
 }

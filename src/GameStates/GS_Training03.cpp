@@ -32,20 +32,27 @@ GS_Training03::GS_Training03(T3DVec3 startingCursorPosition) {
     barricadeList = new BarricadeList();
     enemyList = new EnemyList(&collisionTris);
 
-    repairableList->push(new GO_RepairableTower(
+    GO_RepairableTower* newTower = new GO_RepairableTower(
         (T3DVec3){0,0,8}, 
         100, 
-        80, 
+        60, 
         (color_t){0x77, 0, 0xFF, 0xFF}, 
         -3.0f*T3D_PI/4.0f, 
-        -T3D_PI/4.0f)
-    );
+        -T3D_PI/4.0f);
+    
+    newTower->setRewardFunction([&](){
+        global::gameState->nextStatePush = new GS_Training03InteriorA((T3DVec3){0,0,80});
+    }, global::gameProgress.trainingRewardReceived);
+
+    repairableList->push(newTower);
 
     enemyList->push(new GO_EnemyBasic((T3DVec3){4,0,2}, repairableList->getCurrRepairable()));
     enemyList->push(new GO_EnemyBasic((T3DVec3){-4,0,2}, repairableList->getCurrRepairable()));
     for(auto e : *enemyList->gameObjects_) {
         e->isMoving_ = false;
     }
+    global::audioManager->playBGM(BGM_TRAINING, 0.4f);
+    
 }
 
 GS_Training03::~GS_Training03() {
@@ -54,6 +61,7 @@ GS_Training03::~GS_Training03() {
     delete objectList;
     delete repairableList;
     delete enemyList;
+    delete barricadeList;
     delete theCursor;
 }
 
@@ -115,6 +123,15 @@ void GS_Training03::update() {
             (new GI_Alert("Destroy both enemies to complete\nthis floor of the Training Tower!", true))
         ))))));
         global::GameInterruptStack->push_back(new GI_FadeIn(600));
+    }
+
+    if(!alertedStructureEntryOnce) {
+        if(repairableList->getCurrRepairable()->fullyRepaired) {
+            alertedStructureEntryOnce = true;
+            global::GameInterruptStack->push_back(
+                (new GI_Alert("Now that the structure is fully\nrepaired, press A to enter it.", false))
+            );
+        }
     }
 }
 
@@ -186,7 +203,7 @@ void GS_Training03::levelWon() {
     }*/
 
     global::GameInterruptStack->push_back((new GI_Alert("You have defeated the enemies!\nUse your repair points to repair\nthe structure.", false))->setNextInterrupt(
-        new GI_Alert("Structures with a treasure icon\nabove them will reward you\nfor fully repairing them.", false)
+        new GI_Alert("Structures with a treasure icon\nabove them will allow entry\nwhen fully repaired.", false)
     ));
 }
 
@@ -219,7 +236,7 @@ void GS_Training03::checkForWinOrLoss() {
 void GS_Training03::barricadeCastFailed() {
     if(!barricadeHasFailedOnce) {
         barricadeHasFailedOnce = true;
-        global::GameInterruptStack->push_back(new GI_Alert("Be careful! If an enemy is in\nthe way when casting a barricade,\nit won't materialize!", false));
+        global::GameInterruptStack->push_back(new GI_Alert("Be careful! If an enemy is in\nthe way when casting a barricade,\nit won't materialize!", true));
     }
 }
 
@@ -235,6 +252,6 @@ void GS_Training03::enemyDestroyed() {
     if(!alertedRPBoostOnce) {
         alertedRPBoostOnce = true;
 
-        global::GameInterruptStack->push_back((new GI_Alert("Enemies drop Repair Points (RP).\nPick them up and use them\nto repair structures.", true)));
+        global::GameInterruptStack->push_back((new GI_Alert("Enemies drop Repair Points (RP)\nwhen defeated. Pick them up and\nuse them to repair structures.", false)));
     }
 }

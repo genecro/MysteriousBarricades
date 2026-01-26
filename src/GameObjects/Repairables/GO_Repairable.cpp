@@ -14,6 +14,11 @@ GO_Repairable::GO_Repairable() {
         repelRingModel = t3d_model_load("rom:/repelRing.t3dm");
     }
 
+    /*
+    rspq_block_begin();
+    t3d_model_draw(repelRingModel);
+    dplRepelRing = rspq_block_end();
+    */
 }
 
 GO_Repairable::~GO_Repairable() {
@@ -23,6 +28,8 @@ GO_Repairable::~GO_Repairable() {
         t3d_model_free(repelRingModel);
         repelRingModel = nullptr;
     }
+
+    //rspq_block_free(dplRepelRing);
 }
 
 void GO_Repairable::updateHPBar() {
@@ -30,6 +37,7 @@ void GO_Repairable::updateHPBar() {
     HPBarTotalLength_ = HPTotal_*40.0f/100.0f;
 
     if(HPCurrent_ >= HPTotal_) {
+        if(!fullyRepaired) global::audioManager->playSFX("complexRise2.wav64", {.volume = 0.4f});
         fullyRepaired = true;
         HPCurrent_ = HPTotal_;
     }
@@ -70,8 +78,31 @@ void GO_Repairable::renderRepelRing() {
     rdpq_set_prim_color((color_t){0x00, 0xFF, 0x00, 0xFF});
     t3d_matrix_set(repelRingMatFP, true);
     t3d_model_draw(repelRingModel);
+    //rspq_block_run(dplRepelRing);
 }
 
 void GO_Repairable::processProjectile(GO_Projectile* theProjectile) {
 
+}
+
+GO_Repairable* GO_Repairable::setRewardFunction(std::function<void()> rewardFunction, bool rewardAlreadyReceived) {
+    rewardFunction_ = rewardFunction;
+    containsReward_ = true;
+    rewardAlreadyReceived_ = rewardAlreadyReceived;
+    return this;
+}
+
+void GO_Repairable::drawRewardIndicator() {
+    if(containsReward_) {
+        T3DVec3 output;
+        t3d_viewport_calc_viewspace_pos(global::gameState->viewport, output, position_+(T3DVec3){0,height_,0});
+
+        rdpq_sync_pipe();
+        rdpq_set_mode_standard();
+        rdpq_mode_alphacompare(1);
+
+        rdpq_sprite_blit(rewardAlreadyReceived_ ? rewardAlreadyReceivedSprite : fullyRepaired ? rewardIndicatorSprite : rewardIndicatorNotFullyRepairedSprite,
+            output.x, output.y,
+            &(rdpq_blitparms_t){});
+    }
 }

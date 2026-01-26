@@ -52,6 +52,11 @@ GO_EnemyRushToBarricade::GO_EnemyRushToBarricade(T3DVec3 pos, GO_Repairable* tar
     if(!enemyModel) {
         enemyModel = t3d_model_load("rom:/enemyRushToBarricade.t3dm");
     }
+    /*
+    rspq_block_begin();
+    t3d_model_draw(enemyModel);
+    dplEnemy = rspq_block_end();
+    */
 }
 
 GO_EnemyRushToBarricade::GO_EnemyRushToBarricade(T3DVec3 pos, T3DVec3 targetPos, bool dropItem = true) : GO_EnemyRushToBarricade(pos, nullptr, dropItem) {
@@ -195,6 +200,7 @@ void GO_EnemyRushToBarricade::renderT3d() {
         rdpq_set_prim_color(objColor_);
         t3d_matrix_set(enemyMatFP, true);
         t3d_model_draw(enemyModel);
+        //rspq_block_run(dplEnemy);
     }
 }
 

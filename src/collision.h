@@ -25,6 +25,7 @@ typedef struct {
   T3DVec3 v0, v1, v2;
 } Triangle;
 
+//from tiny3d example 05_splitscreen
 static void resolve_aabb_collision(const AABB *aabb, T3DVec3 *pos) {
 
   // Check if the point is inside the AABB

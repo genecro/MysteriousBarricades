@@ -20,4 +20,6 @@ private:
     static T3DModel* explosionModel;
 
     static uint8_t instanceCount;
+
+    rspq_block_t* dplExplosion;
 };

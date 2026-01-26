@@ -40,12 +40,17 @@ namespace global
         bool level1Unlocked = true;
         bool level2Unlocked = false;
         bool boss1Unlocked = false;
-        uint8_t numBarricades = 3;
+        uint8_t numBarricades = 2;
         uint8_t rpCapacity = 100;
         float repairSpeedMultiplier = 0.2f;
         bool allTrainingLevelsComplete = false;
         bool trainingRewardReceived = false;
+        bool level1RewardReceived = false;
+        bool barricadesCanRicochet = false;
+        bool level2RewardReceived = false;
     } gameProgress;
+
+    extern std::string playerName;
 
     //extern joypad_inputs_t joypad;
     //extern joypad_buttons_t btn;

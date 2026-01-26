@@ -33,4 +33,7 @@ public:
     bool castHasFailed_ = false;
     float failedTimer_;
     float failedTimerMax_;
+
+protected:
+    //rspq_block_t* dplBarricade;
 };

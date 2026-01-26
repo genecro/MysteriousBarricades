@@ -47,4 +47,18 @@ namespace math{
 
         return (distToMin < distToMax) ? minAngle : maxAngle;
     }
+
+    struct Timer
+  {
+    float value{};
+    float target{};
+
+    void update(float deltaTime) {
+      if(target < value) {
+        value = fmaxf(value - deltaTime, target);
+      } else {
+        value = fminf(value + deltaTime, target);
+      }
+    }
+  };
 }

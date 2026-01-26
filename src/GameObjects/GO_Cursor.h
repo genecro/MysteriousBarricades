@@ -80,4 +80,8 @@ private:
     float repelRingScale;
     
     static uint8_t instanceCount;
+
+    rspq_block_t* dplRepelRing;
+    rspq_block_t* dplCursor;
+    rspq_block_t* dplGroundMarker;
 };

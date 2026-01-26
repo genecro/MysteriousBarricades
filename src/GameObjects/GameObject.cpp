@@ -11,14 +11,14 @@ GameObject::GameObject() {
 GameObject::~GameObject() {
     
 }
-/*
+
 void GameObject::checkCollision() {
     if(isSolid_) {
         AABB objectAABB[1] = {{.min={position_.x-objectWidth_, position_.z-objectWidth_}, .max={position_.x+objectWidth_, position_.z+objectWidth_}}};
-        resolve_aabb_collision(objectAABB, &global::thePlayer->position_);
+        resolve_aabb_collision(objectAABB, &global::gameState->thePlayer_->position_);
     }
 }
-    */
+    
 
 void GameObject::consumeEffect() {
     

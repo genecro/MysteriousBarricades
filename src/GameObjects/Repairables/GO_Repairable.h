@@ -1,5 +1,6 @@
 #pragma once
 
+#include <functional>
 #include "../GameObject.h"
 #include "../GO_Projectile.h"
 //#include "../../globals.h"
@@ -42,6 +43,23 @@ public:
     static T3DModel* repelRingModel;
     static uint8_t rRingInstanceCount;
 
+    virtual GO_Repairable* setRewardFunction(std::function<void()> rewardFunction, bool rewardAlreadyReceived);
+
+    std::function<void()> rewardFunction_;
+    bool containsReward_ = false;
+    bool rewardAlreadyReceived_ = false;
+
+    GO_Repairable* itself_;
+
+protected:
+    sprite_t* rewardIndicatorSprite;
+    sprite_t* rewardIndicatorNotFullyRepairedSprite;
+    sprite_t* rewardAlreadyReceivedSprite;
+
+    void drawRewardIndicator();
+
+    //rspq_block_t* dplRepairable;
+
 private:
     color_t HPBarColor_ = (color_t){0,0,0,0};
 
@@ -49,4 +67,7 @@ private:
     T3DMat4FP* repelRingMatFP;
     float repelRingScale;
     float repelRingRotation = 0.0f;
+
+    //rspq_block_t* dplRepelRing;
+    
 };

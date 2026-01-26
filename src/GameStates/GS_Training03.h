@@ -33,6 +33,7 @@ private:
     bool barricadeHasFailedOnce = false;
     bool alertedEnemiesAttackingOnce = false;
     bool alertedRPBoostOnce = false;
+    bool alertedStructureEntryOnce = false;
 
     T3DMat4FP* envMatFP;
     float scaleFactor = 0.05f;

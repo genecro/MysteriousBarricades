@@ -19,4 +19,8 @@ private:
     static T3DModel* repairModel;
 
     static uint8_t instanceCount;
+
+    rspq_block_t* dplRepairBoost;
+
+    float repairAmount_ = 10.0f;
 };

@@ -25,7 +25,7 @@ public:
 
     std::vector<Triangle>* collisionTris;
 
-    //void checkCollision();
+    void checkCollision();
 
     T3DVec3 position_;
     float rotation_;

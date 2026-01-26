@@ -16,6 +16,7 @@ assets_sprites_RGBA32 = $(wildcard assets/sprites/RGBA32/*.png)
 assets_fonts	= $(wildcard assets/fonts/*.ttf)
 assets_gltf		= $(wildcard assets/models/*.glb)
 assets_wavs		= $(wildcard assets/audio/*.wav)
+assets_mp3s		= $(wildcard assets/audio/*.mp3)
 
 assets_conv		= $(addprefix filesystem/,$(notdir $(assets_logos:%.png=%.sprite))) \
 				  $(addprefix filesystem/sprites/,$(notdir $(assets_sprites:%.png=%.sprite))) \
@@ -24,7 +25,8 @@ assets_conv		= $(addprefix filesystem/,$(notdir $(assets_logos:%.png=%.sprite)))
 				  $(addprefix filesystem/,$(notdir $(assets_fonts:%.ttf=%.font64))) \
 				  $(addprefix filesystem/,$(notdir $(assets_gltf:%.glb=%.t3dm))) \
 				  $(addprefix filesystem/,$(notdir $(assets_gltf:%.glb=%.bin))) \
-				  $(addprefix filesystem/,$(notdir $(assets_wavs:%.wav=%.wav64)))
+				  $(addprefix filesystem/,$(notdir $(assets_wavs:%.wav=%.wav64))) \
+				  $(addprefix filesystem/,$(notdir $(assets_mp3s:%.mp3=%.wav64)))
 
 all: mystbar.z64
 
@@ -61,6 +63,11 @@ filesystem/%.wav64: assets/audio/%.wav
 	@mkdir -p $(dir $@)
 	@echo "    [AUDIO] $@"
 	@$(N64_AUDIOCONV) --wav-resample 32000 --wav-mono --wav-compress 0 -o filesystem $<
+
+filesystem/%.wav64: assets/audio/%.mp3
+	@mkdir -p $(dir $@)
+	@echo "    [AUDIO MP3] $@"
+	@$(N64_AUDIOCONV) --wav-resample 19000 --wav-mono --wav-compress 1 -o filesystem $<
 
 filesystem/PixelFraktur.font64:	MKFONT_FLAGS+=--size 36
 filesystem/PixelFraktur16.font64: MKFONT_FLAGS+=--size 16

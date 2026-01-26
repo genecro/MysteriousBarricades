@@ -4,7 +4,7 @@
 
 class GO_Projectile : public GameObject {
 public:
-    GO_Projectile(T3DVec3 position, float angle, float speed, GameObject* origin, float damage=20);
+    GO_Projectile(T3DVec3 position, float angle, float speed, GameObject* origin, float objectWidth, float damage=20);
     virtual ~GO_Projectile();
     virtual void handleInput() override;
     virtual void update() override;
@@ -24,6 +24,8 @@ private:
     T3DMat4 projectileMat;
     T3DMat4FP* projectileMatFP;
     static T3DModel* projectileModel;
+
+    float scaleFactor_;
 
     
     float speed_;

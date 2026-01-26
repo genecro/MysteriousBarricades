@@ -11,6 +11,7 @@ namespace global
     surface_t* disp;
     Audio* audioManager;
 
+    std::string playerName;
     
     gameProgress_t gameProgress;
 }

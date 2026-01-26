@@ -54,10 +54,11 @@ template <typename T> GI_Pause<T>::GI_Pause(T3DVec3 startingPos = (T3DVec3){0,10
     quitStr = "Quit";
     pauseInterrupt = true;
     startingPos_ = startingPos;
+    global::audioManager->pauseMenuBGM();
 }
 
 template <typename T> GI_Pause<T>::~GI_Pause() {
-
+    global::audioManager->unpauseMenuBGM();
 }
 
 template <typename T> void GI_Pause<T>::handleInput() {
@@ -95,6 +96,7 @@ template <typename T> void GI_Pause<T>::handleInput() {
             break;
 
             case PAUSE_SELECTION_QUIT:
+                if(!global::GameStateStack->empty()) global::GameStateStack->pop();
                 global::GameInterruptStack->push_back(new GI_FadeToNextGS<GS_SelectLevel>((T3DVec3){0,10,0}, 600.0f));
                 timeToDestroy = true;
             break;

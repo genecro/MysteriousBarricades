@@ -24,6 +24,7 @@ namespace {
 
 Audio::Audio() {
     lastIdx = CHANNEL_SFX;
+    bgm.wave.name = nullptr;
 }
 
 Audio::~Audio() {
@@ -71,4 +72,56 @@ uint32_t Audio::playSFX(std::string name, SfxConf conf = {}) {
 
     debugf("No free instance\n");
     return 0;
+}
+
+void Audio::playBGM(uint8_t bgmIdx, float vol) {
+    if(currBGM !=bgmIdx) {
+        debugf("New BGM requested: %d\n", bgmIdx);
+        currBGM = bgmIdx;
+        if(bgm.wave.name) {
+            debugf("Name exists\n");
+            if(mixer_ch_playing(CHANNEL_BGM)) {
+                debugf("Channel playing\n");
+                mixer_ch_stop(CHANNEL_BGM);
+                debugf("Channel stopped\n");
+            }
+            else {
+                debugf("Channel not playing\n");
+            }
+            wav64_close(&bgm);
+            debugf("WAV closed\n");
+        }
+        else {
+            debugf("No name exists\n");
+        }
+        volBGM = vol;
+        wav64_open(&bgm, BGMList[bgmIdx].c_str());
+        wav64_set_loop(&bgm, true);
+        //mixer_ch_set_vol(CHANNEL_BGM, 0.01f, 0.01f);
+        mixer_ch_set_vol(CHANNEL_BGM, volBGM, volBGM);
+        mixer_ch_set_limits(CHANNEL_BGM, 0, 48000, 0);
+        wav64_play(&bgm, CHANNEL_BGM);
+
+        //bgmVolume.target = BGM_FADE_TIME;
+        //bgmVolume.value = 0.1f;
+    }
+    
+}
+
+void Audio::stopBGM() {
+    //bgmVolume.target = 0;
+}
+
+void Audio::setBGMVolume(float vol) {
+    //bgmVolume.target = vol;
+}
+
+void Audio::pauseMenuBGM() {
+    volBGM /= 3.0f;
+    mixer_ch_set_vol(CHANNEL_BGM, volBGM, volBGM);
+}
+
+void Audio::unpauseMenuBGM() {
+    volBGM *= 3.0f;
+    mixer_ch_set_vol(CHANNEL_BGM, volBGM, volBGM);
 }

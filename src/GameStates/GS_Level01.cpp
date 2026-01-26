@@ -18,6 +18,12 @@ GS_Level01::GS_Level01(T3DVec3 startingCursorPosition) {
     collisionTris = collision::loadCollTriangles("rom:/level01.bin");
     collision::scaleTriangles(&collisionTris, scaleFactor);
 
+    /*
+    rspq_block_begin();
+    t3d_model_draw(envModel);
+    dplEnv = rspq_block_end();
+    */
+
     envModel->aabbMax[0]*=scaleFactor;
     envModel->aabbMin[0]*=scaleFactor;
     envModel->aabbMax[2]*=scaleFactor;
@@ -32,7 +38,12 @@ GS_Level01::GS_Level01(T3DVec3 startingCursorPosition) {
     objectList = new GameObjectList();
     repairableList = new RepairableList();
     repairableList->push(new GO_RepairableTower(collision::findGroundIntersection(collisionTris, (T3DVec3){15,10,15}), 100, 25, (color_t){255, 255, 0, 255}, -T3D_PI/2.0f, 0));
-    repairableList->push(new GO_RepairableTower(collision::findGroundIntersection(collisionTris, (T3DVec3){-15,10,-15}), 100, 25, (color_t){120, 0, 255, 255}, T3D_PI/2.0f, T3D_PI));
+
+    GO_RepairableTower* tower = new GO_RepairableTower(collision::findGroundIntersection(collisionTris, (T3DVec3){-15,10,-15}), 100, 25, (color_t){120, 0, 255, 255}, T3D_PI/2.0f, T3D_PI);
+    tower->setRewardFunction([&](){
+        global::gameState->nextStatePush = new GS_Level01InteriorA((T3DVec3){0,0,320});
+    }, global::gameProgress.level1RewardReceived);
+    repairableList->push(tower);
 
     barricadeList = new BarricadeList();
 
@@ -109,11 +120,13 @@ GS_Level01::GS_Level01(T3DVec3 startingCursorPosition) {
         }
     });
     global::GameInterruptStack->push_back(new GI_FadeIn(600));
+    global::audioManager->playBGM(BGM_LEVEL, 0.8f);
 }
 
 GS_Level01::~GS_Level01() {
     t3d_model_free(envModel);
     free_uncached(envMatFP);
+    //rspq_block_free(dplEnv);
     delete objectList;
     delete repairableList;
     delete barricadeList;
@@ -128,9 +141,9 @@ void GS_Level01::handleInput() {
         global::GameInterruptStack->push_back(new GI_Pause<GS_Level01>());
     }
 
-    if(btn.c_up) {
-        objectList->push(new GO_Projectile((T3DVec3){0,5,0}, 3.0f*T3D_PI/4.0f, 0.3f, nullptr));
-    }
+    // if(btn.c_up) {
+    //     objectList->push(new GO_Projectile((T3DVec3){0,5,0}, 3.0f*T3D_PI/4.0f, 0.3f, nullptr));
+    // }
 
     float borderScale = 0.8f;
 
@@ -185,6 +198,7 @@ void GS_Level01::renderT3d() {
     
     t3d_matrix_set(envMatFP, true);
     t3d_model_draw(envModel);
+    //rspq_block_run(dplEnv);
 
     barricadeList->renderT3d();
     objectList->renderT3d();

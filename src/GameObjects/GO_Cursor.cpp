@@ -40,6 +40,18 @@ GO_Cursor::GO_Cursor(T3DVec3 position, std::vector<Triangle> *newCollisionTris) 
     repelRingMatFP = (T3DMat4FP*)malloc_uncached(sizeof(T3DMat4FP));
     repelRingScale = 1.0f;
 
+    rspq_block_begin();
+    t3d_model_draw(repelRingModel);
+    dplRepelRing = rspq_block_end();
+
+    rspq_block_begin();
+    t3d_model_draw(cursorModel);
+    dplCursor = rspq_block_end();
+
+    rspq_block_begin();
+    t3d_model_draw(groundMarkerModel);
+    dplGroundMarker = rspq_block_end();
+
     barricadeIndicatorFull = sprite_load("rom:/sprites/barricadeIndicatorFull.rgba16.sprite");
     barricadeIndicatorEmpty = sprite_load("rom:/sprites/barricadeIndicatorEmpty.rgba16.sprite");
 
@@ -54,7 +66,11 @@ GO_Cursor::GO_Cursor(T3DVec3 position, std::vector<Triangle> *newCollisionTris) 
 
 GO_Cursor::~GO_Cursor() {
     free_uncached(cursorMatFP);
+    free_uncached(cursorEdgeMatFP1);
+    free_uncached(cursorEdgeMatFP2);
     free_uncached(groundMarkerMatFP);
+    free_uncached(groundMarkerEdgeMatFP1);
+    free_uncached(groundMarkerEdgeMatFP2);
     instanceCount--;
     if(instanceCount == 0) {
         t3d_model_free(cursorModel);
@@ -66,6 +82,10 @@ GO_Cursor::~GO_Cursor() {
     t3d_model_free(repelRingModel);
     sprite_free(barricadeIndicatorFull);
     sprite_free(barricadeIndicatorEmpty);
+
+    rspq_block_free(dplRepelRing);
+    rspq_block_free(dplCursor);
+    rspq_block_free(dplGroundMarker);
 }
 
 void GO_Cursor::handleInput() {
@@ -210,7 +230,7 @@ void GO_Cursor::handleInput() {
                 }
                 else {
                     barricadeIndicatorBlinkTimer = barricadeIndicatorBlinkTimerMax;
-                    global::audioManager->playSFX("metallicDodgeChance5.wav64", {.volume = 0.4f});
+                    global::audioManager->playSFX("rom:/metallicDodgeChance5.wav64", {.volume = 0.4f});
                     global::gameState->triedToCastWithoutSlots();
                 }
                 cursorState = global::CURSOR_STATE_BASE;
@@ -351,11 +371,13 @@ void GO_Cursor::renderT3d() {
 
     rdpq_set_prim_color(cursorColor);
     t3d_matrix_set(cursorMatFP, true);
-    t3d_model_draw(cursorModel);
+    //t3d_model_draw(cursorModel);
+    rspq_block_run(dplCursor);
 
     if(repellingEnemies_) {
         t3d_matrix_set(repelRingMatFP, true);
-        t3d_model_draw(repelRingModel);
+        //t3d_model_draw(repelRingModel);
+        rspq_block_run(dplRepelRing);
     }
 
     for(auto& r : *global::gameState->repairableList->repairables) {
@@ -366,7 +388,8 @@ void GO_Cursor::renderT3d() {
 
     rdpq_set_prim_color(groundMarkerColor);
     t3d_matrix_set(groundMarkerMatFP, true);
-    t3d_model_draw(groundMarkerModel);
+    //t3d_model_draw(groundMarkerModel);
+    rspq_block_run(dplGroundMarker);
 
     switch (cursorState) {
         case global::CURSOR_STATE_BASE:
@@ -375,16 +398,20 @@ void GO_Cursor::renderT3d() {
         case global::CURSOR_STATE_BARRICADE:
             
             t3d_matrix_set(cursorEdgeMatFP1, true);
-            t3d_model_draw(cursorModel);
+            //t3d_model_draw(cursorModel);
+            rspq_block_run(dplCursor);
 
             t3d_matrix_set(cursorEdgeMatFP2, true);
-            t3d_model_draw(cursorModel);
-            
+            //t3d_model_draw(cursorModel);
+            rspq_block_run(dplCursor);
+
             t3d_matrix_set(groundMarkerEdgeMatFP1, true);
-            t3d_model_draw(groundMarkerModel);
+            //t3d_model_draw(groundMarkerModel);
+            rspq_block_run(dplGroundMarker);
 
             t3d_matrix_set(groundMarkerEdgeMatFP2, true);
-            t3d_model_draw(groundMarkerModel);
+            //t3d_model_draw(groundMarkerModel);
+            rspq_block_run(dplGroundMarker);
         break;
 
         case global::CURSOR_STATE_REPAIR:

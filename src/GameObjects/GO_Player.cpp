@@ -4,7 +4,7 @@
 #include "Barricades/GO_BarricadeStandard.h"
 
 #define STICK_DEADZONE 8
-#define INTERACTION_DISTANCE 1
+#define INTERACTION_DISTANCE 6
 #define INTERACTION_ANGLE T3D_PI/6.0f
 #define PLAYER_WIDTH 2
 #define FB_COUNT 3
@@ -71,6 +71,8 @@ GO_Player::~GO_Player() {
 
     sprite_free(barricadeIndicatorEmpty);
     sprite_free(barricadeIndicatorFull);
+
+    rspq_block_free(dplPlayer);
 }
 
 void GO_Player::handleInput() {
@@ -162,7 +164,7 @@ void GO_Player::handleInput() {
                 barricadeEdgeRelativeToCursor.z = 0;
             }
             if(rel.a) {
-                if(global::gameState->barricadeList->gameObjects_->size() < totalBarricadeCt) {
+                if(global::gameState->barricadeList->gameObjects_->size() < global::gameProgress.numBarricades) {//totalBarricadeCt) {
                     if(abs(barricadeEdgeRelativeToCursor.x) + abs(barricadeEdgeRelativeToCursor.z) > 1) {
                         global::gameState->barricadeList->push(
                             new GO_BarricadeStandard(
@@ -174,7 +176,8 @@ void GO_Player::handleInput() {
                     }
                 }
                 else {
-                    barricadeIndicatorBlinkTimer = barricadeIndicatorBlinkTimerMax;
+                    //barricadeIndicatorBlinkTimer = barricadeIndicatorBlinkTimerMax;
+                    blinkBarricadeIndicator();
                     global::audioManager->playSFX("metallicDodgeChance5.wav64", {.volume = 0.4f});
                     global::gameState->triedToCastWithoutSlots();
                 }
@@ -315,9 +318,11 @@ void GO_Player::renderRdpq() {
     if(displayBarricadeIndicator) {
         rdpq_set_mode_standard();
         rdpq_mode_alphacompare(1);
-        int numFreeBarricades = totalBarricadeCt-global::gameState->barricadeList->gameObjects_->size();
+        //int numFreeBarricades = totalBarricadeCt-global::gameState->barricadeList->gameObjects_->size();
+        int numFreeBarricades = global::gameProgress.numBarricades-global::gameState->barricadeList->gameObjects_->size();
 
-        for(int i = 0; i < totalBarricadeCt; i++) {
+        //for(int i = 0; i < totalBarricadeCt; i++) {
+        for(int i = 0; i < global::gameProgress.numBarricades; i++) {
             rdpq_sprite_blit(i+1 > numFreeBarricades ? barricadeIndicatorEmpty : barricadeIndicatorFull,
                 27 + i*16,
                 32, 
@@ -352,7 +357,8 @@ bool GO_Player::canInteract(T3DVec3 target, float targetWidth) {
 }
 
 bool GO_Player::isTouching(T3DVec3 target, float targetWidth) {
-    return t3d_vec3_distance2({{target.x, 0, target.z}}, {{position_.x, 0, position_.z}}) <= pow(PLAYER_WIDTH + targetWidth, 2);
+    //return t3d_vec3_distance2({{target.x, 0, target.z}}, {{position_.x, 0, position_.z}}) <= pow(PLAYER_WIDTH + targetWidth, 2);
+    return sqrtf(pow(target.x - position_.x, 2) + pow(target.z - position_.z, 2)) <= (objectWidth_ + targetWidth);
 }
 
 int GO_Player::removeItem(int id, int qty) {
@@ -380,4 +386,17 @@ int GO_Player::addItem(int id, int qty) {
         inventory_.items->emplace(id, qty);
         return qty;
     }
+}
+
+void GO_Player::blinkBarricadeIndicator() {
+    barricadeIndicatorBlinkTimer = barricadeIndicatorBlinkTimerMax;
+}
+
+bool GO_Player::collidedWithProjectile() {
+    for(GameObject* p : *global::gameState->objectList->gameObjects) {
+        if(p->isProjectile_ && isTouching(p->position_, p->objectWidth_)) {
+            return true;
+        }
+    }
+    return false;
 }

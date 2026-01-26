@@ -42,6 +42,7 @@ GS_Boss1::GS_Boss1(T3DVec3 startingCursorPosition) {
     enemyList->push(theBoss_);
 
     global::GameInterruptStack->push_back(new GI_FadeIn(600));
+    global::audioManager->playBGM(BGM_BOSS, 0.3f);
 }
 
 GS_Boss1::~GS_Boss1() {

@@ -16,11 +16,8 @@ public:
     virtual void renderT3d() override;
     virtual void renderRdpq() override;
 
-    //GI_Alert* setNextAlert(GI_Alert* nextAlert);
-
 private:
     std::string name_;
-    //GI_Alert* nextAlert_ = nullptr;
     bool titleText_ = false;
     int numLines;
 };

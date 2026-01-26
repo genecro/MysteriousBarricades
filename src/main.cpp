@@ -41,12 +41,14 @@ int main(void)
     global::audioManager = new Audio();
 
     global::GameInterruptStack = new std::vector<GameInterrupt*>();
+    global::GameStateStack = new std::stack<GameState*>();
 
     //global::gameState = new GS_Intro();
-    //global::gameState = new GS_Menu();
+    global::gameState = new GS_Menu();
     //global::gameState = new GS_Level01((T3DVec3){0, 10, 0});
     //global::gameState = new GS_Training02((T3DVec3){0, 10, 0});
-    global::gameState = new GS_Training03InteriorA((T3DVec3){0,0,0});
+    //global::gameState = new GS_Training03InteriorA((T3DVec3){0,0,80});
+    //global::gameState = new GS_Level01InteriorA((T3DVec3){0,0,320});
 
     //zbuffer = surface_alloc(FMT_RGBA16, display_get_width(), display_get_height());
 
@@ -135,16 +137,16 @@ int main(void)
 
         rdpq_sync_pipe();
         //display stats
-        /*
         
-        if(global::thePlayer) {
+        
+        if(global::gameState->thePlayer_) {
             rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, 25, 25, "Player position:");
-            rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, 25, 37, "X: %.2f", global::thePlayer->position_.x);
-            rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, 25, 49, "Y: %.2f", global::thePlayer->position_.y);
-            rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, 25, 61, "Z: %.2f", global::thePlayer->position_.z);
-            rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, 25, 73, "ROT: %.2f", global::thePlayer->rotation_);
+            rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, 25, 37, "X: %.2f", global::gameState->thePlayer_->position_.x);
+            rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, 25, 49, "Y: %.2f", global::gameState->thePlayer_->position_.y);
+            rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, 25, 61, "Z: %.2f", global::gameState->thePlayer_->position_.z);
+            rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, 25, 73, "ROT: %.2f", global::gameState->thePlayer_->rotation_);
         }
-            */
+            
         //rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, display_get_width()-110, display_get_height()-52, "%.2f FPS", display_get_fps());
         sys_get_heap_stats(&heapStats);
         rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, display_get_width()-110, 25, "%.2f FPS", display_get_fps());
@@ -165,10 +167,23 @@ int main(void)
             global::gameState = nextState;
             debugf("Next state has been set\n");
         }
+        else if(global::gameState->nextStatePush != nullptr) {
+            global::GameStateStack->push(global::gameState);
+            GameState* nextState = global::gameState->nextStatePush;
+            global::gameState->nextStatePush = nullptr;
+            global::gameState = nextState;
+        }
+        else if(global::gameState->nextStatePop) {
+            rspq_wait();
+            delete global::gameState;
+            global::gameState = global::GameStateStack->top();
+            global::GameStateStack->pop();
+        }
 
         if(global::gameState && global::gameState->envModel) {
             rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, display_get_width()-110, 73, "EnvVertCt: %d", global::gameState->envModel->totalVertCount);
         }
+        mixer_try_play();
 
         rdpq_detach_show();
     }

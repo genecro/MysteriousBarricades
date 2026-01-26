@@ -28,6 +28,8 @@ public:
     virtual void renderT3d() = 0;
     virtual void renderRdpq() = 0;
     GameState* nextState = nullptr;
+    GameState* nextStatePush = nullptr;
+    bool nextStatePop = false;
     bool pausable = true;
 
     //std::vector<AABB> mapColl_;
@@ -64,7 +66,7 @@ public:
     int remainingEnemies = 0;
 
     GO_Cursor* theCursor;
-    GO_Player* thePlayer_;
+    GO_Player* thePlayer_ = nullptr;
     
 
     virtual void barricadeCreated();
@@ -118,6 +120,8 @@ protected:
 
     std::vector<TimedEvent> timeline;
     float timelineCtr = 0;
+
+    //rspq_block_t* dplEnv;
 
     //bool envVisible;
     //int totalObjects;

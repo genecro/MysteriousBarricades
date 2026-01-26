@@ -19,7 +19,7 @@
 #define MOVE_CURSOR_UP -1
 #define MOVE_CURSOR_DOWN 1
 #define SCREEN_PADDING 25
-#define NUM_CREDITS_PAGES 4
+#define NUM_CREDITS_PAGES 5
 
 class GS_Menu : public GameState
 {
@@ -88,9 +88,10 @@ private:
     uint8_t currCreditsPage = 0;
     std::string creditsStr_[NUM_CREDITS_PAGES] = {
         "Logo font: \"English Towne\"\n    by Dieter Steffmann\n\nSmall in-game text: \"Piacevoli\"\n    from fontenddev.com\n\nLarge in-game text: \"Owre Kynge\"\n    from fontenddev.com",
-        "Title music:\n    \"Les Barricades Mysterieuses\"\n    by Francois Couperin\n    from his 6th Ordre (1717)",
+        "Title music:\n    \"Les Barricades Mysterieuses\"\n    by Francois Couperin\n    from his 6th Ordre (1717)\n\nBoss music:\n    Fuguette a 3 voix\n    by Arthur Dodement (ca. 1912)",
         "Some textures from Craig Smith's\n    Retro Texture Pack\n    little-martian.dev\n\nSmall icons:\n    RunninBlood's RPG icon pack\n    runninblood.itch.io",
-        "Sound effects from Helton Yan's\n    Pixel Combat pack\n    heltonyan.itch.io"
+        "Sound effects from Helton Yan's\n    Pixel Combat pack\n    heltonyan.itch.io",
+        "Player character (wizard) model,\nNPC (knight) model,\nand model animations\n    by Quaternius (quaternius.com)"
     };
 
     void drawNameEntry();

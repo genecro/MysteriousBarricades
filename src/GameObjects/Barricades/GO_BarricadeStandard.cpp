@@ -20,7 +20,11 @@ GO_BarricadeStandard::GO_BarricadeStandard(T3DVec3 pos, T3DVec3 sizeRotation, co
     if(!barricadeModel) {
         barricadeModel = t3d_model_load("rom:/barricadeStandard.t3dm");
     }
-
+    /*
+    rspq_block_begin();
+    t3d_model_draw(barricadeModel);
+    dplBarricade = rspq_block_end();
+    */
     debugf("Barricade scale = %.2f\n", scale_);
 }
 
@@ -66,6 +70,7 @@ void GO_BarricadeStandard::renderT3d() {
     rdpq_set_prim_color(objColor_);
     t3d_matrix_set(barricadeMatFP, true);
     t3d_model_draw(barricadeModel);
+    //rspq_block_run(dplBarricade);
 }
 
 //TODO: move this to GO_Barricade and create affectEnemy function here

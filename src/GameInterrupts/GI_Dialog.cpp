@@ -53,7 +53,7 @@ void GI_Dialog::renderRdpq() {
 
     rdpq_text_printf(&(rdpq_textparms_t) {
         .style_id=FONTSTYLE_RED,
-    }, FONT_TANNENBERG_20, SCREEN_PADDING+20, display_get_height()-SCREEN_PADDING-BOX_HEIGHT-NAME_HEIGHT/2.0f+NAME_PADDING, name_.c_str());
+    }, FONT_OWREKYNGE_20, SCREEN_PADDING+20, display_get_height()-SCREEN_PADDING-BOX_HEIGHT-NAME_HEIGHT/2.0f+NAME_PADDING, name_.c_str());
 
     int nbytes = text_.length();
 
@@ -65,7 +65,7 @@ void GI_Dialog::renderRdpq() {
             .align = ALIGN_LEFT,
             .valign = VALIGN_TOP,
             .wrap = WRAP_WORD,
-        }, FONT_BLACKFOREST_14, text_.c_str(), &nbytes);
+        }, FONT_PIACEVOLI_16, text_.c_str(), &nbytes);
     
     //debugf("nbytes after paragraph: %d\n", nbytes);
     //debugf("nchars after paragraph: %d\n", par->nchars);

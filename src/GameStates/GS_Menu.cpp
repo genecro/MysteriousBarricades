@@ -2,6 +2,7 @@
 //#include "GS_001ChurchSquare.h"
 #include "GS_Menu.h"
 #include "../globals.h"
+#include "GS_StoryIntro.h"
 
 enum {
     MENU_ITEM_NEW_GAME = 0,
@@ -57,6 +58,7 @@ GS_Menu::GS_Menu() {
     textY = display_get_height()/2 + 50;
 
     global::GameInterruptStack->push_back(new GI_FadeIn());
+    global::audioManager->playBGM(BGM_MAIN_MENU, 0.8f);
 }
 
 GS_Menu::~GS_Menu() {
@@ -217,8 +219,9 @@ void GS_Menu::updateNewGameState() {
             //TODO:
             //global::GameInterruptStack->push_back(new GI_FadeToNextGS<GS_001ChurchSquare>(GS_001ChurchSquare::startPos.CHURCH_INTERIOR));//, 0.5*T3D_PI));
             //global::GameInterruptStack->push_back(new GI_FadeToNextGS<GS_002ChurchInterior>((T3DVec3){{0,0,-150}}));
+            global::playerName = nameEntry.newPlayerName;
             global::audioManager->playSFX("rom:/pierce6.wav64", {.volume = 0.7f});
-            global::GameInterruptStack->push_back(new GI_FadeToNextGS<GS_SelectLevel>((T3DVec3){0,0,0}, 1200.0f));
+            global::GameInterruptStack->push_back(new GI_FadeToNextGS<GS_StoryIntro>((T3DVec3){0,0,0}, 1200.0f));
         }
     }
 }

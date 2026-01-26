@@ -36,55 +36,6 @@ GO_Boss1::GO_Boss1(T3DVec3 pos, float rotation) {
             return true;
         }
     });
-    /*
-    spinAndShootTimeline.push_back({
-        4*60,
-        [&](){
-            intendedRotation_ = std::remainder(intendedRotation_ + T3D_PI/2.0f, 2.0f*T3D_PI);
-            return true;
-        }
-    });
-
-    spinAndShootTimeline.push_back({
-        4*60,
-        [&](){
-            shootProjectile();
-            return true;
-        }
-    });
-
-    spinAndShootTimeline.push_back({
-        4*60,
-        [&](){
-            intendedRotation_ = std::remainder(intendedRotation_ + T3D_PI/2.0f, 2.0f*T3D_PI);
-            return true;
-        }
-    });
-
-    spinAndShootTimeline.push_back({
-        4*60,
-        [&](){
-            shootProjectile();
-            return true;
-        }
-    });
-
-    spinAndShootTimeline.push_back({
-        4*60,
-        [&](){
-            intendedRotation_ = std::remainder(intendedRotation_ + T3D_PI/2.0f, 2.0f*T3D_PI);
-            return true;
-        }
-    });
-
-    spinAndShootTimeline.push_back({
-        4*60,
-        [&](){
-            shootProjectile();
-            return true;
-        }
-    });
-    */
 
     spinAndShootTimeline.push_back({
         4*60,
@@ -198,6 +149,6 @@ void GO_Boss1::processProjectile(GO_Projectile* theProjectile) {
 }
 
 void GO_Boss1::shootProjectile() {
-    global::gameState->objectList->push(new GO_Projectile((T3DVec3){3.0f*cosf(rotation_+T3D_PI/2.0f), 5.0f, 3.0f*sinf(rotation_+T3D_PI/2.0f)}, rotation_+T3D_PI, 0.3f * speedMultiplier, this));
+    global::gameState->objectList->push(new GO_Projectile((T3DVec3){3.0f*cosf(rotation_+T3D_PI/2.0f), 5.0f, 3.0f*sinf(rotation_+T3D_PI/2.0f)}, rotation_+T3D_PI, 0.3f * speedMultiplier, this, 0.3f));
     global::audioManager->playSFX("gearedPunch5.wav64", {.volume = 0.4f});
 }

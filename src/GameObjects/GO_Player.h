@@ -41,6 +41,9 @@ public:
     int removeItem(int id, int qty);
     int addItem(int id, int qty);
 
+    void blinkBarricadeIndicator();
+    bool collidedWithProjectile();
+
 protected:
     T3DMat4FP* playerMatFP;
     T3DModel *modelPlayer;
@@ -54,7 +57,7 @@ protected:
     int frameIdx = 0;
 
     int playerState_ = PLAYER_STATE_BASE;
-    float barrierSize = 5.0f;
+    float barrierSize = 8.0f;
 
     T3DVec3 moveDir;
     bool grounded;

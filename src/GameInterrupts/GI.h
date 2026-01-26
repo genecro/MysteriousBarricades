@@ -6,3 +6,4 @@
 #include "GI_FadeToNextGS.h"
 #include "GI_Pause.h"
 #include "GI_MultiChoice.h"
+#include "GI_Action.h"

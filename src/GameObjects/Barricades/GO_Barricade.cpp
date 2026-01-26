@@ -29,23 +29,26 @@ void GO_Barricade::processProjectile(GO_Projectile* theProjectile) {
     }
     else {
         if(checkCollision(theProjectile)) {
-            theProjectile->angle_ = 2*rotation_ - theProjectile->angle_;
-            theProjectile->justReflected = true;
-            theProjectile->reflected = true;
-            global::audioManager->playSFX("magicStep6.wav64", {.volume = 0.4f});
+            if(global::gameProgress.barricadesCanRicochet) {
+                theProjectile->angle_ = 2*rotation_ - theProjectile->angle_;
+                theProjectile->justReflected = true;
+                theProjectile->reflected = true;
+                global::audioManager->playSFX("magicStep6.wav64", {.volume = 0.4f});
+            }
+            else {
+                theProjectile->timeToDelete = true;
+                timeToDelete = true;
+            }
         }
     }
 }
 
 //bool GO_Barricade::checkCollision(GO_Enemy* theEnemy) {
 bool GO_Barricade::checkCollision(GameObject* theEnemy) {
-    
-    float xDiff = position_.x-theEnemy->position_.x;
-    float yDiff = position_.z-theEnemy->position_.z;
-    
-    return abs(
-        fm_cosf(rotation_)*(yDiff) 
-        - fm_sinf(rotation_)*(xDiff)
-    ) <= theEnemy->objectWidth_
-    && sqrt(xDiff*xDiff + yDiff*yDiff) <= scale_/scaleFactor_;
+
+    float xp = (theEnemy->position_.x - position_.x)*fm_cosf(-rotation_) - (theEnemy->position_.z - position_.z)*fm_sinf(-rotation_);
+    float zp = (theEnemy->position_.x - position_.x)*fm_sinf(-rotation_) + (theEnemy->position_.z - position_.z)*fm_cosf(-rotation_);
+
+    float xclamp = fmax(-scale_/scaleFactor_, fmin(scale_/scaleFactor_, xp));
+    return (xp - xclamp)*(xp - xclamp) + zp*zp <= theEnemy->objectWidth_*theEnemy->objectWidth_;
 }

@@ -72,6 +72,11 @@ public:
 
     T3DVec3 HPBarPos_ = (T3DVec3){-2, -2, -2};
 
+protected:
+    //rspq_block_t *dplEnemy;
+
 private:
     color_t HPBarColor_ = (color_t){0,0,0,0};
+
+    
 };

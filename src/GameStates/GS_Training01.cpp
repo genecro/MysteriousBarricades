@@ -45,6 +45,7 @@ GS_Training01::GS_Training01(T3DVec3 startingCursorPosition) {
         )))));
     
     global::GameInterruptStack->push_back(new GI_FadeIn(600));
+    global::audioManager->playBGM(BGM_TRAINING, 0.4f);
 }
 
 GS_Training01::~GS_Training01() {
@@ -145,6 +146,7 @@ void GS_Training01::updateCamera() {
 
 void GS_Training01::levelWon() {
     //enemyList->destroyAllEnemies();
+    global::gameProgress.training2Unlocked = true;
     global::GameInterruptStack->push_back((new GI_Alert("Barricade training complete!", false))
         ->setNextInterrupt(
             (

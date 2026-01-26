@@ -55,6 +55,11 @@ GO_EnemyBasic::GO_EnemyBasic(T3DVec3 pos, GO_Repairable* target, bool dropItem =
     if(!enemyModel) {
         enemyModel = t3d_model_load("rom:/enemyBasic.t3dm");
     }
+    /*
+    rspq_block_begin();
+    t3d_model_draw(enemyModel);
+    dplEnemy = rspq_block_end();
+    */
 }
 
 GO_EnemyBasic::GO_EnemyBasic(T3DVec3 pos, T3DVec3 targetPos, bool dropItem = true) : GO_EnemyBasic(pos, nullptr, dropItem) {
@@ -108,7 +113,7 @@ void GO_EnemyBasic::update() {
         switch(enemyState_) {
             case global::ENEMY_STATE_SEEKING:
                 //not stunned, moves normally
-                if(isMoving_ && !isStunned_) {
+                if(isMoving_ && !isStunned_ && global::GameInterruptStack->empty()) {
                     //rotate randomly towards the target every 5 seconds
                     if((int)(prevLifetime / (60.0f*5.0f)) != (int)(lifetime_ / (60.0f*5.0f))) {
                         //rotation_ = fm_atan2f(target_->position_.z - position_.z, target_->position_.x - position_.x) + (((float)rand() / (float)RAND_MAX)*(T3D_PI / 2.0f) - (T3D_PI / 4.0f));
@@ -178,6 +183,7 @@ void GO_EnemyBasic::renderT3d() {
         rdpq_set_prim_color(objColor_);
         t3d_matrix_set(enemyMatFP, true);
         t3d_model_draw(enemyModel);
+        //rspq_block_run(dplEnemy);
     }
 }
 
