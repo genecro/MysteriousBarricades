@@ -17,9 +17,11 @@ GO_Explosion::GO_Explosion(T3DVec3 position, float size, color_t color, float li
         explosionModel = t3d_model_load("rom:/explosion.t3dm");
     }
 
+    /*
     rspq_block_begin();
     t3d_model_draw(explosionModel);
     dplExplosion = rspq_block_end();
+    */
 }
 
 GO_Explosion::~GO_Explosion() {
@@ -30,7 +32,7 @@ GO_Explosion::~GO_Explosion() {
         explosionModel=nullptr;
     }
 
-    rspq_block_free(dplExplosion);
+    //rspq_block_free(dplExplosion);
 }
 
 void GO_Explosion::handleInput() {
@@ -38,6 +40,9 @@ void GO_Explosion::handleInput() {
 }
 
 void GO_Explosion::update() {
+    if(!updateHasBeenCalled_) {
+        updateHasBeenCalled_ = true;
+    }
     lifetime_ += global::frameTimeMultiplier;
     if(lifetime_ >= lifespan_) timeToDelete = true;
 
@@ -59,10 +64,12 @@ void GO_Explosion::renderRdpq() {
 }
 
 void GO_Explosion::renderT3d() {
+    if(!updateHasBeenCalled_) return;
     rdpq_sync_pipe();
 
     rdpq_set_prim_color(explosionColor_);
     t3d_matrix_set(explosionMatFP, true);
-    //t3d_model_draw(explosionModel);
-    rspq_block_run(dplExplosion);
+    t3d_model_draw(explosionModel);
+    //rspq_block_run(dplExplosion);
+    
 }

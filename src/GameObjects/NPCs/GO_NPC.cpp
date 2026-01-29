@@ -29,7 +29,7 @@ void GO_NPC::updateTimeline() {
 void GO_NPC::updatePositionRotation() {
     //simple rotation towards intended rotation
     float rotationDiff = std::remainder(intendedRotation_ - rotation_, 2.0f*T3D_PI);
-    if(fabs(rotationDiff) < T3D_PI/180.0f) {
+    if(fabs(rotationDiff) < rotatingSpeed_) {
         rotation_ = intendedRotation_;
     }
     else if(rotationDiff > 0) {

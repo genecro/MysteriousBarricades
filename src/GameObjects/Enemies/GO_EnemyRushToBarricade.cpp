@@ -50,7 +50,7 @@ GO_EnemyRushToBarricade::GO_EnemyRushToBarricade(T3DVec3 pos, GO_Repairable* tar
 
     instanceCount++;
     if(!enemyModel) {
-        enemyModel = t3d_model_load("rom:/enemyRushToBarricade.t3dm");
+        enemyModel = t3d_model_load("rom:/enemyRushToBarricadeArrow.t3dm");
     }
     /*
     rspq_block_begin();
@@ -71,7 +71,8 @@ GO_EnemyRushToBarricade::~GO_EnemyRushToBarricade() {
     free_uncached(enemyMatFP);
     instanceCount--;
     if(instanceCount==0) {
-        t3d_model_free(enemyModel);
+        //t3d_model_free(enemyModel);
+        rdpq_call_deferred((void (*)(void *))t3d_model_free, enemyModel);
         enemyModel = nullptr;
     }
 }

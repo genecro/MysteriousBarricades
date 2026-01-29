@@ -52,6 +52,8 @@ GO_NPCKnight::~GO_NPCKnight() {
     t3d_anim_destroy(&animIdle);
     t3d_anim_destroy(&animWalk);
 
+    free_uncached(knightMatFP);
+
     //rspq_block_free(dplKnight);
 }
 
@@ -61,6 +63,7 @@ void GO_NPCKnight::handleInput() {
     if(btn.a) {
         if(global::gameState->thePlayer_->canInteract(position_, objectWidth_)) {
             if(interactFunction_) {
+                global::gameState->thePlayer_->animBlend = 0.0f;
                 //face the player
                 intendedRotation_ = atan2f(global::gameState->thePlayer_->position_.z - position_.z,
                                             global::gameState->thePlayer_->position_.x - position_.x);

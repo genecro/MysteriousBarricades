@@ -46,4 +46,10 @@ public:
 
     bool takeable_ = false;
     bool isProjectile_ = false;
+
+    int rotationDirection_ = 1;
+
+    float speed_ = 1.0f;
+protected:
+    bool updateHasBeenCalled_ = false;
 };

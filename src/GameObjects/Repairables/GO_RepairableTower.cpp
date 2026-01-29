@@ -55,6 +55,7 @@ void GO_RepairableTower::handleInput() {
             abs(global::gameState->theCursor->position_.z - position_.z) <= global::gameState->theCursor->objectWidth_ + objectWidth_) {
                 //push current state onto stack, load
                 rewardFunction_();
+                global::gameState->theCursor->setStateBaseState();
         }
     }
 }

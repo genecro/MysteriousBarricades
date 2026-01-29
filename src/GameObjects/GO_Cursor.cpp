@@ -40,6 +40,7 @@ GO_Cursor::GO_Cursor(T3DVec3 position, std::vector<Triangle> *newCollisionTris) 
     repelRingMatFP = (T3DMat4FP*)malloc_uncached(sizeof(T3DMat4FP));
     repelRingScale = 1.0f;
 
+    /*
     rspq_block_begin();
     t3d_model_draw(repelRingModel);
     dplRepelRing = rspq_block_end();
@@ -51,6 +52,7 @@ GO_Cursor::GO_Cursor(T3DVec3 position, std::vector<Triangle> *newCollisionTris) 
     rspq_block_begin();
     t3d_model_draw(groundMarkerModel);
     dplGroundMarker = rspq_block_end();
+    */
 
     barricadeIndicatorFull = sprite_load("rom:/sprites/barricadeIndicatorFull.rgba16.sprite");
     barricadeIndicatorEmpty = sprite_load("rom:/sprites/barricadeIndicatorEmpty.rgba16.sprite");
@@ -60,7 +62,7 @@ GO_Cursor::GO_Cursor(T3DVec3 position, std::vector<Triangle> *newCollisionTris) 
     cursorState = global::CURSOR_STATE_BASE;
 
     RPTotal_ = global::gameProgress.rpCapacity;
-    totalBarricadeCt = global::gameProgress.numBarricades;
+    //global::gameProgress.numBarricades = global::gameProgress.numBarricades;
     repairSpeed_ = global::gameProgress.repairSpeedMultiplier;
 }
 
@@ -83,9 +85,9 @@ GO_Cursor::~GO_Cursor() {
     sprite_free(barricadeIndicatorFull);
     sprite_free(barricadeIndicatorEmpty);
 
-    rspq_block_free(dplRepelRing);
-    rspq_block_free(dplCursor);
-    rspq_block_free(dplGroundMarker);
+    //rspq_block_free(dplRepelRing);
+    //rspq_block_free(dplCursor);
+    //rspq_block_free(dplGroundMarker);
 }
 
 void GO_Cursor::handleInput() {
@@ -217,7 +219,7 @@ void GO_Cursor::handleInput() {
                 //tell the enemies that the cursor is not making a barricade anymore
                 global::gameState->enemyList->cursorNotMakingBarricade();
 
-                if(global::gameState->barricadeList->gameObjects_->size() < totalBarricadeCt) {
+                if(global::gameState->barricadeList->gameObjects_->size() < global::gameProgress.numBarricades) {
                     if(abs(barricadeEdgeRelativeToCursor.x) + abs(barricadeEdgeRelativeToCursor.z) > 1) {
                         global::gameState->barricadeList->push(
                             new GO_BarricadeStandard(
@@ -371,13 +373,13 @@ void GO_Cursor::renderT3d() {
 
     rdpq_set_prim_color(cursorColor);
     t3d_matrix_set(cursorMatFP, true);
-    //t3d_model_draw(cursorModel);
-    rspq_block_run(dplCursor);
+    t3d_model_draw(cursorModel);
+    //rspq_block_run(dplCursor);
 
     if(repellingEnemies_) {
         t3d_matrix_set(repelRingMatFP, true);
-        //t3d_model_draw(repelRingModel);
-        rspq_block_run(dplRepelRing);
+        t3d_model_draw(repelRingModel);
+        //rspq_block_run(dplRepelRing);
     }
 
     for(auto& r : *global::gameState->repairableList->repairables) {
@@ -388,8 +390,8 @@ void GO_Cursor::renderT3d() {
 
     rdpq_set_prim_color(groundMarkerColor);
     t3d_matrix_set(groundMarkerMatFP, true);
-    //t3d_model_draw(groundMarkerModel);
-    rspq_block_run(dplGroundMarker);
+    t3d_model_draw(groundMarkerModel);
+    //rspq_block_run(dplGroundMarker);
 
     switch (cursorState) {
         case global::CURSOR_STATE_BASE:
@@ -398,20 +400,20 @@ void GO_Cursor::renderT3d() {
         case global::CURSOR_STATE_BARRICADE:
             
             t3d_matrix_set(cursorEdgeMatFP1, true);
-            //t3d_model_draw(cursorModel);
-            rspq_block_run(dplCursor);
+            t3d_model_draw(cursorModel);
+            //rspq_block_run(dplCursor);
 
             t3d_matrix_set(cursorEdgeMatFP2, true);
-            //t3d_model_draw(cursorModel);
-            rspq_block_run(dplCursor);
+            t3d_model_draw(cursorModel);
+            //rspq_block_run(dplCursor);
 
             t3d_matrix_set(groundMarkerEdgeMatFP1, true);
-            //t3d_model_draw(groundMarkerModel);
-            rspq_block_run(dplGroundMarker);
+            t3d_model_draw(groundMarkerModel);
+            //rspq_block_run(dplGroundMarker);
 
             t3d_matrix_set(groundMarkerEdgeMatFP2, true);
-            //t3d_model_draw(groundMarkerModel);
-            rspq_block_run(dplGroundMarker);
+            t3d_model_draw(groundMarkerModel);
+            //rspq_block_run(dplGroundMarker);
         break;
 
         case global::CURSOR_STATE_REPAIR:
@@ -428,9 +430,9 @@ void GO_Cursor::renderRdpq() {
     if(displayBarricadeIndicator) {
         rdpq_set_mode_standard();
         rdpq_mode_alphacompare(1);
-        int numFreeBarricades = totalBarricadeCt-global::gameState->barricadeList->gameObjects_->size();
+        int numFreeBarricades = global::gameProgress.numBarricades-global::gameState->barricadeList->gameObjects_->size();
 
-        for(int i = 0; i < totalBarricadeCt; i++) {
+        for(int i = 0; i < global::gameProgress.numBarricades; i++) {
             rdpq_sprite_blit(i+1 > numFreeBarricades ? barricadeIndicatorEmpty : barricadeIndicatorFull,
                 27 + i*16,
                 32, 

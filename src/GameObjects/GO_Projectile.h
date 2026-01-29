@@ -19,6 +19,8 @@ public:
 
     GameObject* origin_;
 
+    int idOfLastReflected_ = -1;
+
 
 private:
     T3DMat4 projectileMat;
@@ -28,7 +30,7 @@ private:
     float scaleFactor_;
 
     
-    float speed_;
+    //float speed_;
 
     static uint8_t instanceCount;
 

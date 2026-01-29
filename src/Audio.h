@@ -48,13 +48,13 @@ public:
     wav64_t bgm{};
 
     void playBGM(uint8_t bgmIdx, float vol);
-    void stopBGM();
-    void setBGMVolume(float vol);
     void pauseMenuBGM();
     void unpauseMenuBGM();
     uint8_t currBGM = 255;
 
     uint32_t playSFX(std::string name, SfxConf conf = {});
+
+    void clearSFX();
 
     std::string BGMList[7] = {
       "rom:/bgm_main_menu.wav64",

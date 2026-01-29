@@ -37,8 +37,8 @@ GS_Training03::GS_Training03(T3DVec3 startingCursorPosition) {
         100, 
         60, 
         (color_t){0x77, 0, 0xFF, 0xFF}, 
-        -3.0f*T3D_PI/4.0f, 
-        -T3D_PI/4.0f);
+        -T3D_PI/2.0f,//-3.0f*T3D_PI/4.0f, 
+        0);//-T3D_PI/4.0f);
     
     newTower->setRewardFunction([&](){
         global::gameState->nextStatePush = new GS_Training03InteriorA((T3DVec3){0,0,80});
@@ -63,6 +63,7 @@ GS_Training03::~GS_Training03() {
     delete enemyList;
     delete barricadeList;
     delete theCursor;
+    global::audioManager->clearSFX();
 }
 
 void GS_Training03::handleInput() {

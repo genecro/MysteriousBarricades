@@ -22,6 +22,7 @@ GS_StoryIntro::GS_StoryIntro(T3DVec3 startingPos) {
 }
 
 GS_StoryIntro::~GS_StoryIntro() {
+    global::audioManager->clearSFX();
 }
 
 void GS_StoryIntro::handleInput() {

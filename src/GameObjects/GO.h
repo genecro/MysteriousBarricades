@@ -12,6 +12,7 @@
 #include "Enemies/GO_EnemyBasic.h"
 #include "Enemies/GO_EnemyRushToBarricade.h"
 #include "GO_Projectile.h"
+#include "GO_ProjectileLog.h"
 #include "GO_RepairBoost.h"
 #include "GO_RepairBoostInf.h"
 #include "NPCs/GO_NPCKnight.h"

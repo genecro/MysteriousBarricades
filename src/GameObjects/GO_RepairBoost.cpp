@@ -19,10 +19,11 @@ GO_RepairBoost::GO_RepairBoost(T3DVec3 position) {
     if(!repairModel) {
         repairModel = t3d_model_load("rom:/repairPoints.t3dm");
     }
-
+    /*
     rspq_block_begin();
     t3d_model_draw(repairModel);
     dplRepairBoost = rspq_block_end();
+    */
 }
 
 GO_RepairBoost::~GO_RepairBoost() {
@@ -33,7 +34,7 @@ GO_RepairBoost::~GO_RepairBoost() {
         repairModel=nullptr;
     }
 
-    rspq_block_free(dplRepairBoost);
+    //rspq_block_free(dplRepairBoost);
 }
 
 void GO_RepairBoost::handleInput() {
@@ -41,6 +42,9 @@ void GO_RepairBoost::handleInput() {
 }
 
 void GO_RepairBoost::update() {
+    if(!updateHasBeenCalled_) {
+        updateHasBeenCalled_ = true;
+    }
     lifetime_ += global::frameTimeMultiplier;
     t3d_mat4_from_srt_euler(&repairMat,
         (float[3]){0.02f, 0.02f, 0.02f},
@@ -51,9 +55,10 @@ void GO_RepairBoost::update() {
 }
 
 void GO_RepairBoost::renderT3d() {
+    if(!updateHasBeenCalled_) return;
     t3d_matrix_set(repairMatFP, true);
-    //t3d_model_draw(repairModel);
-    rspq_block_run(dplRepairBoost);
+    t3d_model_draw(repairModel);
+    //rspq_block_run(dplRepairBoost);
 }
 
 void GO_RepairBoost::renderRdpq() {

@@ -45,6 +45,9 @@ void GO_Projectile::handleInput() {
 }
 
 void GO_Projectile::update() {
+    if(!updateHasBeenCalled_) {
+        updateHasBeenCalled_ = true;
+    }
     lifetime_ += global::frameTimeMultiplier;
     position_ += {speed_*fm_cosf(angle_)*global::frameTimeMultiplier, 0, speed_*fm_sinf(angle_)*global::frameTimeMultiplier};
     t3d_mat4_from_srt_euler(&projectileMat,
@@ -61,6 +64,8 @@ void GO_Projectile::update() {
 }
 
 void GO_Projectile::renderT3d() {
+    if(!updateHasBeenCalled_) return;
+    rdpq_sync_pipe();
     rdpq_set_prim_color(objColor_);
     t3d_matrix_set(projectileMatFP, true);
     t3d_model_draw(projectileModel);

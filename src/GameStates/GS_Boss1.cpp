@@ -54,6 +54,7 @@ GS_Boss1::~GS_Boss1() {
     delete enemyList;
     delete theCursor;
     //delete theBoss_;
+    global::audioManager->clearSFX();
 }
 
 void GS_Boss1::handleInput() {

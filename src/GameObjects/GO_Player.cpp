@@ -33,9 +33,11 @@ GO_Player::GO_Player(std::string name) {
     t3d_anim_attach(&animWalk, &skelBlend);
     frameIdx = 0;
 
+    /*
     rspq_block_begin();
     t3d_model_draw_skinned(modelPlayer, &skel);
     dplPlayer = rspq_block_end();
+    */
 
     inventory_.items = new std::map<int, int>();
 
@@ -57,7 +59,6 @@ GO_Player::GO_Player(std::string name) {
 
     barricadeIndicatorFull = sprite_load("rom:/sprites/barricadeIndicatorFull.rgba16.sprite");
     barricadeIndicatorEmpty = sprite_load("rom:/sprites/barricadeIndicatorEmpty.rgba16.sprite");
-    totalBarricadeCt = global::gameProgress.numBarricades;
 }
 
 GO_Player::~GO_Player() {
@@ -72,7 +73,7 @@ GO_Player::~GO_Player() {
     sprite_free(barricadeIndicatorEmpty);
     sprite_free(barricadeIndicatorFull);
 
-    rspq_block_free(dplPlayer);
+    //rspq_block_free(dplPlayer);
 }
 
 void GO_Player::handleInput() {
@@ -282,7 +283,8 @@ void GO_Player::renderT3d() {
     
     t3d_skeleton_use(&skel);
     t3d_matrix_set(&playerMatFP[frameIdx], true);
-    rspq_block_run(dplPlayer);
+    t3d_model_draw_skinned(modelPlayer, &skel);
+    //rspq_block_run(dplPlayer);
 
     if(playerState_ == PLAYER_STATE_CURSOR || playerState_ == PLAYER_STATE_BARRICADE) {
         rdpq_sync_pipe();

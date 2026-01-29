@@ -13,6 +13,7 @@ GS_SelectLevel::GS_SelectLevel(T3DVec3 startingPos) {
 
 GS_SelectLevel::~GS_SelectLevel() {
     sprite_free(levelLockedSprite);
+    global::audioManager->clearSFX();
 }
 
 void GS_SelectLevel::handleInput() {

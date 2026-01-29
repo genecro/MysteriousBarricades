@@ -7,6 +7,7 @@
 #include "GS_Level01.h"
 #include "GS_Level01InteriorA.h"
 #include "GS_Boss1.h"
+#include "GS_Boss1InteriorA.h"
 
 #include "GS_Training01.h"
 #include "GS_Training02.h"

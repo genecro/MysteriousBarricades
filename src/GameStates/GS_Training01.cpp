@@ -56,6 +56,7 @@ GS_Training01::~GS_Training01() {
     delete barricadeList;
     delete enemyList;
     delete theCursor;
+    global::audioManager->clearSFX();
 }
 
 void GS_Training01::handleInput() {

@@ -53,7 +53,7 @@ GO_EnemyBasic::GO_EnemyBasic(T3DVec3 pos, GO_Repairable* target, bool dropItem =
 
     instanceCount++;
     if(!enemyModel) {
-        enemyModel = t3d_model_load("rom:/enemyBasic.t3dm");
+        enemyModel = t3d_model_load("rom:/enemyBasicArrow.t3dm");
     }
     /*
     rspq_block_begin();
@@ -74,7 +74,8 @@ GO_EnemyBasic::~GO_EnemyBasic() {
     free_uncached(enemyMatFP);
     instanceCount--;
     if(instanceCount==0) {
-        t3d_model_free(enemyModel);
+        rdpq_call_deferred((void (*)(void *))t3d_model_free, enemyModel);
+        //t3d_model_free(enemyModel);
         enemyModel = nullptr;
     }
 }

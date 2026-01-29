@@ -44,16 +44,18 @@ public:
     void blinkBarricadeIndicator();
     bool collidedWithProjectile();
 
+    float animBlend = 0.0f;
+
 protected:
     T3DMat4FP* playerMatFP;
     T3DModel *modelPlayer;
-    rspq_block_t *dplPlayer;
+    //rspq_block_t *dplPlayer;
 
     T3DSkeleton skel;
     T3DSkeleton skelBlend;
     T3DAnim animIdle;
     T3DAnim animWalk;
-    float animBlend = 0.0f;
+    
     int frameIdx = 0;
 
     int playerState_ = PLAYER_STATE_BASE;
@@ -82,7 +84,6 @@ protected:
     T3DMat4FP* groundMarkerEdgeMatFP2;
     T3DModel* groundMarkerModel;
 
-    int totalBarricadeCt;
     sprite_t* barricadeIndicatorFull;
     sprite_t* barricadeIndicatorEmpty;
     bool displayBarricadeIndicator = true;

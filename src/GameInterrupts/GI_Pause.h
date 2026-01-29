@@ -22,14 +22,16 @@ protected:
     char* contStr;
     char* retryStr;
     char* quitStr;
+    char* returnStr;
 
     enum {
         PAUSE_SELECTION_CONT = 0,
         PAUSE_SELECTION_RETRY = 1,
-        PAUSE_SELECTION_QUIT = 2
+        PAUSE_SELECTION_QUIT = 2,
+        PAUSE_SELECTION_RETURN = 3,
     };
 
-    uint8_t currSelection = 0;
+    int currSelection = 0;
     uint8_t totalSelections = 3;
 
     T3DVec3 startingPos_;
@@ -52,9 +54,13 @@ template <typename T> GI_Pause<T>::GI_Pause(T3DVec3 startingPos = (T3DVec3){0,10
     contStr = "Continue";
     retryStr = "Retry";
     quitStr = "Quit";
+    returnStr = "Return to last area";
     pauseInterrupt = true;
     startingPos_ = startingPos;
     global::audioManager->pauseMenuBGM();
+    if(!global::GameStateStack->empty()) {
+        totalSelections = 4;
+    }
 }
 
 template <typename T> GI_Pause<T>::~GI_Pause() {
@@ -74,7 +80,7 @@ template <typename T> void GI_Pause<T>::handleInput() {
         if(currSelection < 0) {
             currSelection = 0;
         }
-        else if (currSelection >= totalSelections) {
+        else if (currSelection > totalSelections - 1) {
             currSelection = totalSelections - 1;
         }
         else {
@@ -98,6 +104,11 @@ template <typename T> void GI_Pause<T>::handleInput() {
             case PAUSE_SELECTION_QUIT:
                 if(!global::GameStateStack->empty()) global::GameStateStack->pop();
                 global::GameInterruptStack->push_back(new GI_FadeToNextGS<GS_SelectLevel>((T3DVec3){0,10,0}, 600.0f));
+                timeToDestroy = true;
+            break;
+
+            case PAUSE_SELECTION_RETURN:
+                global::gameState->nextStatePop = true;
                 timeToDestroy = true;
             break;
         }
@@ -137,6 +148,12 @@ template <typename T> void GI_Pause<T>::renderRdpq() {
     rdpq_text_printf(&(rdpq_textparms_t) {
         .style_id= currSelection==PAUSE_SELECTION_QUIT ? FONTSTYLE_RED : FONTSTYLE_WHITE,
     }, FONT_PIACEVOLI_16, display_get_width()/2-20, display_get_height()/2+30, quitStr);
+
+    if(!global::GameStateStack->empty()) {
+        rdpq_text_printf(&(rdpq_textparms_t) {
+            .style_id= currSelection==PAUSE_SELECTION_RETURN ? FONTSTYLE_RED : FONTSTYLE_WHITE,
+        }, FONT_PIACEVOLI_16, display_get_width()/2-20, display_get_height()/2+50, returnStr);
+    }
 
     
 

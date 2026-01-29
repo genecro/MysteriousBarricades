@@ -46,7 +46,7 @@ namespace global
         bool allTrainingLevelsComplete = false;
         bool trainingRewardReceived = false;
         bool level1RewardReceived = false;
-        bool barricadesCanRicochet = false;
+        bool barricadesCanRicochet = true;
         bool level2RewardReceived = false;
     } gameProgress;
 

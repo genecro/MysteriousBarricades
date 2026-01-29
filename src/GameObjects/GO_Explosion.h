@@ -21,5 +21,5 @@ private:
 
     static uint8_t instanceCount;
 
-    rspq_block_t* dplExplosion;
+    //rspq_block_t* dplExplosion;
 };

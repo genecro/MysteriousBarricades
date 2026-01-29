@@ -69,6 +69,7 @@ GS_Menu::~GS_Menu() {
     t3d_model_free(model);
     rspq_block_free(dplDraw);
     free_uncached(modelMatFP);
+    global::audioManager->clearSFX();
 }
 
 void GS_Menu::handleInput() {

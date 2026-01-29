@@ -80,13 +80,15 @@ GS_Level01InteriorA::GS_Level01InteriorA(T3DVec3 startingPlayerPos) {
                 return false;
             }
             else {
-                objectList->push(new GO_Projectile(projectileOrigin, -T3D_PI, 0.5f, nullptr, 30.0f));
+                objectList->push(new GO_ProjectileLog(projectileOrigin, -T3D_PI, 0.5f, nullptr, 5.0f, 3.0f));
                 timeline = addProjectile;
             }
             return true;
     }});
 
     timeline = addProjectile;
+
+    objectList->push(new GO_ProjectileLog((T3DVec3){0,5,80}, -T3D_PI, 0.5f, nullptr, 5.0f, 3.0f));
 
     global::GameInterruptStack->push_back(new GI_FadeIn(600));
     //global::audioManager->playBGM(BGM_INTERIOR, 0.8f);
@@ -99,6 +101,7 @@ GS_Level01InteriorA::~GS_Level01InteriorA() {
     delete barricadeList;
     delete enemyList;
     delete thePlayer_;
+    t3d_viewport_destroy(&viewport);
 }
 
 void GS_Level01InteriorA::handleInput() {
@@ -121,8 +124,14 @@ void GS_Level01InteriorA::update() {
     if(thePlayer_->position_.z > 325) {
         nextStatePop = true;
     }
-    if(thePlayer_->collidedWithProjectile()) {
-        global::GameInterruptStack->push_back(new GI_FadeToNextGS<GS_Level01InteriorA>((T3DVec3){0,0,320}, 600));
+    //if(thePlayer_->collidedWithProjectile()) {
+    for(GameObject* obj : *objectList->gameObjects) {
+        if(obj->isProjectile_) {
+            if(abs(thePlayer_->position_.z - obj->position_.z) <= thePlayer_->objectWidth_ + obj->objectWidth_
+                && abs(thePlayer_->position_.x - obj->position_.x) <= 18) {
+                global::GameInterruptStack->push_back(new GI_FadeToNextGS<GS_Level01InteriorA>((T3DVec3){0,0,320}, 600));
+            }
+        }
     }
     thePlayer_->update();
     updateCamera();

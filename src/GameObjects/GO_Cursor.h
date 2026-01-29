@@ -29,7 +29,6 @@ public:
     float RPRectangleBaseLength = 100;
     float RPRectangleHeight = 10;
 
-    int totalBarricadeCt;
     sprite_t* barricadeIndicatorFull;
     sprite_t* barricadeIndicatorEmpty;
     bool displayBarricadeIndicator = true;
@@ -81,7 +80,7 @@ private:
     
     static uint8_t instanceCount;
 
-    rspq_block_t* dplRepelRing;
-    rspq_block_t* dplCursor;
-    rspq_block_t* dplGroundMarker;
+    //rspq_block_t* dplRepelRing;
+    //rspq_block_t* dplCursor;
+    //rspq_block_t* dplGroundMarker;
 };

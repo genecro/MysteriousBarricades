@@ -70,6 +70,7 @@ GS_Training03InteriorA::~GS_Training03InteriorA() {
     delete barricadeList;
     delete enemyList;
     delete thePlayer_;
+    t3d_viewport_destroy(&viewport);
 }
 
 void GS_Training03InteriorA::handleInput() {
