@@ -36,4 +36,5 @@ public:
 
 protected:
     //rspq_block_t* dplBarricade;
+    float clamp(float val, float minVal, float maxVal);
 };

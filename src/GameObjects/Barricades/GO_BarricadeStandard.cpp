@@ -98,4 +98,5 @@ void GO_BarricadeStandard::castSuccess() {
     castSuccess_ = true;
     global::gameState->barricadeCreated();
     global::audioManager->playSFX("bitSweep1.wav64", {.volume = 0.4f});
+    debugf("Barricade length: %.2f\n", scale_/scaleFactor_);
 }

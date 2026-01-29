@@ -19,7 +19,7 @@ public:
 
     GameObject* origin_;
 
-    int idOfLastReflected_ = -1;
+    //int idOfLastReflected_ = -1;
 
 
 private:

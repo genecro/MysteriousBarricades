@@ -53,10 +53,8 @@ GS_Level01InteriorA::GS_Level01InteriorA(T3DVec3 startingPlayerPos) {
                 ->setNextInterrupt(
                     (new GI_Alert("You will certainly need this\nability for the ordeals which\nlie ahead.", false))
                 ->setNextInterrupt(
-                    (new GI_Alert("And you may even find some\nuse for it in the entrance\ncorridor of this tower...", false))
-                ->setNextInterrupt(
                     (new GI_Alert("Good luck! We are forever\ngrateful for your services\nto our realm.", false))
-                )))))))))));
+                ))))))))));
             global::gameProgress.level1RewardReceived = true;
         }
         else {

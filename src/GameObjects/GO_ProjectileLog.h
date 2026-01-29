@@ -17,11 +17,11 @@ public:
 
     float damage_;
 
-    float stretch_;
+    
 
     GameObject* origin_;
 
-    int idOfLastReflected_ = -1;
+    
 
 
 private:

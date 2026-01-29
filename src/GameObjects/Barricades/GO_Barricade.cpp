@@ -48,12 +48,31 @@ void GO_Barricade::processProjectile(GO_Projectile* theProjectile) {
 //bool GO_Barricade::checkCollision(GO_Enemy* theEnemy) {
 bool GO_Barricade::checkCollision(GameObject* theEnemy) {
 
-    float xp = (theEnemy->position_.x - position_.x)*fm_cosf(-rotation_) - (theEnemy->position_.z - position_.z)*fm_sinf(-rotation_);
-    float zp = (theEnemy->position_.x - position_.x)*fm_sinf(-rotation_) + (theEnemy->position_.z - position_.z)*fm_cosf(-rotation_);
+    float xp = (theEnemy->position_.x - position_.x)*fm_cosf(rotation_) + (theEnemy->position_.z - position_.z)*fm_sinf(rotation_);
+    float zp = -(theEnemy->position_.x - position_.x)*fm_sinf(rotation_) + (theEnemy->position_.z - position_.z)*fm_cosf(rotation_);
+    float L2 = scale_/scaleFactor_;
 
-    float xclamp = fmax(-scale_/scaleFactor_, fmin(scale_/scaleFactor_, xp));
+    if(theEnemy->stretch_ == 1.0f) {
+        float xclamp = clamp(xp, -L2, L2);
 
-    float distance = theEnemy->isProjectile_ ? (theEnemy->objectWidth_ + theEnemy->speed_) * global::frameTimeMultiplier : theEnemy->objectWidth_;
+        float distance = theEnemy->isProjectile_ ? (theEnemy->objectWidth_ + theEnemy->speed_) * global::frameTimeMultiplier : theEnemy->objectWidth_;
 
-    return (xp - xclamp)*(xp - xclamp) + zp*zp <= distance*distance;//theEnemy->objectWidth_*theEnemy->objectWidth_;
+        return (xp - xclamp)*(xp - xclamp) + zp*zp <= distance*distance;
+    }
+
+    else {
+        //this is a special case for collision with a zone defined by two parallel lines aligned with the x axis
+        //need to make it more general in the future
+        float z1 = position_.z + scale_/scaleFactor_ * fm_sinf(rotation_);
+        float z2 = position_.z - scale_/scaleFactor_ * fm_sinf(rotation_);
+
+        return fmax(z1, z2) >= theEnemy->position_.z - theEnemy->objectWidth_ 
+                && fmin(z1, z2) <= theEnemy->position_.z + theEnemy->objectWidth_;
+    }
+}
+
+float GO_Barricade::clamp(float val, float minVal, float maxVal) {
+    if(val < minVal) return minVal;
+    if(val > maxVal) return maxVal;
+    return val;
 }

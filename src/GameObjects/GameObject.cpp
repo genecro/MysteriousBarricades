@@ -23,3 +23,7 @@ void GameObject::checkCollision() {
 void GameObject::consumeEffect() {
     
 }
+
+void GameObject::activate() {
+
+}

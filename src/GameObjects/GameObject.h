@@ -22,6 +22,7 @@ public:
     virtual void renderRdpq() = 0;
 
     virtual void consumeEffect();
+    virtual void activate();
 
     std::vector<Triangle>* collisionTris;
 
@@ -32,6 +33,7 @@ public:
     std::string name_;
 
     float objectWidth_;
+    float stretch_ = 1.0f;
 
     int id_;
 
@@ -50,6 +52,8 @@ public:
     int rotationDirection_ = 1;
 
     float speed_ = 1.0f;
+
+    int idOfLastReflected_ = -1;
 protected:
     bool updateHasBeenCalled_ = false;
 };

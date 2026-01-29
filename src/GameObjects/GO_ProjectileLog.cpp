@@ -29,6 +29,8 @@ GO_ProjectileLog::GO_ProjectileLog(T3DVec3 position, float angle, float speed, G
     origin_ = origin;
     stretch_ = stretch;
 
+    debugf("Stretch = %.2f\n", stretch_);
+
     rotationDirection_ = -1;
 }
 

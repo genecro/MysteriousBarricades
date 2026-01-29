@@ -112,11 +112,11 @@ void GO_Player::handleInput() {
                 animBlend = 0.0f;
             }
 
-            if(joypad.btn.l) {
-                downwardVel = 0.0f;
-                moveDir += {{0, 0.5f*global::frameTimeMultiplier, 0}};
-            }
-            else {
+            //if(joypad.btn.l) {
+            //    downwardVel = 0.0f;
+            //    moveDir += {{0, 0.5f*global::frameTimeMultiplier, 0}};
+            //}
+            //else {
                 if(grounded) {
                     downwardVel = 0.0f;
                 }
@@ -126,7 +126,7 @@ void GO_Player::handleInput() {
                     }
                     moveDir.y -= downwardVel * global::frameTimeMultiplier;
                 }
-            }
+            //}
 
             //moveDir = collision::resolveWallCollision(position_, fmaxf(objectWidth_, downwardVel*global::frameTimeMultiplier), global::gameState->collisionTris, T3D_PI/3.0f, moveDir, &grounded);
             moveDir = collision::resolveWallCollisionLoop(position_, fmaxf(objectWidth_, downwardVel*global::frameTimeMultiplier), global::gameState->collisionTris, T3D_PI/3.0f, moveDir, &grounded);
