@@ -20,7 +20,8 @@ GS_Level01InteriorA::GS_Level01InteriorA(T3DVec3 startingPlayerPos) {
 
     thePlayer_ = new GO_Player(global::playerName);
 
-    thePlayer_->position_ = startingPlayerPos + (T3DVec3){{0, thePlayer_->objectWidth_, 0}};
+    //thePlayer_->position_ = startingPlayerPos + (T3DVec3){{0, thePlayer_->objectWidth_, 0}};
+    thePlayer_->position_ = (T3DVec3){0, thePlayer_->objectWidth_, 320};
     thePlayer_->rotation_ = -T3D_PI/2.0f;
 
     initCamera();

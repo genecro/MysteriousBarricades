@@ -192,6 +192,10 @@ void GO_Player::handleInput() {
 }
 
 void GO_Player::update() {
+    if(abs(rotation_) == T3D_PI || rotation_ == 0.0f) {
+        rotation_ += 0.01f;
+    }
+
     frameIdx = (frameIdx + 1) % FB_COUNT;
 
     cursorRotation_ += 0.007;

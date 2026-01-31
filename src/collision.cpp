@@ -60,13 +60,13 @@ std::vector<Triangle> collision::loadCollTriangles(const std::string& binaryFile
   
     size_t triangleCount;
     inFile.read(reinterpret_cast<char*>(&triangleCount), sizeof(size_t));
-    debugf("Loading triangle count: %llu\n", triangleCount);
+    //debugf("Loading triangle count: %llu\n", triangleCount);
     triangles.resize(triangleCount);
   
     inFile.read(reinterpret_cast<char*>(triangles.data()), triangleCount * sizeof(Triangle));
     inFile.close();
   
-    debugf("Loaded %d triangles from %s\n", triangleCount, binaryFilename.c_str());
+    //debugf("Loaded %d triangles from %s\n", triangleCount, binaryFilename.c_str());
 
     scaleTriangles(&triangles, 64.0f);
   

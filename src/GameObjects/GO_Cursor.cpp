@@ -62,7 +62,6 @@ GO_Cursor::GO_Cursor(T3DVec3 position, std::vector<Triangle> *newCollisionTris) 
     cursorState = global::CURSOR_STATE_BASE;
 
     RPTotal_ = global::gameProgress.rpCapacity;
-    //global::gameProgress.numBarricades = global::gameProgress.numBarricades;
     repairSpeed_ = global::gameProgress.repairSpeedMultiplier;
 }
 
@@ -97,8 +96,11 @@ void GO_Cursor::handleInput() {
     joypad_buttons_t btnHeld = joypad_get_buttons_held(JOYPAD_PORT_1);
     joypad_inputs_t joypad = joypad_get_inputs(JOYPAD_PORT_1);
 
-    switch (cursorState) {
+    if(btn.c_left){
+        debugf("Cursor Pos: X: %.2f Y: %.2f Z: %.2f\n", position_.x, position_.y, position_.z);
+    }
 
+    switch (cursorState) {
         //moving around
         case global::CURSOR_STATE_BASE:
             

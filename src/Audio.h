@@ -48,6 +48,7 @@ public:
     wav64_t bgm{};
 
     void playBGM(uint8_t bgmIdx, float vol);
+    void stopBGM();
     void pauseMenuBGM();
     void unpauseMenuBGM();
     uint8_t currBGM = 255;

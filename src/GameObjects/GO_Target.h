@@ -6,12 +6,16 @@
 
 class GO_Target : public GameObject {
 public:
-    GO_Target(T3DVec3 position, float rotation, std::vector<GameObject*>* objectsToActivate, std::function<void()> onActivate=nullptr);
+    GO_Target(T3DVec3 position, float rotation, std::vector<GameObject*> objectsToActivate, std::function<void()> onActivate=nullptr);
     virtual ~GO_Target();
     virtual void handleInput() override;
     virtual void update() override;
     virtual void renderT3d() override;
     virtual void renderRdpq() override;
+
+    GO_Target* setActivateFunction(std::function<void()> onActivate);
+    color_t targetColor_;
+    void setColor(color_t newColor);
 
 private:
     T3DMat4 targetMat;
@@ -22,12 +26,14 @@ private:
 
     float targetAmount_ = 10.0f;
 
-    std::vector<GameObject*>* objectsToActivate_ = nullptr;
+    std::vector<GameObject*> objectsToActivate_{};
 
     bool checkProjectionCollision(GameObject* p);
     void checkProjectiles();
 
-    color_t targetColor_ = (color_t){0xFF, 0, 0, 0xFF};
+    bool activated_ = false;
 
-    std::function<void()> onActivate_;
+    
+
+    std::function<void()> onActivate_ = nullptr;
 };

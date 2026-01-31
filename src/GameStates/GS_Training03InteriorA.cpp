@@ -19,7 +19,8 @@ GS_Training03InteriorA::GS_Training03InteriorA(T3DVec3 startingPlayerPos) {
 
     thePlayer_ = new GO_Player(global::playerName);
 
-    thePlayer_->position_ = startingPlayerPos + (T3DVec3){{0, thePlayer_->objectWidth_, 0}};
+    //thePlayer_->position_ = startingPlayerPos + (T3DVec3){{0, thePlayer_->objectWidth_, 0}};
+    thePlayer_->position_ = (T3DVec3){0, thePlayer_->objectWidth_, 80};
     thePlayer_->rotation_ = -T3D_PI/2.0f;
 
     initCamera();
@@ -54,7 +55,7 @@ GS_Training03InteriorA::GS_Training03InteriorA(T3DVec3 startingPlayerPos) {
             global::gameProgress.trainingRewardReceived = true;
         }
         else {
-            global::GameInterruptStack->push_back(new GI_Alert("Venture forth!", false));
+            global::GameInterruptStack->push_back(new GI_Alert("When you are ready to proceed,\npause and quit to the Level Select\nscreen.", false));
         }
     });
     objectList->push(knight1);

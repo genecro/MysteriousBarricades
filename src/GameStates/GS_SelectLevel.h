@@ -25,8 +25,8 @@ public:
         SELECTION_TRAINING_2 = 1,
         SELECTION_TRAINING_3 = 2,
         SELECTION_LEVEL_1 = 3,
-        SELECTION_LEVEL_2 = 4,
-        SELECTION_BOSS1 = 5
+        SELECTION_BOSS_1 = 4,
+        SELECTION_CHALLENGE_1 = 5,
     };
 
     uint8_t currSelection = SELECTION_TRAINING;
@@ -55,10 +55,10 @@ private:
     uint8_t training3BoxY = 70;
     uint8_t level01BoxX = 80;
     uint8_t level01BoxY = 110;
-    uint8_t level02BoxX = 120;
-    uint8_t level02BoxY = 110;
-    uint8_t boss1BoxX = 160;
+    uint8_t boss1BoxX = 120;
     uint8_t boss1BoxY = 110;
+    uint8_t challenge1BoxX = 160;
+    uint8_t challenge1BoxY = 110;
     uint8_t selectBoxSize = 30;
     uint8_t selectBoxBorder = 3;
     

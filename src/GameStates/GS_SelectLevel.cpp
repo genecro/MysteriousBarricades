@@ -28,10 +28,10 @@ void GS_SelectLevel::handleInput() {
         global::gameProgress.training3Unlocked = !global::gameProgress.training3Unlocked;
     }
     else if(btn.c_left) {
-        global::gameProgress.level2Unlocked = !global::gameProgress.level2Unlocked;
+        global::gameProgress.boss1Unlocked = !global::gameProgress.boss1Unlocked;
     }
     else if(btn.c_down) {
-        global::gameProgress.boss1Unlocked = !global::gameProgress.boss1Unlocked;
+        global::gameProgress.challenge1Unlocked = !global::gameProgress.challenge1Unlocked;
     }
 
     switch(currSelection) {
@@ -51,7 +51,7 @@ void GS_SelectLevel::handleInput() {
         break;
         case SELECTION_TRAINING_2:
             if(yAxis < 0) {
-                currSelection = global::gameProgress.level2Unlocked ? SELECTION_LEVEL_2 : SELECTION_LEVEL_1;
+                currSelection = global::gameProgress.boss1Unlocked ? SELECTION_BOSS_1 : SELECTION_LEVEL_1;
                 global::audioManager->playSFX("rom:/bootsOnGenericGround6.wav64", {.volume = 0.4f});
             }
             else if (global::gameProgress.training3Unlocked && xAxis > 0) {
@@ -69,7 +69,7 @@ void GS_SelectLevel::handleInput() {
         break;
         case SELECTION_TRAINING_3:
             if(yAxis < 0) {
-                currSelection = global::gameProgress.boss1Unlocked ? SELECTION_BOSS1 : global::gameProgress.level2Unlocked ? SELECTION_LEVEL_2 : SELECTION_LEVEL_1;
+                currSelection = global::gameProgress.challenge1Unlocked ? SELECTION_CHALLENGE_1 : global::gameProgress.boss1Unlocked ? SELECTION_BOSS_1 : SELECTION_LEVEL_1;
                 global::audioManager->playSFX("rom:/bootsOnGenericGround6.wav64", {.volume = 0.4f});
             }
             else if(xAxis < 0) {
@@ -86,8 +86,8 @@ void GS_SelectLevel::handleInput() {
                 currSelection = SELECTION_TRAINING;
                 global::audioManager->playSFX("rom:/bootsOnGenericGround6.wav64", {.volume = 0.4f});
             }
-            else if(global::gameProgress.level2Unlocked && xAxis > 0) {
-                currSelection = SELECTION_LEVEL_2;
+            else if(global::gameProgress.boss1Unlocked && xAxis > 0) {
+                currSelection = SELECTION_BOSS_1;
                 global::audioManager->playSFX("rom:/bootsOnGenericGround6.wav64", {.volume = 0.4f});
             }
             else if(btn.a || btn.start) {
@@ -95,13 +95,13 @@ void GS_SelectLevel::handleInput() {
                 global::GameInterruptStack->push_back(new GI_FadeToNextGS<GS_Level01>((T3DVec3){0,10,0}, 1200.0f));
             }
         break;
-        case SELECTION_LEVEL_2:
+        case SELECTION_BOSS_1:
             if(yAxis > 0) {
                 currSelection = global::gameProgress.training2Unlocked ? SELECTION_TRAINING_2 : SELECTION_TRAINING;
                 global::audioManager->playSFX("rom:/bootsOnGenericGround6.wav64", {.volume = 0.4f});
             }
-            else if(global::gameProgress.boss1Unlocked && xAxis > 0) {
-                currSelection = SELECTION_BOSS1;
+            else if(global::gameProgress.challenge1Unlocked && xAxis > 0) {
+                currSelection = SELECTION_CHALLENGE_1;
                 global::audioManager->playSFX("rom:/bootsOnGenericGround6.wav64", {.volume = 0.4f});
             }
             else if(xAxis < 0) {
@@ -110,21 +110,21 @@ void GS_SelectLevel::handleInput() {
             }
             else if(btn.a || btn.start) {
                 global::audioManager->playSFX("rom:/pierce6.wav64", {.volume = 0.7f});
-                //global::GameInterruptStack->push_back(new GI_FadeToNextGS<GS_Level02>((T3DVec3){0,10,0}, 1200.0f));
+                global::GameInterruptStack->push_back(new GI_FadeToNextGS<GS_Boss1>((T3DVec3){10,10,-10}, 1200.0f));
             }
         break;
-        case SELECTION_BOSS1:
+        case SELECTION_CHALLENGE_1:
             if(yAxis > 0) {
                 currSelection = global::gameProgress.training3Unlocked ? SELECTION_TRAINING_3 : global::gameProgress.training2Unlocked ? SELECTION_TRAINING_2 : SELECTION_TRAINING;
                 global::audioManager->playSFX("rom:/bootsOnGenericGround6.wav64", {.volume = 0.4f});
             }
-            else if(global::gameProgress.level2Unlocked && xAxis < 0) {
-                currSelection = SELECTION_LEVEL_2;
+            else if(global::gameProgress.boss1Unlocked && xAxis < 0) {
+                currSelection = SELECTION_BOSS_1;
                 global::audioManager->playSFX("rom:/bootsOnGenericGround6.wav64", {.volume = 0.4f});
             }
             else if(btn.a || btn.start) {
                 global::audioManager->playSFX("rom:/pierce6.wav64", {.volume = 0.7f});
-                global::GameInterruptStack->push_back(new GI_FadeToNextGS<GS_Boss1>((T3DVec3){10,10,-10}, 1200.0f));
+                global::GameInterruptStack->push_back(new GI_FadeToNextGS<GS_Training04>((T3DVec3){0,10,0}, 1200.0f));
             }
         break;
     }
@@ -169,16 +169,16 @@ void GS_SelectLevel::renderRdpq() {
             levelString = "Level 1";
         break;
 
-        case SELECTION_LEVEL_2:
-            selectionBoxX = level02BoxX;
-            selectionBoxY = level02BoxY;
-            levelString = "Level 2";
-        break;
-
-        case SELECTION_BOSS1:
+        case SELECTION_BOSS_1:
             selectionBoxX = boss1BoxX;
             selectionBoxY = boss1BoxY;
             levelString = "Boss 1";
+        break;
+
+        case SELECTION_CHALLENGE_1:
+            selectionBoxX = challenge1BoxX;
+            selectionBoxY = challenge1BoxY;
+            levelString = "Training Tower: Challenge Floor";
         break;
     }
 
@@ -192,8 +192,8 @@ void GS_SelectLevel::renderRdpq() {
     rdpq_fill_rectangle(training2BoxX+selectBoxBorder, training2BoxY+selectBoxBorder, training2BoxX+selectBoxSize-selectBoxBorder, training2BoxY+selectBoxSize-selectBoxBorder);
     rdpq_fill_rectangle(training3BoxX+selectBoxBorder, training3BoxY+selectBoxBorder, training3BoxX+selectBoxSize-selectBoxBorder, training3BoxY+selectBoxSize-selectBoxBorder);
     rdpq_fill_rectangle(level01BoxX+selectBoxBorder, level01BoxY+selectBoxBorder, level01BoxX+selectBoxSize-selectBoxBorder, level01BoxY+selectBoxSize-selectBoxBorder);
-    rdpq_fill_rectangle(level02BoxX+selectBoxBorder, level02BoxY+selectBoxBorder, level02BoxX+selectBoxSize-selectBoxBorder, level02BoxY+selectBoxSize-selectBoxBorder);
     rdpq_fill_rectangle(boss1BoxX+selectBoxBorder, boss1BoxY+selectBoxBorder, boss1BoxX+selectBoxSize-selectBoxBorder, boss1BoxY+selectBoxSize-selectBoxBorder);
+    rdpq_fill_rectangle(challenge1BoxX+selectBoxBorder, challenge1BoxY+selectBoxBorder, challenge1BoxX+selectBoxSize-selectBoxBorder, challenge1BoxY+selectBoxSize-selectBoxBorder);
 
     
 
@@ -218,15 +218,15 @@ void GS_SelectLevel::renderRdpq() {
         .style_id=FONTSTYLE_BLACK,
     }, FONT_PIACEVOLI_16, level01BoxX+10, level01BoxY+20, lvlLbl.c_str());
     
-    lvlLbl = "L2";
-    rdpq_text_printf(&(rdpq_textparms_t) {
-        .style_id= global::gameProgress.level2Unlocked ? FONTSTYLE_BLACK : FONTSTYLE_GREY,
-    }, FONT_PIACEVOLI_16, level02BoxX+10, level02BoxY+20, lvlLbl.c_str());
-
     lvlLbl = "B1";
     rdpq_text_printf(&(rdpq_textparms_t) {
         .style_id= global::gameProgress.boss1Unlocked ? FONTSTYLE_BLACK : FONTSTYLE_GREY,
     }, FONT_PIACEVOLI_16, boss1BoxX+10, boss1BoxY+20, lvlLbl.c_str());
+
+    lvlLbl = "T4";
+    rdpq_text_printf(&(rdpq_textparms_t) {
+        .style_id= global::gameProgress.challenge1Unlocked ? FONTSTYLE_BLACK : FONTSTYLE_GREY,
+    }, FONT_PIACEVOLI_16, challenge1BoxX+10, challenge1BoxY+20, lvlLbl.c_str());
 
     std::string lvlSel = "Select Level";
 
@@ -250,12 +250,12 @@ void GS_SelectLevel::renderRdpq() {
         rdpq_sprite_blit(levelLockedSprite, training3BoxX, training3BoxY, {});
     }
 
-    if(!global::gameProgress.level2Unlocked) {
-        rdpq_sprite_blit(levelLockedSprite, level02BoxX, level02BoxY, {});
-    }
-
     if(!global::gameProgress.boss1Unlocked) {
         rdpq_sprite_blit(levelLockedSprite, boss1BoxX, boss1BoxY, {});
+    }
+
+    if(!global::gameProgress.challenge1Unlocked) {
+        rdpq_sprite_blit(levelLockedSprite, challenge1BoxX, challenge1BoxY, {});
     }
 }
 

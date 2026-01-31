@@ -53,8 +53,8 @@ template <typename T> GI_Pause<T>::GI_Pause(T3DVec3 startingPos = (T3DVec3){0,10
     pauseStr = "Paused";
     contStr = "Continue";
     retryStr = "Retry";
-    quitStr = "Quit";
-    returnStr = "Return to last area";
+    quitStr = "Quit to Level Select";
+    returnStr = "Leave structure";
     pauseInterrupt = true;
     startingPos_ = startingPos;
     global::audioManager->pauseMenuBGM();

@@ -14,6 +14,10 @@ GS_Boss1InteriorA::GS_Boss1InteriorA(T3DVec3 startingPlayerPos) {
 
     envScale = 0.8f;
     collision::scaleTriangles(&collisionTris, envScale);
+    envModel->aabbMax[0]*=envScale;
+    envModel->aabbMin[0]*=envScale;
+    envModel->aabbMax[2]*=envScale;
+    envModel->aabbMin[2]*=envScale;
 
     t3d_viewport_set_projection(viewport, 75.0f, 20.0f, 200.0f);
 
@@ -28,37 +32,67 @@ GS_Boss1InteriorA::GS_Boss1InteriorA(T3DVec3 startingPlayerPos) {
 
     GO_NPCKnight* knight1 = new GO_NPCKnight("Knight1", (T3DVec3){{0,0,0}}, T3D_PI/2.0f);
     knight1->setInteractFunction([&](){
-        if(!global::gameProgress.trainingRewardReceived) {
+        if(!global::gameProgress.boss1RewardReceived) {
             global::GameInterruptStack->push_back(
-                    (new GI_Alert("Congratulations! You have completed\nthe Training Tower.", false))
+                    (new GI_Alert(global::playerName + "...", false))
                 ->setNextInterrupt(
-                    (new GI_Alert("Here is your reward:", false))
+                    (new GI_Alert("I hear it no longer...", false))
+                ->setNextInterrupt(
+                    (new GI_Alert("That hulking colossus...", false))
+                ->setNextInterrupt(
+                    (new GI_Alert("Its rain of missiles...", false))
+                ->setNextInterrupt(
+                    (new GI_Alert("It has ceased!", false))
+                ->setNextInterrupt(
+                    (new GI_Alert("Our structures have been spared!", false))
+                ->setNextInterrupt(
+                    (new GI_Alert("You, master of impedimancy, have\nsaved our realm!", false))
+                ->setNextInterrupt(
+                    (new GI_Alert("We shall forever remember you\nand your...", false))
+                ->setNextInterrupt(
+                    (new GI_Alert("...Mysterious Barricades.", false))
+                ->setNextInterrupt(
+                    (new GI_Alert("...", false))
+                ->setNextInterrupt(
+                    (new GI_Alert("Oh, right! A messenger from the\nnorthern realm has informed us\nthey are under a similar attack...", false))
+                ->setNextInterrupt(
+                    (new GI_Alert("...but that will have to wait for\nanother installment.", false))
+                ->setNextInterrupt(
+                    (new GI_Alert("In the meantime, we have added\nanother floor to our Training\nTower.", false))
                 ->setNextInterrupt(
                     (new GI_Action([&](){
-                        global::gameProgress.numBarricades += 1;
+                        global::gameProgress.challenge1Unlocked = true;
                         global::audioManager->playSFX("mechaLevelUp5.wav64", {.volume = 0.4f});
-                        global::gameState->thePlayer_->blinkBarricadeIndicator();
                     })
                 )
                 ->setNextInterrupt(
-                    (new GI_Alert("+1 Barricade Slot", false, true))
+                    (new GI_Alert("Training Tower: Challenge\nFloor unlocked!", false, true))
                 ->setNextInterrupt(
-                    (new GI_Alert("By the way, you can cast barricades\nwhile walking around as well!", false))
+                    (new GI_Alert("We hope you may use it to further\nhone your skills of deflection.", false))
                 ->setNextInterrupt(
-                    (new GI_Alert("Hold Z and use the control stick\nto position your casting point.", false))
-                ->setNextInterrupt(
-                    (new GI_Alert("Then hold A and use the control\nstick to set the angle and size\nof your barricade.", false))
-                ->setNextInterrupt(
-                    (new GI_Alert("Finally, release A to cast the\nbarricade.", false))
-                ))))))));
-            global::gameProgress.trainingRewardReceived = true;
+                    (new GI_Alert("Once again, thank you. And know\nthat wherever you may journey,\nyou will always be welcome here.", false))
+                )))))))))))))))));
+            global::gameProgress.boss1RewardReceived = true;
         }
         else {
-            global::GameInterruptStack->push_back(new GI_Alert("Venture forth!", false));
+            global::GameInterruptStack->push_back(new GI_Alert("Wherever you may journey, you\nwill always be welcome here.", false));
         }
     });
     objectList->push(knight1);
-
+    GO_Grate* grate1 = new GO_Grate((T3DVec3){0,0,212}, 0.0f);
+    GO_Grate* grate2 = new GO_Grate((T3DVec3){0,0,53}, 0.0f);
+    objectList->push(grate1);
+    objectList->push(grate2);
+    GO_Cannon* cannon1 = new GO_Cannon((T3DVec3){-32, 5, 220}, 0.0f, 205.0f, 350.0f);
+    GO_Cannon* cannon2 = new GO_Cannon((T3DVec3){-40, 5, 74}, -T3D_PI/2.0f, 50.0f, 205.0f);
+    objectList->push(cannon1);
+    objectList->push(cannon2);
+    std::vector<GameObject*> gratesToActivate1 = {grate1, cannon1};
+    std::vector<GameObject*> gratesToActivate2 = {grate2, cannon2};
+    GO_Target* target1 = new GO_Target((T3DVec3){-40, 5, 250}, -T3D_PI/2.0f, gratesToActivate1);
+    GO_Target* target2 = new GO_Target((T3DVec3){-40, 5, 105}, -T3D_PI/2.0f, gratesToActivate2);
+    objectList->push(target1);
+    objectList->push(target2);
     barricadeList = new BarricadeList();
     enemyList = new EnemyList(&collisionTris);
 }

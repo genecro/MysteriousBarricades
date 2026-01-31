@@ -29,7 +29,11 @@ GS_Boss1::GS_Boss1(T3DVec3 startingCursorPosition) {
 
     objectList = new GameObjectList();
     repairableList = new RepairableList();
-    repairableList->push(new GO_RepairableTower(collision::findGroundIntersection(collisionTris, (T3DVec3){20,10,20}), 100, 35, (color_t){255, 120, 120, 255}, -T3D_PI/2.0f, 0));
+    GO_RepairableTower* rewardTower = new GO_RepairableTower(collision::findGroundIntersection(collisionTris, (T3DVec3){20,10,20}), 100, 35, (color_t){255, 120, 120, 255}, -T3D_PI/2.0f, 0);
+    rewardTower->setRewardFunction([&](){
+        global::gameState->nextStatePush = new GS_Boss1InteriorA((T3DVec3){0,0,320});
+    }, global::gameProgress.boss1RewardReceived);
+    repairableList->push(rewardTower);
     repairableList->push(new GO_RepairableTower(collision::findGroundIntersection(collisionTris, (T3DVec3){-20,10,-20}), 100, 35, (color_t){120, 120, 255, 255}, T3D_PI/2.0f, T3D_PI));
     repairableList->push(new GO_RepairableTower(collision::findGroundIntersection(collisionTris, (T3DVec3){-20,10,20}), 100, 35, (color_t){255, 120, 0, 255}, -T3D_PI/2.0f, 0));
     repairableList->push(new GO_RepairableTower(collision::findGroundIntersection(collisionTris, (T3DVec3){20,10,-20}), 100, 35, (color_t){255, 255, 255, 255}, T3D_PI/2.0f, T3D_PI));
@@ -137,6 +141,7 @@ void GS_Boss1::renderRdpq() {
     theCursor->renderRdpq();
     //theBoss_->renderRdpq();
 
+    /*
     std::string enRemStr = "Enemies Remaining: " + std::to_string(remainingEnemies + enemyList->gameObjects_->size());
 
     rdpq_text_printf(&(rdpq_textparms_t) {
@@ -147,6 +152,7 @@ void GS_Boss1::renderRdpq() {
         display_get_height()-25, 
         enRemStr.c_str()
     );
+    */
 }
 
 void GS_Boss1::initCamera() {
@@ -160,15 +166,17 @@ void GS_Boss1::handleInputCamera() {
 }
 
 void GS_Boss1::updateCamera() {
+    float minZ = -23.0f;
     camera.target = theCursor->position_ + (T3DVec3){0, -3, 0};
-    camera.pos = theCursor->position_ + (T3DVec3){0, 10, -15};
+    camera.pos = theCursor->position_ + (T3DVec3){0, 
+        fm_lerp(10, 15, (global::gameState->theCursor->position_.z-minZ)/(-2.0f*minZ)), 
+        fm_lerp(-15, -30, (global::gameState->theCursor->position_.z-minZ)/(-2.0f*minZ))};
 }
 
 void GS_Boss1::levelWon() {
     enemyList->destroyAllEnemies();
     global::GameInterruptStack->push_back(new GI_Alert("You won!", false));
-    global::gameProgress.level2Unlocked = true;
-    remainingEnemies = 0;
+    global::audioManager->stopBGM();
 }
 
 void GS_Boss1::levelLost() {

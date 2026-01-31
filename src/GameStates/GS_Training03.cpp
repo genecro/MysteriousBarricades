@@ -203,7 +203,7 @@ void GS_Training03::levelWon() {
         global::GameInterruptStack->push_back((new GI_Alert("")))
     }*/
 
-    global::GameInterruptStack->push_back((new GI_Alert("You have defeated the enemies!\nUse your repair points to repair\nthe structure.", false))->setNextInterrupt(
+    global::GameInterruptStack->push_back((new GI_Alert("You have defeated the enemies!\nUse your Repair Points to repair\nthe structure.", false))->setNextInterrupt(
         new GI_Alert("Structures with a treasure icon\nabove them will allow entry\nwhen fully repaired.", false)
     ));
 }

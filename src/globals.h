@@ -37,17 +37,17 @@ namespace global
     extern struct gameProgress_t {
         bool training2Unlocked = false;
         bool training3Unlocked = false;
-        bool level1Unlocked = true;
-        bool level2Unlocked = false;
+        bool level1Unlocked = false;
         bool boss1Unlocked = false;
+        bool challenge1Unlocked = false;
         uint8_t numBarricades = 2;
         uint8_t rpCapacity = 100;
         float repairSpeedMultiplier = 0.2f;
         bool allTrainingLevelsComplete = false;
         bool trainingRewardReceived = false;
         bool level1RewardReceived = false;
-        bool barricadesCanRicochet = false;
-        bool level2RewardReceived = false;
+        bool barricadesCanRicochet = true;
+        bool boss1RewardReceived = false;
     } gameProgress;
 
     extern std::string playerName;

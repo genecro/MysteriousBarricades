@@ -16,3 +16,6 @@
 #include "GO_RepairBoost.h"
 #include "GO_RepairBoostInf.h"
 #include "NPCs/GO_NPCKnight.h"
+#include "GO_Grate.h"
+#include "GO_Target.h"
+#include "GO_Cannon.h"

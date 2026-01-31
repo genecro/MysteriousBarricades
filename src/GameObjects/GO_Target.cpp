@@ -4,10 +4,10 @@
 T3DModel* GO_Target::targetModel = nullptr;
 uint8_t GO_Target::instanceCount = 0;
 
-GO_Target::GO_Target(T3DVec3 position, float rotation, std::vector<GameObject*>* objectsToActivate, std::function<void()> onActivate) {
+GO_Target::GO_Target(T3DVec3 position, float rotation, std::vector<GameObject*> objectsToActivate, std::function<void()> onActivate) {
     position_ = position;
 
-    objectWidth_ = 3;
+    objectWidth_ = 3.5;
     
     objectsToActivate_ = objectsToActivate;
     onActivate_ = onActivate;
@@ -21,7 +21,11 @@ GO_Target::GO_Target(T3DVec3 position, float rotation, std::vector<GameObject*>*
     }
     rotation_ = rotation;
     
-    
+    if(abs(rotation_) == T3D_PI/2.0f) {
+        rotation_ += 0.01f;
+    }
+
+    targetColor_ = (color_t){0xFF, 0, 0, 0xFF};
 }
 
 GO_Target::~GO_Target() {
@@ -38,9 +42,9 @@ void GO_Target::handleInput() {
 }
 
 void GO_Target::update() {
-
+    if(!activated_) checkProjectiles();
     t3d_mat4_from_srt_euler(&targetMat,
-        (float[3]){0.02f, 0.02f, 0.02f},
+        (float[3]){0.05f, 0.05f, 0.05f},
         (float[3]){0.0f, rotation_, 0.0f},
         position_.v
     );
@@ -70,16 +74,29 @@ void GO_Target::checkProjectiles() {
     for(auto& obj : *global::gameState->objectList->gameObjects) {
         if(obj->isProjectile_) {
             if(checkProjectionCollision(obj)) {
-                //global::audioManager->playSFX("targetHit.wav64", {.volume=0.5f});
-                if(objectsToActivate_) {
-                    for(auto& obj : *objectsToActivate_) {
+                activated_ = true;
+                global::audioManager->playSFX("genericBuff5.wav64", {.volume = 0.2f});
+                debugf("Checking if list is empty\n");
+                if(!objectsToActivate_.empty()) {
+                    for(auto& obj : objectsToActivate_) {
+                        debugf("Trying to activate object\n");
                         obj->activate();
                     }
                 }
+                targetColor_ = (color_t){0, 0xFF, 0, 0xFF};
                 if(onActivate_) {
                     onActivate_();
                 }
             }
         }
     }
+}
+
+GO_Target* GO_Target::setActivateFunction(std::function<void()> onActivate) {
+        onActivate_ = onActivate;
+        return this;
+}
+
+void GO_Target::setColor(color_t newColor) {
+    targetColor_ = newColor;
 }

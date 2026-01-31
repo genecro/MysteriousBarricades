@@ -32,6 +32,9 @@ GS_Training04::GS_Training04(T3DVec3 startingCursorPosition) {
     barricadeList = new BarricadeList();
     enemyList = new EnemyList(&collisionTris);
 
+    global::audioManager->playBGM(BGM_MAIN_MENU, 0.8f);
+
+    /*
     global::GameInterruptStack->push_back(
             (new GI_Alert("Training Tower, 4th Floor:\nProjectiles", true, true))
             ->setNextInterrupt(
@@ -39,6 +42,7 @@ GS_Training04::GS_Training04(T3DVec3 startingCursorPosition) {
             ->setNextInterrupt(
             (new GI_Alert("Test 03", true))
         )));
+        */
 }
 
 GS_Training04::~GS_Training04() {

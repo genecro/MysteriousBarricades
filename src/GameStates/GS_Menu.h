@@ -19,7 +19,7 @@
 #define MOVE_CURSOR_UP -1
 #define MOVE_CURSOR_DOWN 1
 #define SCREEN_PADDING 25
-#define NUM_CREDITS_PAGES 5
+#define NUM_CREDITS_PAGES 6
 
 class GS_Menu : public GameState
 {
@@ -91,7 +91,8 @@ private:
         "Title music:\n    \"Les Barricades Mysterieuses\"\n    by Francois Couperin\n    from his 6th Ordre (1717)\n\nBoss music:\n    Fuguette a 3 voix\n    by Arthur Dodement (ca. 1912)",
         "Some textures from Craig Smith's\n    Retro Texture Pack\n    little-martian.dev\n\nSmall icons:\n    RunninBlood's RPG icon pack\n    runninblood.itch.io",
         "Sound effects from Helton Yan's\n    Pixel Combat pack\n    heltonyan.itch.io",
-        "Player character (wizard) model,\nNPC (knight) model,\nand model animations\n    by Quaternius (quaternius.com)"
+        "Player character (wizard) model,\nNPC (knight) model,\nand model animations\n    by Quaternius (quaternius.com)",
+        "Thanks to the creators and\ncontributors of libdragon, tiny3d,\nand fast64 for making N64\nhomebrew what it is today!"
     };
 
     void drawNameEntry();

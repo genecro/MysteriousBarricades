@@ -243,7 +243,7 @@ void GS_Level01::updateCamera() {
 void GS_Level01::levelWon() {
     enemyList->destroyAllEnemies();
     global::GameInterruptStack->push_back(new GI_Alert("You won!", false));
-    global::gameProgress.level2Unlocked = true;
+    global::gameProgress.boss1Unlocked = true;
     remainingEnemies = 0;
 }
 

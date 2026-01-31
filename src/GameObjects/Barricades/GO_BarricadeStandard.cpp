@@ -25,7 +25,7 @@ GO_BarricadeStandard::GO_BarricadeStandard(T3DVec3 pos, T3DVec3 sizeRotation, co
     t3d_model_draw(barricadeModel);
     dplBarricade = rspq_block_end();
     */
-    debugf("Barricade scale = %.2f\n", scale_);
+    //debugf("Barricade scale = %.2f\n", scale_);
 }
 
 GO_BarricadeStandard::~GO_BarricadeStandard() {
@@ -98,5 +98,5 @@ void GO_BarricadeStandard::castSuccess() {
     castSuccess_ = true;
     global::gameState->barricadeCreated();
     global::audioManager->playSFX("bitSweep1.wav64", {.volume = 0.4f});
-    debugf("Barricade length: %.2f\n", scale_/scaleFactor_);
+    //debugf("Barricade length: %.2f\n", scale_/scaleFactor_);
 }
