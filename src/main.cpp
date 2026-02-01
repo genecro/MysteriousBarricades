@@ -137,7 +137,7 @@ int main(void)
             global::GameInterruptStack->at(i)->renderRdpq();
         }
 
-        
+        /*
         rdpq_sync_pipe();
         //display stats
         
@@ -158,7 +158,7 @@ int main(void)
         rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, display_get_width()-110, 61, "Ratio: %.2f%%", 100.0f*heapStats.used/heapStats.total);
         
 
-        
+        */
 
         //if current gameState has nextState, point to nextState and delete current gameState
         if(global::gameState->nextState != nullptr)
@@ -183,9 +183,11 @@ int main(void)
             global::GameStateStack->pop();
         }
 
+        /*
         if(global::gameState && global::gameState->envModel) {
             rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, display_get_width()-110, 73, "EnvVertCt: %d", global::gameState->envModel->totalVertCount);
         }
+            */
         mixer_try_play();
 
         rdpq_detach_show();

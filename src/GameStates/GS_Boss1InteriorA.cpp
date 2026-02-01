@@ -23,7 +23,7 @@ GS_Boss1InteriorA::GS_Boss1InteriorA(T3DVec3 startingPlayerPos) {
 
     thePlayer_ = new GO_Player(global::playerName);
 
-    thePlayer_->position_ = startingPlayerPos + (T3DVec3){{0, thePlayer_->objectWidth_, 0}};
+    thePlayer_->position_ = (T3DVec3){0,0,320} + (T3DVec3){{0, thePlayer_->objectWidth_, 0}};
     thePlayer_->rotation_ = -T3D_PI/2.0f;
 
     initCamera();
@@ -101,6 +101,7 @@ GS_Boss1InteriorA::GS_Boss1InteriorA(T3DVec3 startingPlayerPos) {
     objectList->push(target2);
     barricadeList = new BarricadeList();
     enemyList = new EnemyList(&collisionTris);
+    global::audioManager->playBGM(BGM_TRAINING, 0.4f);
 }
 
 GS_Boss1InteriorA::~GS_Boss1InteriorA() {

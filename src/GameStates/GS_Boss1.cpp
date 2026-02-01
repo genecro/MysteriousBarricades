@@ -213,6 +213,11 @@ void GS_Boss1::checkForWinOrLoss() {
         }
     }
 
+    if(enemyList->gameObjects_->empty()) {
+        endStateReached = true;
+        levelWon();
+    }
+
     /*
     if(allFullyRepaired) {
         //win

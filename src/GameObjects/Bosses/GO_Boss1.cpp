@@ -98,7 +98,7 @@ void GO_Boss1::update() {
     updateHPBar();
 
     if(HPCurrent_ <= 0) {
-        global::audioManager->stopBGM();
+        //global::audioManager->stopBGM();
         global::audioManager->playSFX("bossDying.wav64", {.volume = 0.4f});
         global::gameState->objectList->push(new GO_RepairBoostInf((T3DVec3){0,position_.y,0}));
         global::gameState->objectList->push(new GO_Explosion((T3DVec3){2,position_.y,0}, 10.0f, (color_t){0xFF, 0x77, 0x00, 0xFF}, 4*60));
