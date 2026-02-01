@@ -1,3 +1,8 @@
+## Quick start guide
+1. Download and install [Ares](https://ares-emu.net/)
+2. Download the rom ([mystbar.z64](https://github.com/genecro/MysteriousBarricades/blob/master/mystbar.z64))
+3. Run Ares and load the rom
+
 ## Dependencies
 1. [libdragon](https://github.com/DragonMinded/libdragon) (preview branch)
 2. [tiny3d](https://github.com/HailToDodongo/tiny3d)
