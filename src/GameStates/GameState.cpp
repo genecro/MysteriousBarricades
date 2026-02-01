@@ -265,3 +265,11 @@ void GameState::triedToCastWithoutSlots() {
 void GameState::enemiesAttackingStructure() {
 
 }
+
+void GameState::projectileWentOutOfBounds() {
+
+}
+
+void GameState::projectileNotDeflected() {
+    
+}

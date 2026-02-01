@@ -36,8 +36,12 @@ void GO_Barricade::processProjectile(GO_Projectile* theProjectile) {
                 global::audioManager->playSFX("magicStep6.wav64", {.volume = 0.4f});
                 theProjectile->rotationDirection_ *= -1;
                 theProjectile->idOfLastReflected_ = this->id_;
+                if(global::gameState->projectilesDestroyBarricades) {
+                    timeToDelete = true;
+                }
             }
             else {
+                global::gameState->projectileNotDeflected();
                 theProjectile->timeToDelete = true;
                 timeToDelete = true;
             }

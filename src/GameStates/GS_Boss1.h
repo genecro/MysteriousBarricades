@@ -19,6 +19,8 @@ public:
     void levelWon() override;
     void levelLost() override;
 
+    virtual void projectileNotDeflected() override;
+
     GO_Boss1* theBoss_;
 
     
@@ -36,4 +38,6 @@ private:
     void initCamera() override;
     void handleInputCamera() override;
     void updateCamera() override;
+
+    int projectileNotDeflectedCount = 0;
 };

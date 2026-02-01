@@ -98,6 +98,7 @@ void GO_Boss1::update() {
     updateHPBar();
 
     if(HPCurrent_ <= 0) {
+        global::audioManager->stopBGM();
         global::audioManager->playSFX("bossDying.wav64", {.volume = 0.4f});
         global::gameState->objectList->push(new GO_RepairBoostInf((T3DVec3){0,position_.y,0}));
         global::gameState->objectList->push(new GO_Explosion((T3DVec3){2,position_.y,0}, 10.0f, (color_t){0xFF, 0x77, 0x00, 0xFF}, 4*60));
@@ -149,6 +150,6 @@ void GO_Boss1::processProjectile(GO_Projectile* theProjectile) {
 }
 
 void GO_Boss1::shootProjectile() {
-    global::gameState->objectList->push(new GO_Projectile((T3DVec3){3.0f*cosf(rotation_+T3D_PI/2.0f), 5.0f, 3.0f*sinf(rotation_+T3D_PI/2.0f)}, rotation_+T3D_PI, 0.3f * speedMultiplier, this, 0.3f));
+    global::gameState->objectList->push(new GO_Projectile((T3DVec3){3.0f*cosf(rotation_+T3D_PI/2.0f), 5.0f, 3.0f*sinf(rotation_+T3D_PI/2.0f)}, rotation_+T3D_PI, 0.3f * speedMultiplier, this, 0.3f, 20.0f));
     global::audioManager->playSFX("gearedPunch5.wav64", {.volume = 0.4f});
 }

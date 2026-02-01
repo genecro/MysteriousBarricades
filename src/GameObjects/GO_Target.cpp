@@ -76,10 +76,10 @@ void GO_Target::checkProjectiles() {
             if(checkProjectionCollision(obj)) {
                 activated_ = true;
                 global::audioManager->playSFX("genericBuff5.wav64", {.volume = 0.2f});
-                debugf("Checking if list is empty\n");
+                //debugf("Checking if list is empty\n");
                 if(!objectsToActivate_.empty()) {
                     for(auto& obj : objectsToActivate_) {
-                        debugf("Trying to activate object\n");
+                        //debugf("Trying to activate object\n");
                         obj->activate();
                     }
                 }

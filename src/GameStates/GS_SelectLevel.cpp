@@ -9,6 +9,7 @@ GS_SelectLevel::GS_SelectLevel(T3DVec3 startingPos) {
     envModel = nullptr;
     global::GameInterruptStack->push_back(new GI_FadeIn(600));
     global::audioManager->playBGM(BGM_LEVEL_SELECT, 0.8f);
+
 }
 
 GS_SelectLevel::~GS_SelectLevel() {
@@ -21,6 +22,7 @@ void GS_SelectLevel::handleInput() {
     int xAxis = joypad_get_axis_pressed(JOYPAD_PORT_1, JOYPAD_AXIS_STICK_X);
     int yAxis = joypad_get_axis_pressed(JOYPAD_PORT_1, JOYPAD_AXIS_STICK_Y);
 
+    /*
     if(btn.c_up) {
         global::gameProgress.training2Unlocked = !global::gameProgress.training2Unlocked;
     }
@@ -33,10 +35,50 @@ void GS_SelectLevel::handleInput() {
     else if(btn.c_down) {
         global::gameProgress.challenge1Unlocked = !global::gameProgress.challenge1Unlocked;
     }
+        */
+
+    if(!global::gameProgress.everythingUnlocked && 
+        (btn.c_up || btn.c_right || btn.c_down || btn.c_left)) {
+        switch(currentCodeState_) {
+            case CODE_STATE_0:
+                if(btn.c_up) currentCodeState_ = CODE_STATE_1;
+            break;
+
+            case CODE_STATE_1:
+                if(btn.c_right) currentCodeState_ = CODE_STATE_2;
+                else currentCodeState_ = CODE_STATE_0;
+            break;
+
+            case CODE_STATE_2:
+                if(btn.c_down) currentCodeState_ = CODE_STATE_3;
+                else currentCodeState_ = CODE_STATE_0;
+            break;
+
+            case CODE_STATE_3:
+                if(btn.c_left) {
+                    //unlock everything
+                    global::gameProgress.numBarricades = 3;
+                    global::gameProgress.allTrainingLevelsComplete = true;
+                    global::gameProgress.barricadesCanRicochet = true;
+                    global::gameProgress.boss1RewardReceived = true;
+                    global::gameProgress.boss1Unlocked = true;
+                    global::gameProgress.challenge1Unlocked = true;
+                    global::gameProgress.level1RewardReceived = true;
+                    global::gameProgress.level1Unlocked = true;
+                    global::gameProgress.training2Unlocked = true;
+                    global::gameProgress.training3Unlocked = true;
+                    global::gameProgress.trainingRewardReceived = true;
+                    global::gameProgress.everythingUnlocked = true;
+                    global::audioManager->playSFX("complexRise2.wav64", {.volume = 0.4f});
+                }
+                else currentCodeState_ = CODE_STATE_0;
+            break;
+        }
+    }
 
     switch(currSelection) {
         case SELECTION_TRAINING:
-            if(yAxis < 0) {
+            if(global::gameProgress.level1Unlocked && yAxis < 0) {
                 currSelection = SELECTION_LEVEL_1;
                 global::audioManager->playSFX("rom:/bootsOnGenericGround6.wav64", {.volume = 0.4f});
             }
@@ -51,7 +93,7 @@ void GS_SelectLevel::handleInput() {
         break;
         case SELECTION_TRAINING_2:
             if(yAxis < 0) {
-                currSelection = global::gameProgress.boss1Unlocked ? SELECTION_BOSS_1 : SELECTION_LEVEL_1;
+                currSelection = global::gameProgress.boss1Unlocked ? SELECTION_BOSS_1 : global::gameProgress.level1Unlocked ? SELECTION_LEVEL_1 : SELECTION_TRAINING_2;
                 global::audioManager->playSFX("rom:/bootsOnGenericGround6.wav64", {.volume = 0.4f});
             }
             else if (global::gameProgress.training3Unlocked && xAxis > 0) {
@@ -69,7 +111,7 @@ void GS_SelectLevel::handleInput() {
         break;
         case SELECTION_TRAINING_3:
             if(yAxis < 0) {
-                currSelection = global::gameProgress.challenge1Unlocked ? SELECTION_CHALLENGE_1 : global::gameProgress.boss1Unlocked ? SELECTION_BOSS_1 : SELECTION_LEVEL_1;
+                currSelection = global::gameProgress.challenge1Unlocked ? SELECTION_CHALLENGE_1 : global::gameProgress.boss1Unlocked ? SELECTION_BOSS_1 : global::gameProgress.level1Unlocked ? SELECTION_LEVEL_1 : SELECTION_TRAINING_3;
                 global::audioManager->playSFX("rom:/bootsOnGenericGround6.wav64", {.volume = 0.4f});
             }
             else if(xAxis < 0) {
@@ -215,7 +257,7 @@ void GS_SelectLevel::renderRdpq() {
     
     lvlLbl = "L1";
     rdpq_text_printf(&(rdpq_textparms_t) {
-        .style_id=FONTSTYLE_BLACK,
+        .style_id= global::gameProgress.level1Unlocked ? FONTSTYLE_BLACK : FONTSTYLE_GREY, 
     }, FONT_PIACEVOLI_16, level01BoxX+10, level01BoxY+20, lvlLbl.c_str());
     
     lvlLbl = "B1";
@@ -248,6 +290,10 @@ void GS_SelectLevel::renderRdpq() {
 
     if(!global::gameProgress.training3Unlocked) {
         rdpq_sprite_blit(levelLockedSprite, training3BoxX, training3BoxY, {});
+    }
+
+    if(!global::gameProgress.level1Unlocked) {
+        rdpq_sprite_blit(levelLockedSprite, level01BoxX, level01BoxY, {});
     }
 
     if(!global::gameProgress.boss1Unlocked) {

@@ -174,16 +174,30 @@ void GS_Boss1::updateCamera() {
 }
 
 void GS_Boss1::levelWon() {
-    enemyList->destroyAllEnemies();
-    global::GameInterruptStack->push_back(new GI_Alert("You won!", false));
+    //enemyList->destroyAllEnemies();
+    global::GameInterruptStack->push_back(new GI_Alert("You have defeated the boss!", false));
     global::audioManager->stopBGM();
 }
 
 void GS_Boss1::levelLost() {
-    global::GameInterruptStack->push_back((new GI_Alert("A structure has fallen!\nThe enemies have prevailed!", false))->setNextInterrupt(
-        new GI_MultiChoice("Retry", new GI_FadeToNextGS<GS_Boss1>((T3DVec3){-10,10,10}, 1200.0f),
-                        "Quit", new GI_FadeToNextGS<GS_SelectLevel>((T3DVec3){0,0,0}, 1200.0f)))
-    );
+    if(global::gameProgress.barricadesCanRicochet) {
+        global::GameInterruptStack->push_back((new GI_Alert("A structure has fallen!\nThe enemies have prevailed!", false))->setNextInterrupt(
+            new GI_MultiChoice("Retry", new GI_FadeToNextGS<GS_Boss1>((T3DVec3){-10,10,10}, 1200.0f),
+                            "Quit", new GI_FadeToNextGS<GS_SelectLevel>((T3DVec3){0,0,0}, 1200.0f)))
+        );
+    }
+    else {
+        global::GameInterruptStack->push_back((new GI_Alert("A structure has fallen!\nThe enemies have prevailed!", false))
+        ->setNextInterrupt(
+            (new GI_Alert("Hmm... there must be a way\nto reflect these projectiles...", false))
+        ->setNextInterrupt(
+            (new GI_Alert("Maybe I should go back\nand see if I missed anything...", false))
+        ))
+        ->setNextInterrupt(
+            new GI_MultiChoice("Retry", new GI_FadeToNextGS<GS_Boss1>((T3DVec3){-10,10,10}, 1200.0f),
+                            "Quit", new GI_FadeToNextGS<GS_SelectLevel>((T3DVec3){0,0,0}, 1200.0f)))
+        );
+    }
 }
 
 void GS_Boss1::checkForWinOrLoss() {
@@ -205,4 +219,15 @@ void GS_Boss1::checkForWinOrLoss() {
         endStateReached = true;
         levelWon();
     }*/
+}
+
+void GS_Boss1::projectileNotDeflected() {
+    projectileNotDeflectedCount++;
+    if(projectileNotDeflectedCount >= 3) {
+        global::GameInterruptStack->push_back(
+            (new GI_Alert("Hmm... there must be a way\nto reflect these projectiles...", false))
+        ->setNextInterrupt(
+            (new GI_Alert("Maybe I should go back\nand see if I missed anything...", false))
+        ));
+    }
 }

@@ -4,12 +4,15 @@
 T3DModel* GO_Cannon::cannonModel = nullptr;
 uint8_t GO_Cannon::instanceCount = 0;
 
-GO_Cannon::GO_Cannon(T3DVec3 position, float rotation, float playerYLow, float playerYHigh) {
+GO_Cannon::GO_Cannon(T3DVec3 position, float rotation, float playerYLow, float playerYHigh, color_t cannonColor, color_t projectileColor) {
     position_ = position;
 
     objectWidth_ = 3;
     
     playerYLow_ = playerYLow;
+    cannonColor_ = cannonColor;
+    //cannonColor_ = (color_t){0xFF, 0, 0, 0xFF};
+    projectileColor_ = projectileColor;
     playerYHigh_ = playerYHigh;
     
     t3d_mat4_identity(&cannonMat);
@@ -24,7 +27,7 @@ GO_Cannon::GO_Cannon(T3DVec3 position, float rotation, float playerYLow, float p
     shootTimeline.push_back({
         10,
         [&](){
-            //dummy command for when currTimeline gets set by a TimedBossAction
+            //dummy command for when currTimeline gets set by a TimeCannonAction
             return true;
         }
     });
@@ -71,6 +74,8 @@ void GO_Cannon::update() {
 
 void GO_Cannon::renderT3d() {
     //if(!updateHasBeenCalled_) return;
+    rdpq_sync_pipe();
+    rdpq_set_prim_color(cannonColor_);
     t3d_matrix_set(cannonMatFP, true);
     t3d_model_draw(cannonModel);
 }
@@ -100,7 +105,9 @@ void GO_Cannon::shootProjectile() {
         rotation_ + T3D_PI,
         0.3f,
         this,
-        1.0f
+        1.0f,
+        20.0f,
+        projectileColor_
     ));
 }
 

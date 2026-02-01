@@ -74,8 +74,10 @@ public:
     virtual void barricadeCastFailed();
     virtual void triedToCastWithoutSlots();
     virtual void enemiesAttackingStructure();
+    virtual void projectileWentOutOfBounds();
+    virtual void projectileNotDeflected();
 
-
+    bool projectilesDestroyBarricades = false;
     
 
 protected:

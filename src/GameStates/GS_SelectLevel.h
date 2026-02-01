@@ -29,6 +29,15 @@ public:
         SELECTION_CHALLENGE_1 = 5,
     };
 
+    enum {
+        CODE_STATE_0 = 0,
+        CODE_STATE_1 = 1,
+        CODE_STATE_2 = 2,
+        CODE_STATE_3 = 3
+    };
+
+    int currentCodeState_ = CODE_STATE_0;
+
     uint8_t currSelection = SELECTION_TRAINING;
 
     

@@ -44,12 +44,13 @@ int main(void)
     global::GameStateStack = new std::stack<GameState*>();
 
     //global::gameState = new GS_Intro();
-    //global::gameState = new GS_Menu();
+    global::gameState = new GS_Menu();
     //global::gameState = new GS_Level01((T3DVec3){0, 10, 0});
     //global::gameState = new GS_Training02((T3DVec3){0, 10, 0});
     //global::gameState = new GS_Training03InteriorA((T3DVec3){0,0,80});
     //global::gameState = new GS_Level01InteriorA((T3DVec3){0,0,320});
-    global::gameState = new GS_Boss1InteriorA((T3DVec3){0,0,320});
+    //global::gameState = new GS_Boss1InteriorA((T3DVec3){0,0,320});
+    //global::gameState = new GS_Training04((T3DVec3){0,10,0});
 
     //zbuffer = surface_alloc(FMT_RGBA16, display_get_width(), display_get_height());
 
@@ -136,6 +137,7 @@ int main(void)
             global::GameInterruptStack->at(i)->renderRdpq();
         }
 
+        
         rdpq_sync_pipe();
         //display stats
         
@@ -161,12 +163,12 @@ int main(void)
         //if current gameState has nextState, point to nextState and delete current gameState
         if(global::gameState->nextState != nullptr)
         {
-            debugf("Next state detected\n");
+            //debugf("Next state detected\n");
             GameState* nextState = global::gameState->nextState;
             rspq_wait();
             delete global::gameState;
             global::gameState = nextState;
-            debugf("Next state has been set\n");
+            //debugf("Next state has been set\n");
         }
         else if(global::gameState->nextStatePush != nullptr) {
             global::GameStateStack->push(global::gameState);

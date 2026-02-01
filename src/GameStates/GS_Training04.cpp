@@ -32,7 +32,7 @@ GS_Training04::GS_Training04(T3DVec3 startingCursorPosition) {
     barricadeList = new BarricadeList();
     enemyList = new EnemyList(&collisionTris);
 
-    global::audioManager->playBGM(BGM_MAIN_MENU, 0.8f);
+    
 
     /*
     global::GameInterruptStack->push_back(
@@ -43,6 +43,32 @@ GS_Training04::GS_Training04(T3DVec3 startingCursorPosition) {
             (new GI_Alert("Test 03", true))
         )));
         */
+
+    timelineCtr = 0;
+
+    projectilesDestroyBarricades = true;
+
+    addRandomCannon.push_back({10,[](){return true;}});
+    addRandomCannon.push_back({2*60, [&](){
+        int randRotPos = rand() % 3;
+        int randColor = rand() % 3;
+        currCannon = new GO_Cannon(cannonPlacement[randRotPos].pos, cannonPlacement[randRotPos].rot, -17, 17, colors[randColor], colors[randColor]);
+        currCannon->active_ = false;
+        objectList->push(currCannon);
+        return true;
+    }});
+    addRandomCannon.push_back({2*60, [&](){
+        currCannon->shootProjectile();
+        return true;
+    }});
+    addRandomCannon.push_back({2*60, [&](){
+        currCannon->timeToDelete = true;
+        currTimeline = addRandomCannon;
+        return true;
+    }});
+    currTimeline = addRandomCannon;
+
+    global::audioManager->playBGM(BGM_MAIN_MENU, 0.8f);
 }
 
 GS_Training04::~GS_Training04() {
@@ -72,6 +98,10 @@ void GS_Training04::handleInput() {
 void GS_Training04::update() {
     theCursor->update();
     updateCamera();
+    if(!endStateReached) {
+        checkForWinOrLoss();
+        updateTimeline();
+    }
 
     t3d_mat4_from_srt_euler(&envMat,
         (float[3]){ scaleFactor, scaleFactor, scaleFactor},
@@ -86,7 +116,8 @@ void GS_Training04::update() {
     repairableList->update();
     barricadeList->update();
     enemyList->update();
-    if(!endStateReached) checkForWinOrLoss();
+    
+    projectileBarricadeCheck();
 }
 
 void GS_Training04::renderT3d() {
@@ -121,6 +152,21 @@ void GS_Training04::renderRdpq() {
     repairableList->renderRdpq();
     barricadeList->renderRdpq();
     enemyList->renderRdpq();
+    theCursor->renderRdpq();
+
+    if(!endStateReached) {
+        std::string currStr = "Current score: " + std::to_string(currentScore);
+        std::string highStr = "High score: " + std::to_string(global::gameProgress.challenge1HighScore);
+
+        rdpq_text_printf(&(rdpq_textparms_t) {
+                .style_id= FONTSTYLE_WHITE,
+            }, 
+            FONT_PIACEVOLI_16, 
+            25, 
+            display_get_height()-50, 
+            (currStr + "\n" + highStr).c_str()
+        );
+    }
 }
 
 void GS_Training04::initCamera() {
@@ -144,9 +190,75 @@ void GS_Training04::levelWon() {
 }
 
 void GS_Training04::levelLost() {
-    global::GameInterruptStack->push_back(new GI_Alert("You lost!", false));
+    endStateReached = true;
+    global::GameInterruptStack->push_back((new GI_Alert("Game over!", false))
+        ->setNextInterrupt(
+            (new GI_Alert("High score: " + std::to_string(global::gameProgress.challenge1HighScore), false))
+        ->setNextInterrupt(
+            new GI_MultiChoice("Retry", new GI_FadeToNextGS<GS_Training04>((T3DVec3){0,10,0}, 600.0f),
+            "Quit to Level Select", new GI_FadeToNextGS<GS_SelectLevel>((T3DVec3){0,0,0}, 600.0f))
+        )));
 }
 
 void GS_Training04::checkForWinOrLoss() {
+    for(GameObject * p : *objectList->gameObjects) {
+        if(p->isProjectile_ && dynamic_cast<GO_Projectile*>(p)->reflected) {
+            float wallRot = 0.0f;
+            T3DVec3 wallPos = {0,0,0};
+            float L2 = 7.5;
+            color_t projectileColor = dynamic_cast<GO_Projectile*>(p)->objColor_;
+            switch(projectileColor.r) {
+                case 0xFF:
+                    switch(projectileColor.g) {
+                        case 0xFF: //yellow
+                            wallRot = cannonPlacement[2].rot;
+                            wallPos = cannonPlacement[2].pos;
+                        break;
+
+                        case 0: //red
+                            wallRot = cannonPlacement[1].rot;
+                            wallPos = cannonPlacement[1].pos;
+                        break;
+                    }
+                break;
+
+                case 0: //blue
+                    wallRot = cannonPlacement[0].rot;
+                    wallPos = cannonPlacement[0].pos;
+                    L2 = 5;
+                break;
+            }
+            float xp = (p->position_.x - wallPos.x)*fm_cosf(wallRot) + (p->position_.z - wallPos.z)*fm_sinf(wallRot);
+            float zp = -(p->position_.x - wallPos.x)*fm_sinf(wallRot) + (p->position_.z - wallPos.z)*fm_cosf(wallRot);
+            
+            float xclamp = xp < -L2 ? -L2 : xp > L2 ? L2 : xp;//clamp(xp, -L2, L2);
+            
+            float distance = (p->objectWidth_ + p->speed_) * global::frameTimeMultiplier;
+            if((xp - xclamp)*(xp - xclamp) + zp*zp <= distance*distance) {
+                currentScore++;
+                if(currentScore > global::gameProgress.challenge1HighScore) {
+                    global::gameProgress.challenge1HighScore = currentScore;
+                }
+                p->timeToDelete = true;
+            }
+        }
+    }
     
+}
+void GS_Training04::updateTimeline() {
+    timelineCtr += global::frameTimeMultiplier;
+    if(!currTimeline.empty() && timelineCtr >= currTimeline.front().time) {
+        if(currTimeline.front().action()) {
+            currTimeline.erase(currTimeline.begin());
+        }
+        else {
+            currTimeline.front().time = 5*60; // try again in 5 seconds
+        }
+        timelineCtr = 0;
+    }
+}
+
+void GS_Training04::projectileWentOutOfBounds() {
+    levelLost();
+
 }

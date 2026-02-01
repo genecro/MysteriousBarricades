@@ -59,7 +59,12 @@ GS_Level01InteriorA::GS_Level01InteriorA(T3DVec3 startingPlayerPos) {
             global::gameProgress.level1RewardReceived = true;
         }
         else {
-            global::GameInterruptStack->push_back(new GI_Alert("Good luck! We are forever\ngrateful for your services\nto our realm.", false));
+            if(global::gameProgress.boss1Unlocked) {
+                global::GameInterruptStack->push_back(new GI_Alert("Good luck! We are forever\ngrateful for your services\nto our realm.", false));
+            }
+            else {
+                global::GameInterruptStack->push_back(new GI_Alert("Now get back out there\nand finish off the enemies!", false));
+            }
         }
     });
     objectList->push(knight1);

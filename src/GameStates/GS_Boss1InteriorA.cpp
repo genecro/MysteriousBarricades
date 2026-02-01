@@ -75,7 +75,13 @@ GS_Boss1InteriorA::GS_Boss1InteriorA(T3DVec3 startingPlayerPos) {
             global::gameProgress.boss1RewardReceived = true;
         }
         else {
-            global::GameInterruptStack->push_back(new GI_Alert("Wherever you may journey, you\nwill always be welcome here.", false));
+            global::GameInterruptStack->push_back(
+                (new GI_Alert("One more thing:", false))
+            ->setNextInterrupt(
+                (new GI_Alert("Since saving has not been\nimplemented, if you want to unlock\neverything, press this sequence", false))
+            ->setNextInterrupt(
+                (new GI_Alert("of buttons on the Level\nSelect screen: c_up, c_right,\nc_down, c_left", false))
+            )));
         }
     });
     objectList->push(knight1);
@@ -83,8 +89,8 @@ GS_Boss1InteriorA::GS_Boss1InteriorA(T3DVec3 startingPlayerPos) {
     GO_Grate* grate2 = new GO_Grate((T3DVec3){0,0,53}, 0.0f);
     objectList->push(grate1);
     objectList->push(grate2);
-    GO_Cannon* cannon1 = new GO_Cannon((T3DVec3){-32, 5, 220}, 0.0f, 205.0f, 350.0f);
-    GO_Cannon* cannon2 = new GO_Cannon((T3DVec3){-40, 5, 74}, -T3D_PI/2.0f, 50.0f, 205.0f);
+    GO_Cannon* cannon1 = new GO_Cannon((T3DVec3){-32, 5, 220}, 0.0f, 205.0f, 350.0f, (color_t){0xBB, 0xBB, 0xBB, 0xFF}, (color_t){0xFF, 0, 0, 0xFF});
+    GO_Cannon* cannon2 = new GO_Cannon((T3DVec3){-40, 5, 74}, -T3D_PI/2.0f, 50.0f, 205.0f, (color_t){0xBB, 0xBB, 0xBB, 0xFF}, (color_t){0xFF, 0, 0, 0xFF});
     objectList->push(cannon1);
     objectList->push(cannon2);
     std::vector<GameObject*> gratesToActivate1 = {grate1, cannon1};

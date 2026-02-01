@@ -106,7 +106,7 @@ void Audio::stopBGM() {
     if(mixer_ch_playing(CHANNEL_BGM)) {
         mixer_ch_stop(CHANNEL_BGM);
         if(bgm.wave.name) {
-        wav64_close(&bgm);
+            wav64_close(&bgm);
         }
     }
 }

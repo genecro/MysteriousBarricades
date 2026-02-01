@@ -46,8 +46,10 @@ namespace global
         bool allTrainingLevelsComplete = false;
         bool trainingRewardReceived = false;
         bool level1RewardReceived = false;
-        bool barricadesCanRicochet = true;
+        bool barricadesCanRicochet = false;
         bool boss1RewardReceived = false;
+        int challenge1HighScore = 0;
+        bool everythingUnlocked = false;
     } gameProgress;
 
     extern std::string playerName;

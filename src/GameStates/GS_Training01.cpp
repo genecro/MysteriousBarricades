@@ -41,7 +41,7 @@ GS_Training01::GS_Training01(T3DVec3 startingCursorPosition) {
             ->setNextInterrupt(
             (new GI_Alert("Release the A button to cast a\nbarricade aligned with the\nfloating cursors.", false))
             ->setNextInterrupt(
-            (new GI_Alert("Create 10 barricades to complete\nthis floor of the Training Tower!", false))
+            (new GI_Alert("Create 6 barricades to complete\nthis floor of the Training Tower!", false))
         )))));
     
     global::GameInterruptStack->push_back(new GI_FadeIn(600));
@@ -162,7 +162,7 @@ void GS_Training01::levelWon() {
 }
 
 void GS_Training01::checkForWinOrLoss() {
-    if(barricadesCreated >= 10) {
+    if(barricadesCreated >= 6) {
         endStateReached = true;
         levelWon();
     }

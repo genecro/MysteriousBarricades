@@ -202,7 +202,7 @@ void GS_Training03::levelWon() {
     /*if(repairableList->repairables->at(0)->HPCurrent_ < repairableList->repairables->at(0)->HPTotal_) {
         global::GameInterruptStack->push_back((new GI_Alert("")))
     }*/
-
+    global::gameProgress.level1Unlocked = true;
     global::GameInterruptStack->push_back((new GI_Alert("You have defeated the enemies!\nUse your Repair Points to repair\nthe structure.", false))->setNextInterrupt(
         new GI_Alert("Structures with a treasure icon\nabove them will allow entry\nwhen fully repaired.", false)
     ));

@@ -4,7 +4,7 @@
 
 class GO_Projectile : public GameObject {
 public:
-    GO_Projectile(T3DVec3 position, float angle, float speed, GameObject* origin, float objectWidth, float damage=20);
+    GO_Projectile(T3DVec3 position, float angle, float speed, GameObject* origin, float objectWidth, float damage, color_t objColor = color_t{0xFF, 0, 0, 0xFF});
     virtual ~GO_Projectile();
     virtual void handleInput() override;
     virtual void update() override;
@@ -20,6 +20,7 @@ public:
     GameObject* origin_;
 
     //int idOfLastReflected_ = -1;
+    color_t objColor_;
 
 
 private:
@@ -34,5 +35,5 @@ private:
 
     static uint8_t instanceCount;
 
-    color_t objColor_;
+    
 };

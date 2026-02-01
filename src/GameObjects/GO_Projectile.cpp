@@ -4,7 +4,7 @@
 T3DModel* GO_Projectile::projectileModel = nullptr;
 uint8_t GO_Projectile::instanceCount = 0;
 
-GO_Projectile::GO_Projectile(T3DVec3 position, float angle, float speed, GameObject* origin, float objectWidth, float damage=20) {
+GO_Projectile::GO_Projectile(T3DVec3 position, float angle, float speed, GameObject* origin, float objectWidth, float damage, color_t objColor = color_t{0xFF, 0, 0, 0xFF}) {
     position_ = position;
     lifetime_ = 0;
 
@@ -17,7 +17,7 @@ GO_Projectile::GO_Projectile(T3DVec3 position, float angle, float speed, GameObj
 
     damage_ = damage;
 
-    objColor_ = (color_t){0xFF, 0, 0, 0xFF};
+    objColor_ = objColor;
 
     t3d_mat4_identity(&projectileMat);
     projectileMatFP = (T3DMat4FP*)malloc_uncached(sizeof(T3DMat4FP));
@@ -60,6 +60,7 @@ void GO_Projectile::update() {
         || position_.z > global::gameState->envModel->aabbMax[2] || position_.z < global::gameState->envModel->aabbMin[2]){
             //debugf("Out of bounds\n");
             timeToDelete = true;
+            global::gameState->projectileWentOutOfBounds();
     }
 }
 
