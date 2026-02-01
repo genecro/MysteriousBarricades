@@ -29,3 +29,5 @@ I have not personally tested other flashcarts like Everdrive 64 or N64 clones li
 - Player character (wizard) model, NPC (knight) model, and model animations from Quaternius' [Ultimate Animated Character Pack](https://quaternius.com/packs/ultimatedanimatedcharacter.html)
 - Title music: "Les Barricades Mysterieuses" by François Couperin from his Sixth Ordre (1717)
 - Boss music: "Fuguette à 3 voix" by Arthur Dodement (ca. 1912)
+
+OST available here: https://visualculture.bandcamp.com/album/mysterious-barricades-ost
