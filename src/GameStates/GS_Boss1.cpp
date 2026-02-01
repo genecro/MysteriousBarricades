@@ -181,7 +181,8 @@ void GS_Boss1::levelWon() {
 
 void GS_Boss1::levelLost() {
     if(global::gameProgress.barricadesCanRicochet) {
-        global::GameInterruptStack->push_back((new GI_Alert("A structure has fallen!\nThe enemies have prevailed!", false))->setNextInterrupt(
+        global::GameInterruptStack->push_back((new GI_Alert("A structure has fallen!\nThe enemies have prevailed!", false))
+        ->setNextInterrupt(
             new GI_MultiChoice("Retry", new GI_FadeToNextGS<GS_Boss1>((T3DVec3){-10,10,10}, 1200.0f),
                             "Quit", new GI_FadeToNextGS<GS_SelectLevel>((T3DVec3){0,0,0}, 1200.0f)))
         );
@@ -192,11 +193,11 @@ void GS_Boss1::levelLost() {
             (new GI_Alert("Hmm... there must be a way\nto reflect these projectiles...", false))
         ->setNextInterrupt(
             (new GI_Alert("Maybe I should go back\nand see if I missed anything...", false))
-        ))
+        
         ->setNextInterrupt(
             new GI_MultiChoice("Retry", new GI_FadeToNextGS<GS_Boss1>((T3DVec3){-10,10,10}, 1200.0f),
                             "Quit", new GI_FadeToNextGS<GS_SelectLevel>((T3DVec3){0,0,0}, 1200.0f)))
-        );
+        )));
     }
 }
 

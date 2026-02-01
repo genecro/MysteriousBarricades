@@ -137,7 +137,9 @@ void GS_Boss1InteriorA::update() {
     thePlayer_->update();
     updateCamera();
 
-    
+    if(thePlayer_->position_.z > 325) {
+        nextStatePop = true;
+    }
 
     t3d_mat4_from_srt_euler(&envMat,
         (float[3]){ envScale, envScale, envScale},
