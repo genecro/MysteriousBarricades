@@ -49,7 +49,7 @@ GS_Menu::GS_Menu() {
 
     //drawn = false;
     menuChoices[MENU_ITEM_NEW_GAME] = (menuChoice{"New Game", 1});
-    menuChoices[MENU_ITEM_OPTIONS] = (menuChoice{"Options", 1});
+    menuChoices[MENU_ITEM_OPTIONS] = (menuChoice{"Load Game", 0});
     menuChoices[MENU_ITEM_CREDITS] = (menuChoice{"Credits", 1});
 
     menuCursor = 0;
