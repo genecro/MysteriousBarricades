@@ -7,7 +7,7 @@
 
 GI_MultiChoice::~GI_MultiChoice() {
     for(auto const& [key, value] : menuChoices) {
-        if(value && key.compare(currentChoiceString_) != 0) delete value;
+        if(value && key.compare(menuChoices[currentChoice_].first) != 0) delete value;
     }
 }
 
@@ -29,7 +29,7 @@ void GI_MultiChoice::handleInput() {
     }
 
     if(btn.a) {
-        nextInterrupt_ = menuChoices[currentChoiceString_];
+        nextInterrupt_ = menuChoices[currentChoice_].second;
         global::audioManager->playSFX("rom:/zapSelect5.wav64", {.volume = 0.7f});
         timeToDestroy = true;
     }
@@ -56,7 +56,6 @@ void GI_MultiChoice::renderRdpq() {
         rdpq_text_printf(&(rdpq_textparms_t) {
             .style_id= i==currentChoice_ ? FONTSTYLE_RED : FONTSTYLE_WHITE,
         }, FONT_PIACEVOLI_16, SCREEN_PADDING+20, display_get_height()/2.0f - numChoices_/2.0f*LINE_HEIGHT + i*LINE_HEIGHT + LINE_HEIGHT/1.6f, key.c_str());
-        if(i==currentChoice_) currentChoiceString_ = key;
         i++;
     }
     
