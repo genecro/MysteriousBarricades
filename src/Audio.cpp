@@ -33,7 +33,7 @@ Audio::~Audio() {
     }
 }
 
-uint32_t Audio::playSFX(std::string name, SfxConf conf = {}) {
+uint32_t Audio::playSFX(std::string name, SfxConf conf) {
 
     auto it = sfxMap.find(name);
     if(it==sfxMap.end()) {

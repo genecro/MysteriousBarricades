@@ -5,7 +5,7 @@
 #define SCREEN_PADDING 25
 #define BOX_HEIGHT 75
 
-GI_Alert::GI_Alert(std::string name, bool isPause, bool titleText = false) {
+GI_Alert::GI_Alert(std::string name, bool isPause, bool titleText) {
     titleText_ = titleText;
     name_ = name;
 
@@ -45,9 +45,11 @@ void GI_Alert::renderRdpq() {
     rdpq_set_prim_color(RGBA32(0, 0, 0, 128));
     rdpq_fill_rectangle(SCREEN_PADDING, display_get_height()-SCREEN_PADDING-BOX_HEIGHT, display_get_width()-SCREEN_PADDING, display_get_height()-SCREEN_PADDING);
 
-    rdpq_text_printf(&(rdpq_textparms_t) {
-            .style_id= titleText_ ? FONTSTYLE_RED : FONTSTYLE_WHITE,
-        }, 
+    rdpq_textparms_t textParms =
+    {
+        .style_id= titleText_ ? FONTSTYLE_RED : FONTSTYLE_WHITE,
+    };
+    rdpq_text_printf(&textParms, 
         titleText_ ? FONT_OWREKYNGE_20 : FONT_PIACEVOLI_16, 
         SCREEN_PADDING+20, 
         display_get_height()-SCREEN_PADDING-BOX_HEIGHT + (numLines <= 2 ? 30 : 20), 

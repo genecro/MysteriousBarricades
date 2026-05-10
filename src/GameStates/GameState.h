@@ -11,6 +11,7 @@
 #include "../collision.h"
 #include "../GameObjects/GO_Cursor.h"
 #include "../GameObjects/GO_Player.h"
+#include "../Pathfinding/Pathfinding.h"
 
 
 struct TimedEvent {
@@ -40,6 +41,8 @@ public:
     BarricadeList* barricadeList;
     EnemyList* enemyList;
 
+    PathfindingGraph* pathfindingGraph = nullptr;
+    bool debugShowNodes = false;
 
     GO_Repairable* currentRepairable;
 
@@ -91,6 +94,7 @@ protected:
     struct camera_t {
         T3DVec3 pos;
         T3DVec3 target;
+        T3DVec3 up = (T3DVec3){0,1,0};
         float targetDistanceFromPlayer;
         float distanceFromPlayer;
         float targetHeightFromPlayer;

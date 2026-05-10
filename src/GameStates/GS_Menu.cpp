@@ -109,7 +109,7 @@ void GS_Menu::update() {
     camera.target = (T3DVec3){0,zTrans+10*(-zTrans/20.0f),0};
 
     t3d_viewport_set_projection(&viewport, T3D_DEG_TO_RAD(85.0f), 10.0f, 150.0f);
-    t3d_viewport_look_at(&viewport, &camera.pos, &camera.target, &(T3DVec3){{0,1,0}});
+    t3d_viewport_look_at(&viewport, &camera.pos, &camera.target, &camera.up);
 
     t3d_mat4_from_srt_euler(&modelMat,
       (float[3]){modelScale, modelScale, modelScale},
@@ -283,7 +283,7 @@ void GS_Menu::renderRdpq() {
 }
 
 void GS_Menu::drawNameEntry() {
-    char *enterName = "Enter your name:";
+    const char *enterName = "Enter your name:";
 
     int nameX = 40;
     int nameY = 40;
@@ -294,13 +294,17 @@ void GS_Menu::drawNameEntry() {
 
     rdpq_sync_pipe();
 
-    rdpq_text_printf(&(rdpq_textparms_t) {
+    rdpq_textparms_t textParms =
+    {
         .style_id=FONTSTYLE_BLUE,
-    }, FONT_OWREKYNGE_20, nameX-10, nameY, enterName);
+    };
+    rdpq_text_printf(&textParms, FONT_OWREKYNGE_20, nameX-10, nameY, enterName);
  
-    rdpq_text_printf(&(rdpq_textparms_t) {
+    textParms =
+    {
         .style_id=FONTSTYLE_RED,
-    }, FONT_PIACEVOLI_16, nameX+145, nameY, (
+    };
+    rdpq_text_printf(&textParms, FONT_PIACEVOLI_16, nameX+145, nameY, (
         nameEntry.newPlayerName.size() < nameEntry.maxNameLen ? 
             nameEntry.newPlayerName+'_' : 
             nameEntry.newPlayerName).c_str());
@@ -311,17 +315,21 @@ void GS_Menu::drawNameEntry() {
     rdpq_fill_rectangle(alphaX-fontSize/2, alphaY-fontSize, alphaX + nameEntry.numCols*fontSize, alphaY + fontSize*nameEntry.LETTERS_IN_ALPHABET/nameEntry.numCols);
     rdpq_sync_pipe();
     for(int i = 0; i < nameEntry.LETTERS_IN_ALPHABET; i++) {
-        int renderFont = i==nameEntry.nameCursor ? FONTSTYLE_RED : FONTSTYLE_WHITE;
+        short renderFont = i==nameEntry.nameCursor ? FONTSTYLE_RED : FONTSTYLE_WHITE;
         char currChar[] = {'a'+i+(nameEntry.caps*nameEntry.capsConv), '\0'};
 
-        rdpq_text_printf(&(rdpq_textparms_t){
+        textParms =
+        {
             .style_id=renderFont,
-        }, FONT_PIACEVOLI_16, alphaX + (i%nameEntry.numCols)*fontSize, alphaY + (i/nameEntry.numCols)*fontSize, currChar);
+        };
+        rdpq_text_printf(&textParms, FONT_PIACEVOLI_16, alphaX + (i%nameEntry.numCols)*fontSize, alphaY + (i/nameEntry.numCols)*fontSize, currChar);
     }
 
-    rdpq_text_printf(&(rdpq_textparms_t) {
+    textParms =
+    {
         .style_id=FONTSTYLE_WHITE,
-    }, FONT_PIACEVOLI_16, SCREEN_PADDING+10, display_get_height()/2.0f+10, "A: Select letter\nB: Backspace\nR: Toggle shift\nStart: Start game\nL: Back to main menu");
+    };
+    rdpq_text_printf(&textParms, FONT_PIACEVOLI_16, SCREEN_PADDING+10, display_get_height()/2.0f+10, "A: Select letter\nB: Backspace\nR: Toggle shift\nStart: Start game\nL: Back to main menu");
     rdpq_sync_pipe();
 }
 
@@ -338,18 +346,22 @@ void GS_Menu::drawTitleLogo() {
 }
 
 void GS_Menu::drawMainMenu() {
+    rdpq_textparms_t textParms = {};
     for(int i = 0; i < NUM_MENU_CHOICES; i++) {
         //debugf("Menu choice %d\n", i);
-        int renderFont = FONTSTYLE_WHITE;
+        short renderFont = FONTSTYLE_WHITE;
         if(i==menuCursor) {
             renderFont = FONTSTYLE_RED;
         }
         if(!menuChoices[i].enabled){
             renderFont = FONTSTYLE_GREY;
         }
-        rdpq_text_printf(&(rdpq_textparms_t){
+
+        textParms =
+        {
             .style_id=renderFont,
-        }, FONT_PIACEVOLI_16, textX, textY + i*12, menuChoices[i].choiceName);
+        };
+        rdpq_text_printf(&textParms, FONT_PIACEVOLI_16, textX, textY + i*12, menuChoices[i].choiceName);
     }
 }
 
@@ -361,9 +373,11 @@ void GS_Menu::drawCredits() {
     rdpq_set_prim_color(RGBA32(0, 0, 0, 128));
     rdpq_fill_rectangle(SCREEN_PADDING, SCREEN_PADDING, display_get_width()-SCREEN_PADDING, display_get_height()-SCREEN_PADDING);
 
-    rdpq_text_printf(&(rdpq_textparms_t) {
-            .style_id= FONTSTYLE_WHITE,
-        }, 
+    rdpq_textparms_t textParms =
+    {
+        .style_id= FONTSTYLE_WHITE,
+    };
+    rdpq_text_printf(&textParms, 
         FONT_PIACEVOLI_16, 
         SCREEN_PADDING+20, 
         SCREEN_PADDING+20, 

@@ -4,7 +4,7 @@
 T3DModel* GO_Projectile::projectileModel = nullptr;
 uint8_t GO_Projectile::instanceCount = 0;
 
-GO_Projectile::GO_Projectile(T3DVec3 position, float angle, float speed, GameObject* origin, float objectWidth, float damage, color_t objColor = color_t{0xFF, 0, 0, 0xFF}) {
+GO_Projectile::GO_Projectile(T3DVec3 position, float angle, float speed, GameObject* origin, float objectWidth, float damage, color_t objColor) {
     position_ = position;
     lifetime_ = 0;
 

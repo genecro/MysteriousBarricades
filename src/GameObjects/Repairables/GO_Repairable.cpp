@@ -101,8 +101,10 @@ void GO_Repairable::drawRewardIndicator() {
         rdpq_set_mode_standard();
         rdpq_mode_alphacompare(1);
 
+        rdpq_blitparms_t blitParms = {};
+
         rdpq_sprite_blit(rewardAlreadyReceived_ ? rewardAlreadyReceivedSprite : fullyRepaired ? rewardIndicatorSprite : rewardIndicatorNotFullyRepairedSprite,
             output.x, output.y,
-            &(rdpq_blitparms_t){});
+            &blitParms);
     }
 }

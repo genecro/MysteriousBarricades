@@ -51,11 +51,14 @@ void GI_MultiChoice::renderRdpq() {
     rdpq_set_prim_color(RGBA32(0, 0, 0, 128));
     rdpq_fill_rectangle(SCREEN_PADDING, display_get_height()/2.0f - numChoices_/2.0f*LINE_HEIGHT, display_get_width()-SCREEN_PADDING, display_get_height()/2.0f + numChoices_/2.0f*LINE_HEIGHT);
 
+    rdpq_textparms_t textParms = {};
     int i = 0;
     for(auto const& [key, value] : menuChoices) {
-        rdpq_text_printf(&(rdpq_textparms_t) {
-            .style_id= i==currentChoice_ ? FONTSTYLE_RED : FONTSTYLE_WHITE,
-        }, FONT_PIACEVOLI_16, SCREEN_PADDING+20, display_get_height()/2.0f - numChoices_/2.0f*LINE_HEIGHT + i*LINE_HEIGHT + LINE_HEIGHT/1.6f, key.c_str());
+        textParms =
+        {
+            .style_id = i==currentChoice_ ? FONTSTYLE_RED : FONTSTYLE_WHITE,
+        };
+        rdpq_text_printf(&textParms, FONT_PIACEVOLI_16, SCREEN_PADDING+20, display_get_height()/2.0f - numChoices_/2.0f*LINE_HEIGHT + i*LINE_HEIGHT + LINE_HEIGHT/1.6f, key.c_str());
         i++;
     }
     

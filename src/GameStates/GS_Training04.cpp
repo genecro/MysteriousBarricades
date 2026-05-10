@@ -158,9 +158,11 @@ void GS_Training04::renderRdpq() {
         std::string currStr = "Current score: " + std::to_string(currentScore);
         std::string highStr = "High score: " + std::to_string(global::gameProgress.challenge1HighScore);
 
-        rdpq_text_printf(&(rdpq_textparms_t) {
-                .style_id= FONTSTYLE_WHITE,
-            }, 
+        rdpq_textparms_t textParms =
+        {
+            .style_id= FONTSTYLE_WHITE,
+        };
+        rdpq_text_printf(&textParms, 
             FONT_PIACEVOLI_16, 
             25, 
             display_get_height()-50, 

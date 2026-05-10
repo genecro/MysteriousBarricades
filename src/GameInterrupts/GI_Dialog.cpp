@@ -51,21 +51,25 @@ void GI_Dialog::renderRdpq() {
 
     rdpq_fill_rectangle(SCREEN_PADDING, display_get_height()-SCREEN_PADDING-BOX_HEIGHT, display_get_width()-SCREEN_PADDING, display_get_height()-SCREEN_PADDING);
 
-    rdpq_text_printf(&(rdpq_textparms_t) {
+    rdpq_textparms_t textParms =
+    {
         .style_id=FONTSTYLE_RED,
-    }, FONT_OWREKYNGE_20, SCREEN_PADDING+20, display_get_height()-SCREEN_PADDING-BOX_HEIGHT-NAME_HEIGHT/2.0f+NAME_PADDING, name_.c_str());
+    };
+    rdpq_text_printf(&textParms, FONT_OWREKYNGE_20, SCREEN_PADDING+20, display_get_height()-SCREEN_PADDING-BOX_HEIGHT-NAME_HEIGHT/2.0f+NAME_PADDING, name_.c_str());
 
     int nbytes = text_.length();
 
     //debugf("nbytes before paragraph: %d\n", nbytes);
 
-    rdpq_paragraph_t *par = rdpq_paragraph_build(&(rdpq_textparms_t){
-            .width = display_get_width()-(2*(SCREEN_PADDING+BOX_PADDING)),
-            .height = BOX_HEIGHT-(2*BOX_PADDING),
-            .align = ALIGN_LEFT,
-            .valign = VALIGN_TOP,
-            .wrap = WRAP_WORD,
-        }, FONT_PIACEVOLI_16, text_.c_str(), &nbytes);
+    textParms =
+    {
+        .width = int16_t(display_get_width()-(2*(SCREEN_PADDING+BOX_PADDING))),
+        .height = BOX_HEIGHT-(2*BOX_PADDING),
+        .align = ALIGN_LEFT,
+        .valign = VALIGN_TOP,
+        .wrap = WRAP_WORD,
+    };
+    rdpq_paragraph_t *par = rdpq_paragraph_build(&textParms, FONT_PIACEVOLI_16, text_.c_str(), &nbytes);
     
     //debugf("nbytes after paragraph: %d\n", nbytes);
     //debugf("nchars after paragraph: %d\n", par->nchars);

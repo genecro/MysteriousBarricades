@@ -4,7 +4,7 @@
 T3DModel* GO_ProjectileLog::projectileModel = nullptr;
 uint8_t GO_ProjectileLog::instanceCount = 0;
 
-GO_ProjectileLog::GO_ProjectileLog(T3DVec3 position, float angle, float speed, GameObject* origin, float objectWidth, float stretch, float damage=20) {
+GO_ProjectileLog::GO_ProjectileLog(T3DVec3 position, float angle, float speed, GameObject* origin, float objectWidth, float stretch, float damage) {
     position_ = position;
     lifetime_ = 0;
 

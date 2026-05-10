@@ -1,7 +1,7 @@
 #pragma once
 #include <libdragon.h>
 
-enum {
+enum fontIDs : short {
     FONT_FREE_12 = 1,
     //FONT_TANNENBERG_20 = 2,
     //FONT_PIXELFRAKTUR_24 = 3,
@@ -12,7 +12,7 @@ enum {
     FONT_PIACEVOLI_16 = 8,
 };
 
-enum {
+enum fontColors : short {
     FONTSTYLE_WHITE = 1,
     FONTSTYLE_RED = 2,
     FONTSTYLE_BLUE = 3,

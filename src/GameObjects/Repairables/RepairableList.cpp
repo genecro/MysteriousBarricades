@@ -64,16 +64,17 @@ void RepairableList::renderRdpq() {
 }
 
 GO_Repairable* RepairableList::getCurrRepairable() {
-    if(!currentIdSet_) return NULL;
+    if(!currentIdSet_) return nullptr;
     for(int i = 0; i < repairables->size(); i++) {
         if(repairables->at(i)->id_ == currentId_) {
             return repairables->at(i);
         }
     }
+    return nullptr;
 }
 
 GO_Repairable* RepairableList::getNextRepairable() {
-    if(!currentIdSet_) return NULL;
+    if(!currentIdSet_) return nullptr;
     for(int i = 0; i < repairables->size(); i++) {
         if(repairables->at(i)->id_ == currentId_) {
             i = (i+1) % repairables->size();
@@ -81,11 +82,11 @@ GO_Repairable* RepairableList::getNextRepairable() {
             return repairables->at(i);
         }
     }
-
+    return nullptr;
 }
 
 GO_Repairable* RepairableList::getPrevRepairable() {
-    if(!currentIdSet_) return NULL;
+    if(!currentIdSet_) return nullptr;
     for(int i = 0; i < repairables->size(); i++) {
         if(repairables->at(i)->id_ == currentId_) {
             i = (i-1) % repairables->size();
@@ -93,6 +94,7 @@ GO_Repairable* RepairableList::getPrevRepairable() {
             return repairables->at(i);
         }
     }
+    return nullptr;
 }
 
 GO_Repairable* RepairableList::getRandDamagedRep() {
@@ -103,7 +105,7 @@ GO_Repairable* RepairableList::getRandDamagedRep() {
         }
     }
     if(damagedList.size() == 0) return nullptr;
-    return damagedList.at(rand()*damagedList.size()/(RAND_MAX+1));
+    return damagedList.at(rand()*damagedList.size()/(RAND_MAX));
 }
 
 void RepairableList::setCurrentRepairable(GO_Repairable* newCurr) {

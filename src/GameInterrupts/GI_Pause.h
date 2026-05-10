@@ -18,11 +18,11 @@ public:
     virtual void renderRdpq() override;
 
 protected:
-    char* pauseStr;
-    char* contStr;
-    char* retryStr;
-    char* quitStr;
-    char* returnStr;
+    const char* pauseStr;
+    const char* contStr;
+    const char* retryStr;
+    const char* quitStr;
+    const char* returnStr;
 
     enum {
         PAUSE_SELECTION_CONT = 0,
@@ -48,7 +48,7 @@ template <typename T> GI_Pause<T>::GI_Pause() {
 }
     */
 
-template <typename T> GI_Pause<T>::GI_Pause(T3DVec3 startingPos = (T3DVec3){0,10,0}) {
+template <typename T> GI_Pause<T>::GI_Pause(T3DVec3 startingPos) {
     global::audioManager->playSFX("rom:/castingBuff2.wav64", {.volume = 0.5f});
     pauseStr = "Paused";
     contStr = "Continue";
@@ -133,26 +133,36 @@ template <typename T> void GI_Pause<T>::renderRdpq() {
 
     rdpq_fill_rectangle(0, 0, display_get_width(), display_get_height());
 
-    rdpq_text_printf(&(rdpq_textparms_t) {
+    rdpq_textparms_t textParms = 
+    {
         .style_id=FONTSTYLE_RED,
-    }, FONT_OWREKYNGE_20, display_get_width()/2-20, display_get_height()/2-40, pauseStr);
+    };
+    rdpq_text_printf(&textParms, FONT_OWREKYNGE_20, display_get_width()/2-20, display_get_height()/2-40, pauseStr);
 
-    rdpq_text_printf(&(rdpq_textparms_t) {
+    textParms =
+    {
         .style_id= currSelection==PAUSE_SELECTION_CONT ? FONTSTYLE_RED : FONTSTYLE_WHITE,
-    }, FONT_PIACEVOLI_16, display_get_width()/2-20, display_get_height()/2-10, contStr);
+    };
+    rdpq_text_printf(&textParms, FONT_PIACEVOLI_16, display_get_width()/2-20, display_get_height()/2-10, contStr);
 
-    rdpq_text_printf(&(rdpq_textparms_t) {
+    textParms = 
+    {
         .style_id= currSelection==PAUSE_SELECTION_RETRY ? FONTSTYLE_RED : FONTSTYLE_WHITE,
-    }, FONT_PIACEVOLI_16, display_get_width()/2-20, display_get_height()/2+10, retryStr);
+    };
+    rdpq_text_printf(&textParms , FONT_PIACEVOLI_16, display_get_width()/2-20, display_get_height()/2+10, retryStr);
 
-    rdpq_text_printf(&(rdpq_textparms_t) {
+    textParms =
+    {
         .style_id= currSelection==PAUSE_SELECTION_QUIT ? FONTSTYLE_RED : FONTSTYLE_WHITE,
-    }, FONT_PIACEVOLI_16, display_get_width()/2-20, display_get_height()/2+30, quitStr);
+    };
+    rdpq_text_printf(&textParms, FONT_PIACEVOLI_16, display_get_width()/2-20, display_get_height()/2+30, quitStr);
 
     if(!global::GameStateStack->empty()) {
-        rdpq_text_printf(&(rdpq_textparms_t) {
+        textParms =
+        {
             .style_id= currSelection==PAUSE_SELECTION_RETURN ? FONTSTYLE_RED : FONTSTYLE_WHITE,
-        }, FONT_PIACEVOLI_16, display_get_width()/2-20, display_get_height()/2+50, returnStr);
+        };
+        rdpq_text_printf(&textParms, FONT_PIACEVOLI_16, display_get_width()/2-20, display_get_height()/2+50, returnStr);
     }
 
     

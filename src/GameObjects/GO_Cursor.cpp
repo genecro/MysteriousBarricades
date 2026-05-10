@@ -434,13 +434,13 @@ void GO_Cursor::renderRdpq() {
         rdpq_mode_alphacompare(1);
         int numFreeBarricades = global::gameProgress.numBarricades-global::gameState->barricadeList->gameObjects_->size();
 
+        rdpq_blitparms_t blitParms = {.theta = T3D_PI/4.0f};
+
         for(int i = 0; i < global::gameProgress.numBarricades; i++) {
             rdpq_sprite_blit(i+1 > numFreeBarricades ? barricadeIndicatorEmpty : barricadeIndicatorFull,
                 27 + i*16,
                 32, 
-                &(rdpq_blitparms_t){
-                    .theta = T3D_PI/4.0f
-                }
+                &blitParms
             );
         }
     }

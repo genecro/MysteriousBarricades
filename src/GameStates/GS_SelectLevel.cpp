@@ -22,21 +22,6 @@ void GS_SelectLevel::handleInput() {
     int xAxis = joypad_get_axis_pressed(JOYPAD_PORT_1, JOYPAD_AXIS_STICK_X);
     int yAxis = joypad_get_axis_pressed(JOYPAD_PORT_1, JOYPAD_AXIS_STICK_Y);
 
-    /*
-    if(btn.c_up) {
-        global::gameProgress.training2Unlocked = !global::gameProgress.training2Unlocked;
-    }
-    else if(btn.c_right) {
-        global::gameProgress.training3Unlocked = !global::gameProgress.training3Unlocked;
-    }
-    else if(btn.c_left) {
-        global::gameProgress.boss1Unlocked = !global::gameProgress.boss1Unlocked;
-    }
-    else if(btn.c_down) {
-        global::gameProgress.challenge1Unlocked = !global::gameProgress.challenge1Unlocked;
-    }
-        */
-
     if(!global::gameProgress.everythingUnlocked && 
         (btn.c_up || btn.c_right || btn.c_down || btn.c_left)) {
         switch(currentCodeState_) {
@@ -241,45 +226,61 @@ void GS_SelectLevel::renderRdpq() {
 
     //draw level labels
     std::string lvlLbl = "T1";
-    rdpq_text_printf(&(rdpq_textparms_t) {
+    rdpq_textparms_t textParms =
+    {
         .style_id=FONTSTYLE_BLACK,
-    }, FONT_PIACEVOLI_16, trainingBoxX+10, trainingBoxY+20, lvlLbl.c_str());
+    };
+    rdpq_text_printf(&textParms, FONT_PIACEVOLI_16, trainingBoxX+10, trainingBoxY+20, lvlLbl.c_str());
 
     lvlLbl = "T2";
-    rdpq_text_printf(&(rdpq_textparms_t) {
+    textParms =
+    {
         .style_id= global::gameProgress.training2Unlocked ? FONTSTYLE_BLACK : FONTSTYLE_GREY,
-    }, FONT_PIACEVOLI_16, training2BoxX+10, training2BoxY+20, lvlLbl.c_str());
+    };
+    rdpq_text_printf(&textParms, FONT_PIACEVOLI_16, training2BoxX+10, training2BoxY+20, lvlLbl.c_str());
 
     lvlLbl = "T3";
-    rdpq_text_printf(&(rdpq_textparms_t) {
+    textParms =
+    {
         .style_id= global::gameProgress.training3Unlocked ? FONTSTYLE_BLACK : FONTSTYLE_GREY,
-    }, FONT_PIACEVOLI_16, training3BoxX+10, training3BoxY+20, lvlLbl.c_str());
+    };
+    rdpq_text_printf(&textParms, FONT_PIACEVOLI_16, training3BoxX+10, training3BoxY+20, lvlLbl.c_str());
     
     lvlLbl = "L1";
-    rdpq_text_printf(&(rdpq_textparms_t) {
+    textParms =
+    {
         .style_id= global::gameProgress.level1Unlocked ? FONTSTYLE_BLACK : FONTSTYLE_GREY, 
-    }, FONT_PIACEVOLI_16, level01BoxX+10, level01BoxY+20, lvlLbl.c_str());
+    };
+    rdpq_text_printf(&textParms, FONT_PIACEVOLI_16, level01BoxX+10, level01BoxY+20, lvlLbl.c_str());
     
     lvlLbl = "B1";
-    rdpq_text_printf(&(rdpq_textparms_t) {
+    textParms =
+    {
         .style_id= global::gameProgress.boss1Unlocked ? FONTSTYLE_BLACK : FONTSTYLE_GREY,
-    }, FONT_PIACEVOLI_16, boss1BoxX+10, boss1BoxY+20, lvlLbl.c_str());
+    };
+    rdpq_text_printf(&textParms, FONT_PIACEVOLI_16, boss1BoxX+10, boss1BoxY+20, lvlLbl.c_str());
 
     lvlLbl = "T4";
-    rdpq_text_printf(&(rdpq_textparms_t) {
+    textParms =
+    {
         .style_id= global::gameProgress.challenge1Unlocked ? FONTSTYLE_BLACK : FONTSTYLE_GREY,
-    }, FONT_PIACEVOLI_16, challenge1BoxX+10, challenge1BoxY+20, lvlLbl.c_str());
+    };
+    rdpq_text_printf(&textParms, FONT_PIACEVOLI_16, challenge1BoxX+10, challenge1BoxY+20, lvlLbl.c_str());
 
     std::string lvlSel = "Select Level";
 
-    rdpq_text_printf(&(rdpq_textparms_t) {
+    textParms =
+    {
         .style_id=FONTSTYLE_RED,
-    }, FONT_OWREKYNGE_20, (float)display_get_width()/4.0f, (float)display_get_height()/4.0f, lvlSel.c_str());
+    };
+    rdpq_text_printf(&textParms, FONT_OWREKYNGE_20, (float)display_get_width()/4.0f, (float)display_get_height()/4.0f, lvlSel.c_str());
 
     //draw level caption
-    rdpq_text_printf(&(rdpq_textparms_t) {
+    textParms =
+    {
         .style_id=FONTSTYLE_WHITE,
-    }, FONT_PIACEVOLI_16, (float)display_get_width()/4.0f, 3.0f*(float)display_get_height()/4.0f, levelString.c_str());
+    };
+    rdpq_text_printf(&textParms, FONT_PIACEVOLI_16, (float)display_get_width()/4.0f, 3.0f*(float)display_get_height()/4.0f, levelString.c_str());
 
     rdpq_set_mode_standard();
     rdpq_mode_alphacompare(1);

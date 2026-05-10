@@ -298,7 +298,11 @@ T3DVec3 collision::resolveWallCollision(const T3DVec3& playerPos, float playerRa
     for(const auto& tri : triangles) {
         if(sphereIntersectsTriangle(playerPos+movementDir+correction, playerRadius, tri)) {
             T3DVec3 triNorm = triangleNormal(tri);
-            float angle = acosf(t3d_vec3_dot(&triNorm, &(T3DVec3){{0,1,0}}));
+            T3DVec3 upVec = (T3DVec3){0,1,0};
+            float dotProduct = t3d_vec3_dot(&triNorm, &upVec);
+            if(dotProduct < -1) dotProduct = -1;
+            else if(dotProduct > 1) dotProduct = 1;
+            float angle = acosf(dotProduct);
             if(angle >= T3D_PI/2.0f) angle -= T3D_PI;
             else if(angle <= -T3D_PI/2.0f) angle += T3D_PI;
             
@@ -358,7 +362,12 @@ T3DVec3 collision::resolveWallCollisionLoop(const T3DVec3& playerPos, float play
         //if(sphereIntersectsTriangle(playerPos+movementDir+correction, playerRadius, tri)) {
         if(sphereIntersectsTriangle(playerPos+movDir+correction, playerRadius, tri)) {
             T3DVec3 triNorm = triangleNormal(tri);
-            float angle = acosf(t3d_vec3_dot(&triNorm, &(T3DVec3){{0,1,0}}));
+            T3DVec3 upVec = (T3DVec3){0,1,0};
+            debugf("dot product: %.8f\n", t3d_vec3_dot(&triNorm, &upVec));
+            float dotProduct = t3d_vec3_dot(&triNorm, &upVec);
+            if(dotProduct < -1) dotProduct = -1;
+            else if(dotProduct > 1) dotProduct = 1;
+            float angle = acosf(dotProduct);
             if(angle >= T3D_PI/2.0f) angle -= T3D_PI;
             else if(angle <= -T3D_PI/2.0f) angle += T3D_PI;
             
@@ -394,7 +403,8 @@ T3DVec3 collision::resolveWallCollisionLoop(const T3DVec3& playerPos, float play
         for (auto tri : collidedTris) {
             T3DVec3 triNorm = triangleNormal(tri);
             //float dot = t3d_vec3_dot(&(movementDir + correction), &triNorm);//
-            float dot = t3d_vec3_dot(&(movDir + correction), &triNorm);//
+            T3DVec3 correctedMovDir = movDir + correction;
+            float dot = t3d_vec3_dot(&correctedMovDir, &triNorm);//
             if(dot < 0) {//
                 tempCorr -= triNorm * dot;//
                 //tempCorr -= triNorm * t3d_vec3_dot(&(movementDir + correction), &triNorm);

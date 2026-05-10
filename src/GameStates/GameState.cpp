@@ -16,7 +16,7 @@ GameState::GameState()
 
 GameState::~GameState()
 {
-    
+    delete pathfindingGraph;
 }
 
 void GameState::initCamera() {

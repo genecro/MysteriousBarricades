@@ -70,6 +70,14 @@ public:
     T3DVec3 targetPos_;
     GO_Repairable* target_ = nullptr;
 
+    // Pathfinding state
+    std::vector<int> currentPath_;          // indices into the level's pathfinding graph
+    int currentWaypointIdx_ = 0;            // next waypoint index in currentPath_
+    bool pathReady_ = false;                // has a path been computed?
+    T3DVec3 targetNodePos_ = (T3DVec3){0,0,0};  // current waypoint position to move toward
+
+    virtual void updatePathfinding();
+
     T3DVec3 HPBarPos_ = (T3DVec3){-2, -2, -2};
 
 protected:

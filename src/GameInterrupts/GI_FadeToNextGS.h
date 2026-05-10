@@ -27,7 +27,7 @@ protected:
     T3DVec3 playerStartingPos_;
 };
 
-template <typename T> GI_FadeToNextGS<T>::GI_FadeToNextGS(T3DVec3 playerStartingPos, float fadeTime = 300.0f) {
+template <typename T> GI_FadeToNextGS<T>::GI_FadeToNextGS(T3DVec3 playerStartingPos, float fadeTime) {
     fadeTime_ = fadeTime;
     fadeAlpha_ = 1.0f;
     playerStartingPos_ = playerStartingPos;

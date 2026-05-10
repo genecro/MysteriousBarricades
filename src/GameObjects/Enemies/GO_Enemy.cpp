@@ -92,7 +92,7 @@ void GO_Enemy::setStateAttacking(GO_Repairable* target) {
     global::gameState->enemiesAttackingStructure();
 }
 
-void GO_Enemy::setStateSeeking(GO_Repairable* target = nullptr) {
+void GO_Enemy::setStateSeeking(GO_Repairable* target) {
     if(target) {
         target_ = target;
         targetPos_ = target_->position_;
@@ -101,6 +101,7 @@ void GO_Enemy::setStateSeeking(GO_Repairable* target = nullptr) {
         targetPos_ = (T3DVec3){0,0,0};
     }
     enemyState_ = global::ENEMY_STATE_SEEKING;
+    pathReady_ = false;  // force recalculation with new target
 }
 
 void GO_Enemy::summon() {

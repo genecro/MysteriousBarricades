@@ -14,7 +14,9 @@ int main(void)
     float smoothedDeltaTime = 1.0f/60.0f;
     timer_init();
 
-    debug_init_isviewer();
+    debug_init_emulog();
+    //debug_init_usblog();
+    //debug_init_isviewer();
     debug_init_usblog();
     asset_init_compression(2);
     
@@ -44,11 +46,11 @@ int main(void)
     global::GameStateStack = new std::stack<GameState*>();
 
     //global::gameState = new GS_Intro();
-    global::gameState = new GS_Menu();
+    //global::gameState = new GS_Menu();
     //global::gameState = new GS_Level01((T3DVec3){0, 10, 0});
     //global::gameState = new GS_Training02((T3DVec3){0, 10, 0});
     //global::gameState = new GS_Training03InteriorA((T3DVec3){0,0,80});
-    //global::gameState = new GS_Level01InteriorA((T3DVec3){0,0,320});
+    global::gameState = new GS_Level01InteriorA((T3DVec3){0,0,320});
     //global::gameState = new GS_Boss1InteriorA((T3DVec3){0,0,320});
     //global::gameState = new GS_Training04((T3DVec3){0,10,0});
 
@@ -137,28 +139,28 @@ int main(void)
             global::GameInterruptStack->at(i)->renderRdpq();
         }
 
-        /*
+        
         rdpq_sync_pipe();
         //display stats
         
-        
+        rdpq_textparms_t textParms = {};
         if(global::gameState->thePlayer_) {
-            rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, 25, 25, "Player position:");
-            rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, 25, 37, "X: %.2f", global::gameState->thePlayer_->position_.x);
-            rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, 25, 49, "Y: %.2f", global::gameState->thePlayer_->position_.y);
-            rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, 25, 61, "Z: %.2f", global::gameState->thePlayer_->position_.z);
-            rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, 25, 73, "ROT: %.2f", global::gameState->thePlayer_->rotation_);
+            rdpq_text_printf(&textParms, FONT_FREE_12, 25, 25, "Player position:");
+            rdpq_text_printf(&textParms, FONT_FREE_12, 25, 37, "X: %.2f", global::gameState->thePlayer_->position_.x);
+            rdpq_text_printf(&textParms, FONT_FREE_12, 25, 49, "Y: %.2f", global::gameState->thePlayer_->position_.y);
+            rdpq_text_printf(&textParms, FONT_FREE_12, 25, 61, "Z: %.2f", global::gameState->thePlayer_->position_.z);
+            rdpq_text_printf(&textParms, FONT_FREE_12, 25, 73, "ROT: %.2f", global::gameState->thePlayer_->rotation_);
         }
             
-        //rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, display_get_width()-110, display_get_height()-52, "%.2f FPS", display_get_fps());
+        //rdpq_text_printf(&textParms, FONT_FREE_12, display_get_width()-110, display_get_height()-52, "%.2f FPS", display_get_fps());
         sys_get_heap_stats(&heapStats);
-        rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, display_get_width()-110, 25, "%.2f FPS", display_get_fps());
-        rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, display_get_width()-110, 37, "Total: %d", heapStats.total);
-        rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, display_get_width()-110, 49, "Used:  %d", heapStats.used);
-        rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, display_get_width()-110, 61, "Ratio: %.2f%%", 100.0f*heapStats.used/heapStats.total);
+        rdpq_text_printf(&textParms, FONT_FREE_12, display_get_width()-110, 25, "%.2f FPS", display_get_fps());
+        rdpq_text_printf(&textParms, FONT_FREE_12, display_get_width()-110, 37, "Total: %d", heapStats.total);
+        rdpq_text_printf(&textParms, FONT_FREE_12, display_get_width()-110, 49, "Used:  %d", heapStats.used);
+        rdpq_text_printf(&textParms, FONT_FREE_12, display_get_width()-110, 61, "Ratio: %.2f%%", 100.0f*heapStats.used/heapStats.total);
         
 
-        */
+        
 
         //if current gameState has nextState, point to nextState and delete current gameState
         if(global::gameState->nextState != nullptr)
@@ -185,7 +187,7 @@ int main(void)
 
         /*
         if(global::gameState && global::gameState->envModel) {
-            rdpq_text_printf(&(rdpq_textparms_t){}, FONT_FREE_12, display_get_width()-110, 73, "EnvVertCt: %d", global::gameState->envModel->totalVertCount);
+            rdpq_text_printf(&textParms, FONT_FREE_12, display_get_width()-110, 73, "EnvVertCt: %d", global::gameState->envModel->totalVertCount);
         }
             */
         mixer_try_play();

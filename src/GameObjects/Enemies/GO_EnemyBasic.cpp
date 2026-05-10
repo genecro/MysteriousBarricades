@@ -7,7 +7,7 @@
 T3DModel* GO_EnemyBasic::enemyModel = nullptr;
 uint8_t GO_EnemyBasic::instanceCount = 0;
 
-GO_EnemyBasic::GO_EnemyBasic(T3DVec3 pos, GO_Repairable* target, bool dropItem = true) {
+GO_EnemyBasic::GO_EnemyBasic(T3DVec3 pos, GO_Repairable* target, bool dropItem) {
     //debugf("Entering second constructor\n");
     position_ = pos;
     HPTotal_ = 100;
@@ -62,7 +62,7 @@ GO_EnemyBasic::GO_EnemyBasic(T3DVec3 pos, GO_Repairable* target, bool dropItem =
     */
 }
 
-GO_EnemyBasic::GO_EnemyBasic(T3DVec3 pos, T3DVec3 targetPos, bool dropItem = true) : GO_EnemyBasic(pos, nullptr, dropItem) {
+GO_EnemyBasic::GO_EnemyBasic(T3DVec3 pos, T3DVec3 targetPos, bool dropItem) : GO_EnemyBasic(pos, nullptr, dropItem) {
     //debugf("Entering first constructor\n");
     targetPos_ = targetPos;
     // debugf("targetPos_.x = %.2f\n", targetPos_.x);
@@ -93,6 +93,7 @@ void GO_EnemyBasic::update() {
         if(target_) targetPos_ = target_->position_;
         else targetPos_ = (T3DVec3){0,0,0};
         enemyState_ = global::ENEMY_STATE_SEEKING;
+        pathReady_ = false;  // force recalc for new target
     }
 
     if(isStunned_) {
@@ -121,6 +122,9 @@ void GO_EnemyBasic::update() {
                         //rotation_ = fm_atan2f(targetPos_.z - position_.z, targetPos_.x- position_.x) + (((float)rand() / (float)RAND_MAX)*(T3D_PI / 2.0f) - (T3D_PI / 4.0f));
                         intendedRotation_ = fm_atan2f(targetPos_.z - position_.z, targetPos_.x- position_.x) + (((float)rand() / (float)RAND_MAX)*(T3D_PI / 2.0f) - (T3D_PI / 4.0f));
                     }
+
+                    // Update pathfinding -- sets intendedRotation_ toward next waypoint
+                    updatePathfinding();
                     
                     if(abs(rotation_-intendedRotation_) <= rotationIncrement_) rotation_ = intendedRotation_;
                     else if(std::remainder(rotation_ - intendedRotation_, T3D_PI*2.0f) > 0) {

@@ -47,15 +47,61 @@ GS_Level01::GS_Level01(T3DVec3 startingCursorPosition) {
 
     barricadeList = new BarricadeList();
 
+    // Build pathfinding graph for this level
+    // Nodes are placed at key walkable positions; edges connect adjacent nodes.
+    // Format: { position {x, y, z}, { neighbor_indices... } }
+    pathfindingGraph = new PathfindingGraph();
+    // Node layout (5x5 grid covering the level, Y=0 since pathfinding uses XZ distance):
+    //  0(-20,-20)  1(-10,-20)  2(0,-20)   3(10,-20)   4(20,-20)
+    //  5(-20,-10)  6(-10,-10)  7(0,-10)   8(10,-10)   9(20,-10)
+    // 10(-20,0)   11(-10,0)   12(0,0)    13(10,0)    14(20,0)
+    // 15(-20,10)  16(-10,10)  17(0,10)   18(10,10)   19(20,10)
+    // 20(-20,20)  21(-10,20)  22(0,20)   23(10,20)   24(20,20)
+    pathfindingGraph->nodes.push_back({(T3DVec3){-20,0,-20}, {1, 5, 6}});
+    pathfindingGraph->nodes.push_back({(T3DVec3){-10,0,-20}, {0, 2, 5, 6, 7}});
+    pathfindingGraph->nodes.push_back({(T3DVec3){0,0,-20},   {1, 3, 6, 7, 8}});
+    pathfindingGraph->nodes.push_back({(T3DVec3){10,0,-20},  {2, 4, 7, 8, 9}});
+    pathfindingGraph->nodes.push_back({(T3DVec3){20,0,-20},  {3, 8, 9}});
+    pathfindingGraph->nodes.push_back({(T3DVec3){-20,0,-10},{0, 1, 6, 10, 11}});
+    pathfindingGraph->nodes.push_back({(T3DVec3){-10,0,-10},{0, 1, 2, 5, 7, 10, 11, 12}});
+    pathfindingGraph->nodes.push_back({(T3DVec3){0,0,-10},  {1, 2, 3, 6, 8, 11, 12, 13}});
+    pathfindingGraph->nodes.push_back({(T3DVec3){10,0,-10}, {2, 3, 4, 7, 9, 12, 13, 14}});
+    pathfindingGraph->nodes.push_back({(T3DVec3){20,0,-10}, {3, 4, 8, 13, 14}});
+    pathfindingGraph->nodes.push_back({(T3DVec3){-20,0,0},  {5, 6, 11, 15, 16}});
+    pathfindingGraph->nodes.push_back({(T3DVec3){-10,0,0},  {5, 6, 7, 10, 12, 15, 16, 17}});
+    pathfindingGraph->nodes.push_back({(T3DVec3){0,0,0},    {6, 7, 8, 11, 13, 16, 17, 18}});
+    pathfindingGraph->nodes.push_back({(T3DVec3){10,0,0},   {7, 8, 9, 12, 14, 17, 18, 19}});
+    pathfindingGraph->nodes.push_back({(T3DVec3){20,0,0},   {8, 9, 13, 18, 19}});
+    pathfindingGraph->nodes.push_back({(T3DVec3){-20,0,10}, {10, 11, 16, 20, 21}});
+    pathfindingGraph->nodes.push_back({(T3DVec3){-10,0,10}, {10, 11, 12, 15, 17, 20, 21, 22}});
+    pathfindingGraph->nodes.push_back({(T3DVec3){0,0,10},   {11, 12, 13, 16, 18, 21, 22, 23}});
+    pathfindingGraph->nodes.push_back({(T3DVec3){10,0,10},  {12, 13, 14, 17, 19, 22, 23, 24}});
+    pathfindingGraph->nodes.push_back({(T3DVec3){20,0,10},  {13, 14, 18, 23, 24}});
+    pathfindingGraph->nodes.push_back({(T3DVec3){-20,0,20}, {15, 16, 21}});
+    pathfindingGraph->nodes.push_back({(T3DVec3){-10,0,20}, {15, 16, 17, 20, 22}});
+    pathfindingGraph->nodes.push_back({(T3DVec3){0,0,20},   {16, 17, 18, 21, 23}});
+    pathfindingGraph->nodes.push_back({(T3DVec3){10,0,20},  {17, 18, 19, 22, 24}});
+    pathfindingGraph->nodes.push_back({(T3DVec3){20,0,20},  {18, 19, 23}});
+
     enemyList = new EnemyList(&collisionTris);
 
 
 
     enemyList->push(new GO_EnemyBasic((T3DVec3){-15, 5, 0}, repairableList->getRandDamagedRep()));
     enemyList->push(new GO_EnemyBasic((T3DVec3){15, 5, -15}, repairableList->getRandDamagedRep()));
+    /*
+    timeline.push_back({5*60,
+        [&](){
+            enemyList->push(new GO_EnemyRushToBarricade((T3DVec3){15, 5, -15}, repairableList->getRandDamagedRep()));
+            return true;
+        }
+    });
+    */
+    
+    //enemyList->push(new GO_EnemyRushToBarricade((T3DVec3){15, 5, -15}, repairableList->getRandDamagedRep()));
 
     remainingEnemies = 16;
-
+    
     timeline.push_back({20*60,
         [&](){
             if(enemyList->gameObjects_->size() >= 6 || endStateReached) return false;
@@ -141,6 +187,10 @@ void GS_Level01::handleInput() {
         global::GameInterruptStack->push_back(new GI_Pause<GS_Level01>());
     }
 
+    if(btn.d_up){
+        debugShowNodes = !debugShowNodes;
+    }
+
     // if(btn.c_up) {
     //     objectList->push(new GO_Projectile((T3DVec3){0,5,0}, 3.0f*T3D_PI/4.0f, 0.3f, nullptr));
     // }
@@ -207,6 +257,16 @@ void GS_Level01::renderT3d() {
 }
 
 void GS_Level01::renderRdpq() {
+    rdpq_sync_pipe();
+    if(debugShowNodes) {
+        rdpq_set_mode_fill(RGBA32(0xFF, 0x00, 0x00, 0xFF));
+        T3DVec3 nodePos;
+        int nodeRectSize = 2;
+        for(int i = 0; i < pathfindingGraph->nodes.size(); i++) {
+            t3d_viewport_calc_viewspace_pos(global::gameState->viewport, nodePos, pathfindingGraph->nodes.at(i).position);
+            rdpq_fill_rectangle(nodePos.x-nodeRectSize, nodePos.y-nodeRectSize, nodePos.x+nodeRectSize, nodePos.y+nodeRectSize);
+        }
+    }
     objectList->renderRdpq();
     repairableList->renderRdpq();
     barricadeList->renderRdpq();
@@ -215,9 +275,11 @@ void GS_Level01::renderRdpq() {
 
     std::string enRemStr = "Enemies Remaining: " + std::to_string(remainingEnemies + enemyList->gameObjects_->size());
 
-    rdpq_text_printf(&(rdpq_textparms_t) {
-            .style_id= FONTSTYLE_WHITE,
-        }, 
+    rdpq_textparms_t textParms =
+    {
+        .style_id= FONTSTYLE_WHITE,
+    };
+    rdpq_text_printf(&textParms, 
         FONT_PIACEVOLI_16, 
         25, 
         display_get_height()-25, 

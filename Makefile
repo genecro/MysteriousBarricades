@@ -3,7 +3,7 @@ SOURCE_DIR=src
 BUILD_DIR=build
 include $(N64_INST)/include/n64.mk
 include $(N64_INST)/include/t3d.mk
-N64_CXXFLAGS = -std=c++17 -std=gnu++20 -fpermissive
+N64_CXXFLAGS += -std=gnu++20 -Wno-error=sign-compare -Wno-error=narrowing -fpermissive
 #srcFiles = $(wildcard $(SOURCE_DIR)/*/*/*.cpp) $(wildcard $(SOURCE_DIR)/*/*.cpp) $(wildcard $(SOURCE_DIR)/*.cpp)
 srcFiles = $(shell find $(SOURCE_DIR) -name '*.cpp')
 

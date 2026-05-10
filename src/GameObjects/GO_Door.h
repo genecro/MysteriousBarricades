@@ -24,7 +24,7 @@ protected:
 template <typename T> uint8_t GO_Door<T>::instanceCount = 0;
 template <typename T> T3DModel* GO_Door<T>::doorModel = nullptr;
 
-template <typename T> GO_Door<T>::GO_Door(T3DVec3 position, float rotation, float width, T3DVec3 playerStartPos, bool locked=false) :
+template <typename T> GO_Door<T>::GO_Door(T3DVec3 position, float rotation, float width, T3DVec3 playerStartPos, bool locked) :
                     GO_Portal<T>::GO_Portal(position, rotation, width, playerStartPos) {
     locked_ = locked;
 
@@ -57,7 +57,7 @@ template <typename T> void GO_Door<T>::handleInput() {
             rotDiff += 2.0f*T3D_PI;
         }
         debugf("rotDiff = %.2f\n", rotDiff);
-        if(playerContact() &&
+        if(this->playerContact() &&
             abs(rotDiff) <= INTERACTION_ANGLE) {
             if(locked_) {
                 global::GameInterruptStack->push_back(new GI_Alert("You need a key.", false));

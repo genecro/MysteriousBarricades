@@ -6,7 +6,7 @@
 T3DModel* GO_EnemyRushToBarricade::enemyModel = nullptr;
 uint8_t GO_EnemyRushToBarricade::instanceCount = 0;
 
-GO_EnemyRushToBarricade::GO_EnemyRushToBarricade(T3DVec3 pos, GO_Repairable* target, bool dropItem = true) {
+GO_EnemyRushToBarricade::GO_EnemyRushToBarricade(T3DVec3 pos, GO_Repairable* target, bool dropItem) {
     //debugf("Entering second constructor\n");
     position_ = pos;
     HPTotal_ = 100;
@@ -59,7 +59,7 @@ GO_EnemyRushToBarricade::GO_EnemyRushToBarricade(T3DVec3 pos, GO_Repairable* tar
     */
 }
 
-GO_EnemyRushToBarricade::GO_EnemyRushToBarricade(T3DVec3 pos, T3DVec3 targetPos, bool dropItem = true) : GO_EnemyRushToBarricade(pos, nullptr, dropItem) {
+GO_EnemyRushToBarricade::GO_EnemyRushToBarricade(T3DVec3 pos, T3DVec3 targetPos, bool dropItem) : GO_EnemyRushToBarricade(pos, nullptr, dropItem) {
     //debugf("Entering first constructor\n");
     targetPos_ = targetPos;
     // debugf("targetPos_.x = %.2f\n", targetPos_.x);
@@ -90,6 +90,7 @@ void GO_EnemyRushToBarricade::update() {
         if(target_) targetPos_ = target_->position_;
         else targetPos_ = (T3DVec3){0,0,0};
         enemyState_ = global::ENEMY_STATE_SEEKING;
+        pathReady_ = false;  // force recalc for new target
     }
 
     if(isStunned_) {
@@ -118,6 +119,9 @@ void GO_EnemyRushToBarricade::update() {
                         //rotation_ = fm_atan2f(targetPos_.z - position_.z, targetPos_.x- position_.x) + (((float)rand() / (float)RAND_MAX)*(T3D_PI / 2.0f) - (T3D_PI / 4.0f));
                         intendedRotation_ = fm_atan2f(targetPos_.z - position_.z, targetPos_.x- position_.x) + (((float)rand() / (float)RAND_MAX)*(T3D_PI / 2.0f) - (T3D_PI / 4.0f));
                     }
+
+                    // Update pathfinding -- sets intendedRotation_ toward next waypoint
+                    updatePathfinding();
 
                     if(abs(rotation_-intendedRotation_) <= rotationIncrement_) rotation_ = intendedRotation_;
                     else if(std::remainder(rotation_ - intendedRotation_, T3D_PI*2.0f) > 0) {
@@ -153,6 +157,8 @@ void GO_EnemyRushToBarricade::update() {
 
             case global::ENEMY_STATE_CHASING_CURSOR: {
                 intendedRotation_ = fm_atan2f(targetPos_.z - position_.z, targetPos_.x- position_.x);
+
+                updatePathfinding();
                 
                 if(abs(rotation_-intendedRotation_) <= rotationIncrement_ * speed_ / baseSpeed_ * global::frameTimeMultiplier) rotation_ = intendedRotation_;
                 else if(std::remainder(rotation_ - intendedRotation_, T3D_PI*2.0f) > 0) {
@@ -191,6 +197,16 @@ void GO_EnemyRushToBarricade::update() {
 }
 
 void GO_EnemyRushToBarricade::renderRdpq() {
+    if(global::gameState->debugShowNodes) {
+        rdpq_sync_pipe();
+        T3DVec3 nodePos;
+        int nodeRectSize = 2;
+        rdpq_set_mode_fill(RGBA32(0x00, 0xFF, 0x00, 0xFF));
+        for(int i = 0; i < currentPath_.size(); i++) {
+            t3d_viewport_calc_viewspace_pos(global::gameState->viewport, nodePos, global::gameState->pathfindingGraph->nodes.at(currentPath_.at(i)).position);
+            rdpq_fill_rectangle(nodePos.x-nodeRectSize, nodePos.y-nodeRectSize, nodePos.x+nodeRectSize, nodePos.y+nodeRectSize);
+        }
+    }
     drawHPBar();
 }
 
@@ -213,10 +229,12 @@ void GO_EnemyRushToBarricade::cursorMakingBarricade(T3DVec3 cursorPos) {
     targetPos_ = cursorPos;
     enemyState_ = global::ENEMY_STATE_CHASING_CURSOR;
     speed_ = chasingCursorSpeed_;
+    pathReady_ = false;
 }
 
 void GO_EnemyRushToBarricade::cursorNotMakingBarricade() {
     targetPos_ = target_->position_;
     enemyState_ = global::ENEMY_STATE_SEEKING;
     speed_ = baseSpeed_;
+    pathReady_ = false;
 }
