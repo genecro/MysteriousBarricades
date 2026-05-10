@@ -45,14 +45,14 @@ void GS_SelectLevel::handleInput() {
                     global::gameProgress.numBarricades = 3;
                     global::gameProgress.allTrainingLevelsComplete = true;
                     global::gameProgress.barricadesCanRicochet = true;
-                    global::gameProgress.boss1RewardReceived = true;
-                    global::gameProgress.boss1Unlocked = true;
-                    global::gameProgress.challenge1Unlocked = true;
-                    global::gameProgress.level1RewardReceived = true;
-                    global::gameProgress.level1Unlocked = true;
-                    global::gameProgress.training2Unlocked = true;
-                    global::gameProgress.training3Unlocked = true;
-                    global::gameProgress.trainingRewardReceived = true;
+                    global::gameProgress.rewardStatus |= global::TRAININGREWARD;
+                    global::gameProgress.rewardStatus |= global::LEVEL1REWARD;
+                    global::gameProgress.rewardStatus |= global::BOSS1REWARD;
+                    global::gameProgress.levelLockStatus |= global::TRAINING2LOCK;
+                    global::gameProgress.levelLockStatus |= global::TRAINING3LOCK;
+                    global::gameProgress.levelLockStatus |= global::LEVEL1LOCK;
+                    global::gameProgress.levelLockStatus |= global::BOSS1LOCK;
+                    global::gameProgress.levelLockStatus |= global::CHALLENGE1LOCK;
                     global::gameProgress.everythingUnlocked = true;
                     global::audioManager->playSFX("complexRise2.wav64", {.volume = 0.4f});
                 }
@@ -63,7 +63,7 @@ void GS_SelectLevel::handleInput() {
 
     switch(currSelection) {
         case SELECTION_TRAINING:
-            if(global::gameProgress.level1Unlocked && yAxis < 0) {
+            if((global::gameProgress.levelLockStatus & global::LEVEL1LOCK) && yAxis < 0) {
                 currSelection = SELECTION_LEVEL_1;
                 global::audioManager->playSFX("rom:/bootsOnGenericGround6.wav64", {.volume = 0.4f});
             }

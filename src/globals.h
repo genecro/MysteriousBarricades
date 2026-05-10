@@ -34,20 +34,28 @@ namespace global
     extern surface_t* disp;
     extern Audio* audioManager;
 
+    enum levelLockMasks : uint16_t {
+        TRAINING2LOCK   = 0b0000000000000001,
+        TRAINING3LOCK   = 0b0000000000000010,
+        LEVEL1LOCK      = 0b0000000000000100,
+        BOSS1LOCK       = 0b0000000000001000,
+        CHALLENGE1LOCK  = 0b0000000000010000
+    };
+
+    enum rewardMasks : uint16_t {
+        TRAININGREWARD  = 0b0000000000000001,
+        LEVEL1REWARD    = 0b0000000000000010,
+        BOSS1REWARD     = 0b0000000000000100
+    };
+
     extern struct gameProgress_t {
-        bool training2Unlocked = false;
-        bool training3Unlocked = false;
-        bool level1Unlocked = false;
-        bool boss1Unlocked = false;
-        bool challenge1Unlocked = false;
-        uint8_t numBarricades = 2;
-        uint8_t rpCapacity = 100;
+        uint16_t levelLockStatus = 0;
+        uint16_t rewardStatus = 0;
+        uint16_t numBarricades = 2;
+        uint16_t rpCapacity = 100;
         float repairSpeedMultiplier = 0.2f;
         bool allTrainingLevelsComplete = false;
-        bool trainingRewardReceived = false;
-        bool level1RewardReceived = false;
         bool barricadesCanRicochet = false;
-        bool boss1RewardReceived = false;
         int challenge1HighScore = 0;
         bool everythingUnlocked = false;
     } gameProgress;

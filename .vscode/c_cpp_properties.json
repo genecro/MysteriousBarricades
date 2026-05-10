@@ -5,8 +5,10 @@
             "includePath": [
                 "/opt/libdragon/**"
             ],
-            "defines": [],
-            "compilerPath": "/usr/bin/gcc",
+            "defines": [
+                "N64"
+            ],
+            "compilerPath": "/opt/libdragon/bin/mips64-elf-g++",//"/usr/bin/gcc",
             "cStandard": "c17",
             "cppStandard": "gnu++17",
             "intelliSenseMode": "linux-gcc-x64"
